@@ -70,7 +70,7 @@
   </div>
 
   <!-- ==================== MAIN PORTAL ==================== -->
-  <div id="appView" class="hidden max-w-6xl mx-auto p-4 md:p-6">
+  <div id="appView" class="hidden max-w-7xl mx-auto p-4 md:p-6">
     <!-- Top Header -->
     <header class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
@@ -91,13 +91,16 @@
       </button>
     </header>
 
-    <!-- Navigation Tabs -->
+    <!-- Consistent Navigation Tabs -->
     <nav class="flex flex-wrap gap-2 mb-6">
       <button data-tab="directoryTab" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">
         Employee Directory
       </button>
       <button data-tab="probationTab" class="tab-btn bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
-        Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800">0</span>
+        Intern / Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800">0</span>
+      </button>
+      <button data-tab="kpiTab" class="tab-btn bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
+        Monthly KPI
       </button>
       <button id="navAddEmployeeBtn" data-tab="addEmployeeTab" class="tab-btn hidden bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
         + Add New Employee
@@ -112,14 +115,22 @@
       <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
         <div>
           <h2 class="text-lg font-bold text-slate-900">Employee Directory</h2>
-          <p class="text-sm text-slate-500">Click any employee row to view details, probation history, or confidential HR records.</p>
+          <p class="text-sm text-slate-500">Click any employee row to view details, edit records, or access the HR Confidential Vault.</p>
         </div>
-        <input
-          type="text"
-          id="directorySearch"
-          placeholder="Search name, ID, or department..."
-          class="w-full sm:w-72 px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
+        <div class="flex flex-wrap gap-2">
+          <select id="directoryCompanyFilter" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+            <option value="">All Companies</option>
+            <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
+            <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
+            <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
+          </select>
+          <input
+            type="text"
+            id="directorySearch"
+            placeholder="Search name, ID, or department..."
+            class="w-full sm:w-64 px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
       </div>
 
       <div class="overflow-x-auto">
@@ -128,101 +139,424 @@
             <tr class="border-b border-slate-200 text-xs uppercase text-slate-500 bg-slate-50">
               <th class="py-3 px-4 font-semibold">Login ID</th>
               <th class="py-3 px-4 font-semibold">Full Name</th>
-              <th class="py-3 px-4 font-semibold">Department / Position</th>
-              <th class="py-3 px-4 font-semibold">Mobile</th>
+              <th class="py-3 px-4 font-semibold">Company Entity</th>
+              <th class="py-3 px-4 font-semibold">Department / Job Title</th>
+              <th class="py-3 px-4 font-semibold">Mobile Number</th>
               <th class="py-3 px-4 font-semibold">Join Date</th>
               <th class="py-3 px-4 font-semibold">Status</th>
               <th class="py-3 px-4 font-semibold text-right">Action</th>
             </tr>
           </thead>
           <tbody id="directoryTableBody" class="divide-y divide-slate-100 text-sm">
-            <tr><td colspan="7" class="py-6 text-center text-slate-400">Loading employees...</td></tr>
+            <tr><td colspan="8" class="py-6 text-center text-slate-400">Loading employees...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ==================== TAB 2: PROBATION TRACKER ==================== -->
+    <!-- ==================== TAB 2: INTERN / PROBATION TRACKER ==================== -->
     <section id="probationTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div class="mb-5">
-        <h2 class="text-lg font-bold text-slate-900">Probation Tracker</h2>
-        <p class="text-sm text-slate-500">Monitor staff currently on probation, confirm permanent employment, or log extensions.</p>
+        <h2 class="text-lg font-bold text-slate-900">Intern / Probation Tracker</h2>
+        <p class="text-sm text-slate-500">Monitor staff currently under internship or probation, confirm permanent employment, or log extensions.</p>
       </div>
 
-      <div id="probationList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <p class="text-sm text-slate-400">Checking probation records...</p>
+      <div id="probationList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <p class="text-sm text-slate-400">Checking intern and probation records...</p>
       </div>
     </section>
 
-    <!-- ==================== TAB 3: ADD NEW EMPLOYEE (HR ADMIN) ==================== -->
-    <section id="addEmployeeTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-      <div class="mb-5">
-        <h2 class="text-lg font-bold text-slate-900">Onboard New Employee</h2>
-        <p class="text-sm text-slate-500">Creates a Login ID & Password immediately so the employee can sign in right away.</p>
+    <!-- ==================== TAB 3: MONTHLY KPI ==================== -->
+    <section id="kpiTab" class="tab-panel hidden space-y-6">
+      <!-- KPI Control Bar -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Monthly KPI &amp; Performance Evaluation</h2>
+            <p class="text-sm text-slate-500">Weighted 1–5 goal evaluation (Score out of 5.00 &amp; percentage equivalent).</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <select id="kpiEmployeeSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white min-w-[220px]"></select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Goal Year</label>
+              <select id="kpiYearSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="2025">2025</option>
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">Evaluation Month</label>
+              <select id="kpiMonthSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="01">Jan</option>
+                <option value="02">Feb</option>
+                <option value="03">Mar</option>
+                <option value="04">Apr</option>
+                <option value="05">May</option>
+                <option value="06">Jun</option>
+                <option value="07">Jul</option>
+                <option value="08">Aug</option>
+                <option value="09">Sep</option>
+                <option value="10">Oct</option>
+                <option value="11" selected>Nov</option>
+                <option value="12">Dec</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employee KPI Header Summary -->
+        <div id="kpiEmpHeaderBanner" class="mt-5 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-sm">
+          <div>
+            <span class="text-slate-500">Selected Staff:</span> <strong id="kpiSelectedEmpInfo">-</strong>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="toggleKpiTemplateBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700">
+              Manage Annual Goal Template
+            </button>
+            <button id="openDuplicateYearBtn" class="hidden px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700">
+              Duplicate Goals to Another Year
+            </button>
+          </div>
+        </div>
       </div>
 
-      <form id="addEmployeeForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Login ID * (e.g. EMP001)</label>
-          <input type="text" id="newEmpId" required placeholder="EMP001" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+      <!-- Annual KPI Goal Template Editor (Collapsible) -->
+      <div id="kpiTemplateCard" class="hidden bg-white rounded-xl shadow-sm border border-blue-200 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Annual KPI Goal Template (<span id="templateYearLabel">2026</span>)</h3>
+            <p class="text-xs text-slate-500">Define measurable job goals and 1–5 targets (Total Weightage must equal 100%).</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span id="templateWeightBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">Total Weightage: 0%</span>
+            <button type="button" id="loadSampleGoalsBtn" class="hidden px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
+              Load Atlas Sample Goals
+            </button>
+            <button type="button" id="addGoalRowBtn" class="hidden px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
+              + Add Goal Row
+            </button>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Initial Password * (Min 6 chars)</label>
-          <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        <div class="mb-4">
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Individual Focus Summary</label>
+          <input type="text" id="kpiIndividualFocus" placeholder="e.g. Quality Control, Scheduling, and Customer Satisfaction..." class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Full Name * (Auto ALL CAPS)</label>
-          <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        <div id="kpiTemplateRows" class="space-y-4"></div>
+
+        <div id="kpiTemplateActions" class="hidden mt-4 pt-4 border-t border-slate-200 flex justify-end gap-3">
+          <button type="button" id="saveKpiTemplateBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg">
+            Save Annual Goal Template
+          </button>
+        </div>
+      </div>
+
+      <!-- Duplicate Goals Modal -->
+      <div id="duplicateYearModal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md p-6">
+          <h3 class="text-lg font-bold text-slate-900">Duplicate KPI Goals to Another Year</h3>
+          <p class="text-xs text-slate-500 mt-1">Copies all goals, objectives, weightages, and 1–5 targets so you can keep what remains, remove old items, or add new ones.</p>
+          <div class="mt-4">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Year</label>
+            <select id="duplicateTargetYear" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <option value="2026">2026</option>
+              <option value="2027" selected>2027</option>
+              <option value="2028">2028</option>
+              <option value="2029">2029</option>
+            </select>
+          </div>
+          <div class="mt-5 flex justify-end gap-2">
+            <button type="button" id="cancelDuplicateBtn" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-lg">Cancel</button>
+            <button type="button" id="confirmDuplicateBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Duplicate Goals</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Evaluation Scorecard -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <div class="flex items-center gap-2.5">
+              <h3 class="text-base font-bold text-slate-900">Monthly Scorecard: <span id="kpiActivePeriodLabel">Nov-2026</span></h3>
+              <span id="kpiStatusBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">Not Started</span>
+            </div>
+            <p id="kpiFocusDisplay" class="text-xs text-slate-500 mt-1">Individual Focus: -</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <!-- Admin-Only Confirmed Incentive Callout -->
+            <div id="kpiAdminIncentiveBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-lg px-3.5 py-2 text-right">
+              <span class="block text-[11px] font-semibold text-emerald-700 uppercase">HR Admin: Monthly Incentive</span>
+              <strong id="kpiAdminIncentiveValue" class="text-sm text-emerald-900">-</strong>
+            </div>
+
+            <div class="bg-slate-900 text-white rounded-lg px-4 py-2 text-right">
+              <span class="block text-[11px] text-slate-300 uppercase">Weighted Score</span>
+              <strong id="kpiTotalScoreDisplay" class="text-lg font-bold">0.00 / 5.00 (0%)</strong>
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
-          <input type="text" id="newEmpPhone" required placeholder="60123456789" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        <div id="kpiEvaluationBody" class="mt-5 space-y-4">
+          <p class="text-sm text-slate-400">Select an employee and period to load KPI items.</p>
         </div>
 
+        <!-- Manager Remarks & Action Buttons -->
+        <div id="kpiFooterControls" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Reporting Manager / HOD Overall Remarks</label>
+            <input type="text" id="kpiManagerRemarks" placeholder="Manager feedback or revision notes..." class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <span id="kpiAuditSummary" class="text-xs text-slate-400"></span>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="saveKpiDraftBtn" class="hidden px-4 py-2 text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800">
+                Save Draft
+              </button>
+              <button type="button" id="submitKpiBtn" class="hidden px-5 py-2 text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
+                Submit to Manager
+              </button>
+              <button type="button" id="returnKpiBtn" class="hidden px-4 py-2 text-sm font-semibold rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900">
+                Return for Revision
+              </button>
+              <button type="button" id="approveKpiBtn" class="hidden px-5 py-2 text-sm font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white">
+                Approve Monthly KPI
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: ADD NEW EMPLOYEE (HR ADMIN) ==================== -->
+    <section id="addEmployeeTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="mb-6">
+        <h2 class="text-lg font-bold text-slate-900">Onboard New Employee</h2>
+        <p class="text-sm text-slate-500">Creates a Login ID &amp; Password immediately so the employee can sign in right away.</p>
+      </div>
+
+      <form id="addEmployeeForm" class="space-y-8">
+        <!-- Section 1: Identity & Personal Contact -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Department *</label>
-          <input type="text" id="newEmpDept" required placeholder="Operations" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">1. Identity &amp; Residential Details</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Login ID * (e.g. EMP001)</label>
+              <input type="text" id="newEmpId" required placeholder="EMP001" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Initial Password * (Min 6 chars)</label>
+              <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name * (Auto ALL CAPS)</label>
+              <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">NRIC Number *</label>
+              <input type="text" id="newEmpNric" required placeholder="950812-14-5521" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Passport Number (Optional)</label>
+              <input type="text" id="newEmpPassport" placeholder="A12345678" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number *</label>
+              <input type="text" id="newEmpPhone" required placeholder="60123456789" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address (Optional)</label>
+              <input type="email" id="newEmpEmail" placeholder="staff@company.com" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Residential Address *</label>
+              <input type="text" id="newEmpAddress" required placeholder="No. 12, Jalan Utama, Taman Perindustrian, 43300 Seri Kembangan, Selangor" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+          </div>
         </div>
 
+        <!-- Section 2: Emergency Contacts -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Position / Job Title *</label>
-          <input type="text" id="newEmpPosition" required placeholder="Production supervisor" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">2. Emergency Contacts (Contact 1 Mandatory, 2–3 Optional)</h3>
+          <div class="space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Emergency Contact 1 Name *</label>
+                <input type="text" id="newEc1Name" required placeholder="LIM MEI LING" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Relationship *</label>
+                <input type="text" id="newEc1Rel" required placeholder="Spouse" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Number *</label>
+                <input type="text" id="newEc1Phone" required placeholder="60129876543" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3.5 rounded-lg border border-slate-200">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Emergency Contact 2 Name (Optional)</label>
+                <input type="text" id="newEc2Name" placeholder="TAN AH KOW" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Relationship (Optional)</label>
+                <input type="text" id="newEc2Rel" placeholder="Father" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Contact Number (Optional)</label>
+                <input type="text" id="newEc2Phone" placeholder="60161234567" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3.5 rounded-lg border border-slate-200">
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Emergency Contact 3 Name (Optional)</label>
+                <input type="text" id="newEc3Name" placeholder="TAN SIEW LAN" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Relationship (Optional)</label>
+                <input type="text" id="newEc3Rel" placeholder="Sister" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Contact Number (Optional)</label>
+                <input type="text" id="newEc3Phone" placeholder="60177654321" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              </div>
+            </div>
+          </div>
         </div>
 
+        <!-- Section 3: Employment & Reporting Structure -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">System Access Role *</label>
-          <select id="newEmpRole" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
-            <option value="employee">Employee (View own profile & KPIs)</option>
-            <option value="manager">Manager / HOD (View team & approve KPIs)</option>
-            <option value="hr_admin">HR Admin (Full access & confidential vault)</option>
-          </select>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">3. Employment &amp; Reporting Structure</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Company Entity *</label>
+              <select id="newEmpCompany" required class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
+                <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
+                <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Department *</label>
+              <div class="flex gap-1.5">
+                <select id="newEmpDept" required class="dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
+                <button type="button" data-lookup="departments" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100" title="Add Department">+ Add</button>
+                <button type="button" data-lookup="departments" data-target="newEmpDept" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100" title="Remove Selected Department">&times;</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Job Title *</label>
+              <div class="flex gap-1.5">
+                <select id="newEmpJobTitle" required class="job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
+                <button type="button" data-lookup="jobTitles" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100" title="Add Job Title">+ Add</button>
+                <button type="button" data-lookup="jobTitles" data-target="newEmpJobTitle" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100" title="Remove Selected Job Title">&times;</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">System Access Role *</label>
+              <select id="newEmpRole" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="employee">Employee</option>
+                <option value="hr_admin">HR Admin</option>
+                <option value="manager">Manager / HOD</option>
+                <option value="managing_director">Managing Director</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Reporting Manager (Reports To)</label>
+              <select id="newEmpManager" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="">-- Reports to Top Management --</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Join Date * (dd-mmm-yyyy)</label>
+              <input type="text" id="newEmpJoinDate" readonly required placeholder="Select date..." class="date-picker-input cursor-pointer w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Employment Status *</label>
+              <select id="newEmpStatus" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+                <option value="Confirmed / Permanent">Confirmed / Permanent</option>
+                <option value="Intern">Intern</option>
+                <option value="Part Time / Contract">Part Time / Contract</option>
+                <option value="Probation">Probation</option>
+              </select>
+            </div>
+
+            <div id="newEmpMonthsWrapper" class="hidden">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Duration (Months) *</label>
+              <input type="number" id="newEmpDurationMonths" min="1" max="36" placeholder="e.g. 3 or 6" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+            </div>
+
+            <div id="newEmpEndDateWrapper" class="hidden">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Calculated End Date</label>
+              <input type="text" id="newEmpProbationEnd" readonly placeholder="Auto-calculated" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-600" />
+            </div>
+          </div>
         </div>
 
+        <!-- Section 4: Annual Leave Entitlements (Malaysian Leave Types - Blank Fields for HR) -->
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Reporting Manager</label>
-          <select id="newEmpManager" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
-            <option value="">-- None / Reports to Top Management --</option>
-          </select>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-1">4. Leave Entitlements (Days / Year)</h3>
+          <p class="text-xs text-slate-500 mb-4">Key in the entitled days per year for this employee (leave blank if not applicable).</p>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Annual Leave</label>
+              <input type="number" step="0.5" id="newLeaveAnnual" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Sick Leave (MC)</label>
+              <input type="number" step="0.5" id="newLeaveSick" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Hospitalisation Leave</label>
+              <input type="number" step="0.5" id="newLeaveHospital" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Emergency Leave</label>
+              <input type="number" step="0.5" id="newLeaveEmergency" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Compassionate Leave</label>
+              <input type="number" step="0.5" id="newLeaveCompassionate" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Marriage Leave</label>
+              <input type="number" step="0.5" id="newLeaveMarriage" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Maternity Leave</label>
+              <input type="number" step="0.5" id="newLeaveMaternity" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Paternity Leave</label>
+              <input type="number" step="0.5" id="newLeavePaternity" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Replacement Leave</label>
+              <input type="number" step="0.5" id="newLeaveReplacement" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1">Other Leave (Days)</label>
+              <input type="number" step="0.5" id="newLeaveOther" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+            </div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Join Date *</label>
-          <input type="date" id="newEmpJoinDate" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Employment Status & Probation *</label>
-          <select id="newEmpProbationMonths" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
-            <option value="3">On Probation - 3 Months</option>
-            <option value="6">On Probation - 6 Months</option>
-            <option value="0">Confirmed / Permanent (No Probation)</option>
-          </select>
-        </div>
-
-        <div class="md:col-span-2 pt-2">
+        <div class="pt-2">
           <button type="submit" id="createEmpBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition">
             Create Employee Account
           </button>
@@ -231,95 +565,377 @@
     </section>
   </div>
 
-  <!-- ==================== EMPLOYEE DETAIL & HR VAULT MODAL ==================== -->
-  <div id="empModal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
+  <!-- ==================== VIEW DETAILS & FULL EDIT MODAL ==================== -->
+  <div id="empModal" class="hidden fixed inset-0 bg-slate-900/50 z-40 flex items-center justify-center p-3 md:p-6">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-5xl max-h-[92vh] overflow-y-auto p-6">
       <div class="flex items-start justify-between border-b border-slate-200 pb-4">
         <div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2.5">
             <h3 id="modalEmpName" class="text-xl font-bold text-slate-900">-</h3>
             <span id="modalEmpStatusBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full">-</span>
           </div>
           <p id="modalEmpSub" class="text-sm text-slate-500 mt-0.5">-</p>
         </div>
-        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">&times;</button>
+        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 text-2xl font-bold px-2 leading-none">&times;</button>
       </div>
 
-      <!-- General Info Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 py-4 border-b border-slate-200 text-sm">
+      <!-- Full Editable Employee Profile Form -->
+      <div class="mt-5 space-y-6">
         <div>
-          <span class="text-slate-400 block text-xs">Mobile</span>
-          <strong id="modalEmpPhone" class="text-slate-800">-</strong>
-        </div>
-        <div>
-          <span class="text-slate-400 block text-xs">Join Date</span>
-          <strong id="modalEmpJoin" class="text-slate-800">-</strong>
-        </div>
-        <div>
-          <span class="text-slate-400 block text-xs">Probation End Date</span>
-          <strong id="modalEmpProbEnd" class="text-slate-800">-</strong>
-        </div>
-      </div>
-
-      <!-- HR ADMIN ONLY: PROBATION ACTION + CONFIDENTIAL VAULT -->
-      <div id="hrVaultSection" class="hidden mt-5 space-y-6">
-        <!-- Probation Action Box -->
-        <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4">
-          <h4 class="text-sm font-bold text-amber-900 mb-3">Probation Action & Extension Log</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <select id="probActionType" class="px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white">
-              <option value="Confirmed">Confirm Permanent Staff</option>
-              <option value="Extended">Extend Probation</option>
-              <option value="Resigned">Mark Resigned / Inactive</option>
-            </select>
-            <input type="date" id="probNewEndDate" title="New Probation End Date (if extending)" class="px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
-            <input type="text" id="probActionRemarks" placeholder="Reason / remarks..." class="force-sentence px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
+          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Employee Profile &amp; Contact Information</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Login ID</label>
+              <input type="text" data-edit-field="empId" id="editEmpId" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-empId" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
+              <input type="text" data-edit-field="fullName" id="editFullName" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-fullName" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Company Entity</label>
+              <select data-edit-field="companyEntity" id="editCompanyEntity" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
+                <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
+                <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
+              </select>
+              <div id="hist-companyEntity" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">NRIC Number</label>
+              <input type="text" data-edit-field="nric" id="editNric" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-nric" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Passport Number</label>
+              <input type="text" data-edit-field="passport" id="editPassport" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-passport" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Mobile Number</label>
+              <input type="text" data-edit-field="phone" id="editPhone" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-phone" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
+              <input type="email" data-edit-field="email" id="editEmail" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-email" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Residential Address</label>
+              <input type="text" data-edit-field="residentialAddress" id="editAddress" class="emp-edit-input force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-residentialAddress" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Department</label>
+              <select data-edit-field="department" id="editDepartment" class="emp-edit-input dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
+              <div id="hist-department" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Job Title</label>
+              <select data-edit-field="jobTitle" id="editJobTitle" class="emp-edit-input job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
+              <div id="hist-jobTitle" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">System Access Role</label>
+              <select data-edit-field="role" id="editRole" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                <option value="employee">Employee</option>
+                <option value="hr_admin">HR Admin</option>
+                <option value="manager">Manager / HOD</option>
+                <option value="managing_director">Managing Director</option>
+              </select>
+              <div id="hist-role" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Reporting Manager</label>
+              <select data-edit-field="managerUid" id="editManagerUid" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
+              <div id="hist-managerUid" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Join Date (dd-mmm-yyyy)</label>
+              <input type="text" readonly data-edit-field="joinDate" id="editJoinDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              <div id="hist-joinDate" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Employment Status</label>
+              <select data-edit-field="status" id="editStatus" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+                <option value="Confirmed / Permanent">Confirmed / Permanent</option>
+                <option value="Intern">Intern</option>
+                <option value="Part Time / Contract">Part Time / Contract</option>
+                <option value="Probation">Probation</option>
+                <option value="Resigned">Resigned</option>
+              </select>
+              <div id="hist-status" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Intern / Probation Months</label>
+              <input type="number" data-edit-field="durationMonths" id="editDurationMonths" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
+              <div id="hist-durationMonths" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Intern / Probation End Date</label>
+              <input type="text" readonly data-edit-field="probationEndDate" id="editProbationEndDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              <div id="hist-probationEndDate" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
           </div>
-          <button id="saveProbActionBtn" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">
-            Update Status & Save Log
+        </div>
+
+        <!-- Emergency Contacts in Modal -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Emergency Contacts</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div class="p-3 border border-slate-200 rounded-lg space-y-2">
+              <strong class="text-slate-700">Contact 1 (Primary)</strong>
+              <input type="text" data-edit-field="ec1Name" id="editEc1Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec1Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec1Rel" id="editEc1Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec1Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec1Phone" id="editEc1Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec1Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg space-y-2">
+              <strong class="text-slate-700">Contact 2 (Optional)</strong>
+              <input type="text" data-edit-field="ec2Name" id="editEc2Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec2Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec2Rel" id="editEc2Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec2Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec2Phone" id="editEc2Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec2Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+            <div class="p-3 border border-slate-200 rounded-lg space-y-2">
+              <strong class="text-slate-700">Contact 3 (Optional)</strong>
+              <input type="text" data-edit-field="ec3Name" id="editEc3Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec3Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec3Rel" id="editEc3Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec3Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec3Phone" id="editEc3Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec3Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Entitlements in Modal -->
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Annual Leave Entitlements (Days / Year)</h4>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+            <div>
+              <label class="block text-slate-600 mb-1">Annual Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveAnnual" id="editLeaveAnnual" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveAnnual" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Sick Leave (MC)</label>
+              <input type="number" step="0.5" data-edit-field="leaveSick" id="editLeaveSick" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveSick" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Hospitalisation</label>
+              <input type="number" step="0.5" data-edit-field="leaveHospital" id="editLeaveHospital" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveHospital" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Emergency Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveEmergency" id="editLeaveEmergency" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveEmergency" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Compassionate</label>
+              <input type="number" step="0.5" data-edit-field="leaveCompassionate" id="editLeaveCompassionate" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveCompassionate" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Marriage Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveMarriage" id="editLeaveMarriage" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveMarriage" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Maternity Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveMaternity" id="editLeaveMaternity" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveMaternity" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Paternity Leave</label>
+              <input type="number" step="0.5" data-edit-field="leavePaternity" id="editLeavePaternity" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leavePaternity" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Replacement Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveReplacement" id="editLeaveReplacement" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveReplacement" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+            <div>
+              <label class="block text-slate-600 mb-1">Other Leave</label>
+              <input type="number" step="0.5" data-edit-field="leaveOther" id="editLeaveOther" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-leaveOther" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Profile Edit Button (HR Admin Only) -->
+        <div id="saveProfileEditWrapper" class="hidden pt-2 border-b border-slate-200 pb-5">
+          <button type="button" id="saveProfileEditBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg">
+            Save Profile Changes &amp; Record Edit History
           </button>
         </div>
 
-        <!-- Confidential Compensation & Drive Vault -->
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="text-sm font-bold text-slate-900">HR Confidential Vault (Admin Only)</h4>
-            <span class="text-xs text-slate-500">Hidden from Managers & Staff</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Current Basic Salary (RM)</label>
-              <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+        <!-- ==================== HR ADMIN ONLY: CONFIDENTIAL VAULT ==================== -->
+        <div id="hrVaultSection" class="hidden space-y-6">
+          <!-- Quick Intern / Probation Action Box -->
+          <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-amber-900 mb-3">Intern / Probation Quick Action</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <select id="probActionType" class="alpha-select px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white">
+                <option value="Confirmed / Permanent">Confirm Permanent Staff</option>
+                <option value="Extended">Extend Intern / Probation</option>
+                <option value="Resigned">Mark Resigned</option>
+              </select>
+              <input type="text" readonly id="probNewEndDate" placeholder="New End Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
+              <input type="text" id="probActionRemarks" placeholder="Reason / remarks..." class="force-sentence px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
             </div>
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
-              <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-xs font-medium text-slate-600 mb-1">Salary Increment & Bonus / Angpao Notes</label>
-              <input type="text" id="vaultCompNotes" placeholder="2026 increment +RM200, CNY Angpao RM500..." class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-            </div>
-          </div>
-
-          <div class="mt-3 flex items-center gap-3">
-            <button id="saveVaultBtn" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
-              Save Confidential Vault
+            <button type="button" id="saveProbActionBtn" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+              Update Status &amp; Save Log
             </button>
-            <a id="openDriveAnchor" href="#" target="_blank" class="hidden text-xs font-semibold text-blue-600 hover:underline">
-              Open Google Drive Folder &rarr;
-            </a>
           </div>
-        </div>
 
-        <!-- Audit / History Logs -->
-        <div>
-          <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">HR Activity & Probation Logs</h4>
-          <ul id="empLogsList" class="space-y-2 text-xs text-slate-600">
-            <li class="text-slate-400">No logs recorded yet.</li>
-          </ul>
+          <!-- Core Compensation, Confirmed Incentive & Drive Link -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+              <div>
+                <h4 class="text-base font-bold text-slate-900">HR Confidential Vault (Admin Only)</h4>
+                <p class="text-xs text-slate-500">Strictly hidden from Managers, Managing Director, and Staff.</p>
+              </div>
+              <a id="openDriveAnchor" href="#" target="_blank" class="hidden text-xs font-semibold text-blue-600 hover:underline">
+                Open Google Drive Folder &rarr;
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Current Basic Salary (RM)</label>
+                <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  Confirmed Monthly Incentive (RM)
+                  <span id="vaultIncentiveStatusTag" class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">-</span>
+                </label>
+                <input type="number" step="0.01" id="vaultMonthlyIncentive" placeholder="e.g. 500" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
+                <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              </div>
+            </div>
+            <button type="button" id="saveCoreVaultBtn" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+              Save Basic Salary, Incentive &amp; Drive Link
+            </button>
+
+            <!-- 1. Salary Increment Ledger (Up to 50 times) -->
+            <div class="pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-2">
+                <h5 class="text-xs font-bold uppercase text-slate-800">Salary Increment Ledger (<span id="incCountLabel">0</span> / 50)</h5>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+                <input type="text" readonly id="incEffectiveDate" placeholder="Effective Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="number" step="0.01" id="incAddAmount" placeholder="Add Increment RM (e.g. 300)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <button type="button" id="addIncrementBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                  + Add Increment
+                </button>
+              </div>
+              <div id="incrementLedgerList" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- 2. Bonus Ledger (Up to 50 times) -->
+            <div class="pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-2">
+                <h5 class="text-xs font-bold uppercase text-slate-800">Bonus Ledger (<span id="bonusCountLabel">0</span> / 50)</h5>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
+                <input type="text" readonly id="bonusDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="number" step="0.01" id="bonusAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <select id="bonusMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Online Banking">Online Banking</option>
+                </select>
+                <input type="text" id="bonusReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <button type="button" id="addBonusBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                  + Add Bonus
+                </button>
+              </div>
+              <div id="bonusLedgerList" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- 3. Ang Pao Ledger (Up to 50 times) -->
+            <div class="pt-4 border-t border-slate-200">
+              <div class="flex items-center justify-between mb-2">
+                <h5 class="text-xs font-bold uppercase text-slate-800">Ang Pao Ledger (<span id="angPaoCountLabel">0</span> / 50)</h5>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
+                <input type="text" readonly id="angPaoDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="number" step="0.01" id="angPaoAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <select id="angPaoMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white">
+                  <option value="Cash">Cash</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Online Banking">Online Banking</option>
+                </select>
+                <input type="text" id="angPaoReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <button type="button" id="addAngPaoBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                  + Add Ang Pao
+                </button>
+              </div>
+              <div id="angPaoLedgerList" class="space-y-1.5 text-xs"></div>
+            </div>
+
+            <!-- 4. Device Allowance Tracker (Minimum 24 Months) -->
+            <div class="pt-4 border-t border-slate-200">
+              <div class="mb-2">
+                <h5 class="text-xs font-bold uppercase text-slate-800">Device Allowance Reimbursement (Min 24 Months — Remaining Forfeited if Resigned Early)</h5>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
+                <input type="text" id="devTitle" placeholder="Device Title (e.g. iPhone 15)" class="force-sentence px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="number" step="0.01" id="devAmount" placeholder="Total Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="number" min="1" id="devMonths" value="24" placeholder="Months (e.g. 24)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <input type="text" readonly id="devStartDate" placeholder="Start Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
+                <button type="button" id="addDeviceBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                  + Add Device
+                </button>
+              </div>
+              <div id="deviceAllowanceList" class="space-y-2 text-xs"></div>
+            </div>
+          </div>
+
+          <!-- HR Activity & Status Logs -->
+          <div>
+            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">HR Activity &amp; Status History</h4>
+            <ul id="empLogsList" class="space-y-2 text-xs text-slate-600">
+              <li class="text-slate-400">No logs recorded yet.</li>
+            </ul>
+          </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOM CALENDAR POPUP (dd-mmm-yyyy) ==================== -->
+  <div id="customCalendarPopup" class="hidden fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-72 select-none">
+    <div class="flex items-center justify-between gap-1 mb-3">
+      <button type="button" id="calPrevMonth" class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-100">&lt;</button>
+      <div class="flex gap-1">
+        <select id="calMonthSelect" class="text-xs font-semibold border border-slate-200 rounded px-1.5 py-1 bg-white"></select>
+        <select id="calYearSelect" class="text-xs font-semibold border border-slate-200 rounded px-1.5 py-1 bg-white"></select>
+      </div>
+      <button type="button" id="calNextMonth" class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-100">&gt;</button>
+    </div>
+    <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 mb-1">
+      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+    </div>
+    <div id="calDaysGrid" class="grid grid-cols-7 gap-1 text-center text-xs"></div>
+    <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between text-xs">
+      <button type="button" id="calClearBtn" class="text-slate-500 hover:text-red-600 font-medium">Clear</button>
+      <button type="button" id="calTodayBtn" class="text-blue-600 hover:underline font-semibold">Today</button>
     </div>
   </div>
 
@@ -341,7 +957,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Secondary Firebase app so HR can create employee logins without getting logged out
+    // Secondary app for creating staff accounts without logging out HR Admin
     const secondaryApp = initializeApp(firebaseConfig, "EmployeeCreator");
     const secondaryAuth = getAuth(secondaryApp);
 
@@ -349,8 +965,164 @@
     let currentUserUid = null;
     let allEmployees = [];
     let selectedEmpUid = null;
+    let currentVaultData = {};
 
-    // ==================== GLOBAL INPUT GUARDS ====================
+    // Default alphabetical lookups
+    let lookupData = {
+      departments: ["Accounts", "Administration", "Human Resources", "Logistics", "Operations", "Production", "QA / QC", "Sales & Marketing"],
+      jobTitles: ["Executive", "Manager", "Operator", "Supervisor", "Technician"]
+    };
+
+    const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // ==================== DATE & TIMESTAMP HELPERS (dd-mmm-yyyy) ====================
+    function formatDateObj(date) {
+      if (!date || isNaN(date.getTime())) return "";
+      const dd = String(date.getDate()).padStart(2, "0");
+      const mmm = MONTHS_SHORT[date.getMonth()];
+      const yyyy = date.getFullYear();
+      return `${dd}-${mmm}-${yyyy}`;
+    }
+
+    function parseAnyDate(str) {
+      if (!str) return null;
+      // Handle dd-mmm-yyyy (e.g. 11-Oct-2026)
+      const m1 = String(str).trim().match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
+      if (m1) {
+        const day = parseInt(m1[1], 10);
+        const mIdx = MONTHS_SHORT.findIndex((m) => m.toLowerCase() === m1[2].toLowerCase());
+        const year = parseInt(m1[3], 10);
+        if (mIdx >= 0) return new Date(year, mIdx, day);
+      }
+      // Handle YYYY-MM-DD
+      const m2 = String(str).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (m2) {
+        return new Date(parseInt(m2[1], 10), parseInt(m2[2], 10) - 1, parseInt(m2[3], 10));
+      }
+      const d = new Date(str);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    function formatDisplayDate(str) {
+      const d = parseAnyDate(str);
+      return d ? formatDateObj(d) : (str || "-");
+    }
+
+    function formatNowTimestamp() {
+      const now = new Date();
+      const datePart = formatDateObj(now);
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      return `${datePart}, ${hh}:${mm}`;
+    }
+
+    // ==================== INTERACTIVE CALENDAR POPUP ====================
+    const calPopup = document.getElementById("customCalendarPopup");
+    const calMonthSelect = document.getElementById("calMonthSelect");
+    const calYearSelect = document.getElementById("calYearSelect");
+    const calDaysGrid = document.getElementById("calDaysGrid");
+    let activeDateInput = null;
+    let calViewYear = new Date().getFullYear();
+    let calViewMonth = new Date().getMonth();
+
+    MONTHS_SHORT.forEach((m, idx) => {
+      const opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = m;
+      calMonthSelect.appendChild(opt);
+    });
+    for (let y = 1990; y <= 2035; y++) {
+      const opt = document.createElement("option");
+      opt.value = y;
+      opt.textContent = y;
+      calYearSelect.appendChild(opt);
+    }
+
+    function renderCalendar() {
+      calMonthSelect.value = calViewMonth;
+      calYearSelect.value = calViewYear;
+      calDaysGrid.innerHTML = "";
+
+      const firstDay = new Date(calViewYear, calViewMonth, 1).getDay();
+      const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
+      const selectedDate = activeDateInput ? parseAnyDate(activeDateInput.value) : null;
+
+      for (let i = 0; i < firstDay; i++) {
+        calDaysGrid.appendChild(document.createElement("span"));
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = d;
+        const isSelected = selectedDate &&
+          selectedDate.getDate() === d &&
+          selectedDate.getMonth() === calViewMonth &&
+          selectedDate.getFullYear() === calViewYear;
+
+        btn.className = `py-1 rounded font-medium ${
+          isSelected ? "bg-blue-600 text-white font-bold" : "hover:bg-blue-50 text-slate-700"
+        }`;
+
+        btn.addEventListener("click", () => {
+          if (activeDateInput) {
+            const chosen = new Date(calViewYear, calViewMonth, d);
+            activeDateInput.value = formatDateObj(chosen);
+            activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
+          }
+          calPopup.classList.add("hidden");
+        });
+        calDaysGrid.appendChild(btn);
+      }
+    }
+
+    document.addEventListener("click", (e) => {
+      if (e.target.classList.contains("date-picker-input") && !e.target.disabled) {
+        activeDateInput = e.target;
+        const existing = parseAnyDate(activeDateInput.value) || new Date();
+        calViewYear = existing.getFullYear();
+        calViewMonth = existing.getMonth();
+        renderCalendar();
+
+        const rect = activeDateInput.getBoundingClientRect();
+        calPopup.classList.remove("hidden");
+        const top = Math.min(window.innerHeight - 310, rect.bottom + 6);
+        const left = Math.min(window.innerWidth - 300, Math.max(12, rect.left));
+        calPopup.style.top = `${Math.max(12, top)}px`;
+        calPopup.style.left = `${left}px`;
+      } else if (!calPopup.contains(e.target)) {
+        calPopup.classList.add("hidden");
+      }
+    });
+
+    calMonthSelect.addEventListener("change", () => { calViewMonth = parseInt(calMonthSelect.value, 10); renderCalendar(); });
+    calYearSelect.addEventListener("change", () => { calViewYear = parseInt(calYearSelect.value, 10); renderCalendar(); });
+    document.getElementById("calPrevMonth").addEventListener("click", () => {
+      calViewMonth--;
+      if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
+      renderCalendar();
+    });
+    document.getElementById("calNextMonth").addEventListener("click", () => {
+      calViewMonth++;
+      if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
+      renderCalendar();
+    });
+    document.getElementById("calClearBtn").addEventListener("click", () => {
+      if (activeDateInput) {
+        activeDateInput.value = "";
+        activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      calPopup.classList.add("hidden");
+    });
+    document.getElementById("calTodayBtn").addEventListener("click", () => {
+      if (activeDateInput) {
+        activeDateInput.value = formatDateObj(new Date());
+        activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      calPopup.classList.add("hidden");
+    });
+
+    // ==================== GLOBAL INPUT & CURSOR GUARDS ====================
     document.addEventListener("wheel", () => {
       if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
         document.activeElement.blur();
@@ -359,16 +1131,43 @@
 
     document.addEventListener("input", (e) => {
       const el = e.target;
+      // Never rewrite value when user is deleting text so cursor never jumps
+      if (e.inputType && e.inputType.startsWith("delete")) return;
+
       if (el.classList.contains("force-caps")) {
-        const pos = el.selectionStart;
-        el.value = el.value.toUpperCase();
-        el.setSelectionRange(pos, pos);
+        const upper = el.value.toUpperCase();
+        if (el.value !== upper) {
+          const start = el.selectionStart;
+          const end = el.selectionEnd;
+          el.value = upper;
+          if (start !== null) el.setSelectionRange(start, end);
+        }
       } else if (el.classList.contains("force-sentence") && el.value.length > 0) {
-        const pos = el.selectionStart;
-        el.value = el.value.charAt(0).toUpperCase() + el.value.slice(1);
-        el.setSelectionRange(pos, pos);
+        const converted = el.value.charAt(0).toUpperCase() + el.value.slice(1);
+        if (el.value !== converted) {
+          const start = el.selectionStart;
+          const end = el.selectionEnd;
+          el.value = converted;
+          if (start !== null) el.setSelectionRange(start, end);
+        }
       }
     });
+
+    function sortSelectOptions(selectEl) {
+      if (!selectEl) return;
+      const currentVal = selectEl.value;
+      const opts = Array.from(selectEl.options);
+      const placeholder = opts.filter((o) => o.value === "");
+      const sortable = opts.filter((o) => o.value !== "");
+      sortable.sort((a, b) => a.text.localeCompare(b.text));
+      selectEl.innerHTML = "";
+      [...placeholder, ...sortable].forEach((o) => selectEl.appendChild(o));
+      if (currentVal) selectEl.value = currentVal;
+    }
+
+    function sortAllAlphabeticalDropdowns() {
+      document.querySelectorAll(".alpha-select").forEach(sortSelectOptions);
+    }
 
     function showToast(msg, isError = false) {
       const banner = document.getElementById("toastBanner");
@@ -454,9 +1253,12 @@
           document.getElementById("navAddEmployeeBtn").classList.add("hidden");
         }
 
+        sortAllAlphabeticalDropdowns();
+        await loadLookups();
+        await loadEmployees();
+
         loginView.classList.add("hidden");
         appView.classList.remove("hidden");
-        await loadEmployees();
       } catch (err) {
         loginError.textContent = `Error loading profile (${err.code}): ${err.message}`;
         loginError.classList.remove("hidden");
@@ -464,12 +1266,79 @@
       }
     });
 
+    // ==================== DYNAMIC LOOKUPS (DEPARTMENTS & JOB TITLES) ====================
+    async function loadLookups() {
+      if (currentUserProfile.role === "hr_admin") {
+        try {
+          const snap = await getDoc(doc(db, "employees", currentUserUid, "vault", "lookups"));
+          if (snap.exists()) {
+            const data = snap.data();
+            if (Array.isArray(data.departments) && data.departments.length) lookupData.departments = data.departments;
+            if (Array.isArray(data.jobTitles) && data.jobTitles.length) lookupData.jobTitles = data.jobTitles;
+          }
+        } catch (err) { /* fallback to defaults */ }
+      }
+      renderLookupSelects();
+    }
+
+    function renderLookupSelects() {
+      const sortedDepts = [...new Set(lookupData.departments)].sort((a, b) => a.localeCompare(b));
+      const sortedJobs = [...new Set(lookupData.jobTitles)].sort((a, b) => a.localeCompare(b));
+
+      document.querySelectorAll(".dept-select").forEach((sel) => {
+        const prev = sel.value;
+        sel.innerHTML = sortedDepts.map((d) => `<option value="${d}">${d}</option>`).join("");
+        if (prev && sortedDepts.includes(prev)) sel.value = prev;
+      });
+
+      document.querySelectorAll(".job-select").forEach((sel) => {
+        const prev = sel.value;
+        sel.innerHTML = sortedJobs.map((j) => `<option value="${j}">${j}</option>`).join("");
+        if (prev && sortedJobs.includes(prev)) sel.value = prev;
+      });
+    }
+
+    async function saveLookups() {
+      if (currentUserProfile.role !== "hr_admin") return;
+      await setDoc(doc(db, "employees", currentUserUid, "vault", "lookups"), lookupData, { merge: true });
+    }
+
+    document.querySelectorAll(".add-lookup-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const key = btn.dataset.lookup;
+        const label = key === "departments" ? "Department" : "Job Title";
+        const raw = prompt(`Enter new ${label} name:`);
+        if (!raw || !raw.trim()) return;
+        const formatted = raw.trim().charAt(0).toUpperCase() + raw.trim().slice(1);
+        if (!lookupData[key].includes(formatted)) {
+          lookupData[key].push(formatted);
+          renderLookupSelects();
+          await saveLookups();
+          showToast(`Added ${label}: ${formatted}`);
+        }
+      });
+    });
+
+    document.querySelectorAll(".remove-lookup-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const key = btn.dataset.lookup;
+        const selectEl = document.getElementById(btn.dataset.target);
+        const val = selectEl.value;
+        if (!val) return;
+        if (!confirm(`Remove "${val}" from the dropdown list?`)) return;
+        lookupData[key] = lookupData[key].filter((item) => item !== val);
+        renderLookupSelects();
+        await saveLookups();
+        showToast(`Removed: ${val}`);
+      });
+    });
+
     // ==================== LOAD & RENDER EMPLOYEES ====================
     async function loadEmployees() {
       allEmployees = [];
       const role = currentUserProfile.role;
 
-      if (role === "hr_admin") {
+      if (role === "hr_admin" || role === "managing_director") {
         const snap = await getDocs(collection(db, "employees"));
         snap.forEach((d) => allEmployees.push({ uid: d.id, ...d.data() }));
       } else if (role === "manager") {
@@ -483,22 +1352,49 @@
         allEmployees.push({ uid: currentUserUid, ...currentUserProfile });
       }
 
+      // Merge any custom departments/job titles from existing employee docs
+      allEmployees.forEach((e) => {
+        if (e.department && !lookupData.departments.includes(e.department)) lookupData.departments.push(e.department);
+        const jt = e.jobTitle || e.position;
+        if (jt && !lookupData.jobTitles.includes(jt)) lookupData.jobTitles.push(jt);
+      });
+      renderLookupSelects();
+
       allEmployees.sort((a, b) => (a.empId || "").localeCompare(b.empId || ""));
-      renderDirectory(allEmployees);
+      filterAndRenderDirectory();
       renderProbationTracker(allEmployees);
-      populateManagerDropdown(allEmployees);
+      populateManagerDropdowns(allEmployees);
+      populateKpiEmployeeSelector(allEmployees);
     }
 
     function getStatusBadgeClass(status) {
-      if (status === "Probation") return "bg-amber-100 text-amber-800";
+      if (status === "Probation" || status === "Intern") return "bg-amber-100 text-amber-800";
       if (status === "Resigned") return "bg-red-100 text-red-700";
       return "bg-emerald-100 text-emerald-800";
     }
 
+    function filterAndRenderDirectory() {
+      const term = document.getElementById("directorySearch").value.toLowerCase();
+      const companyFilter = document.getElementById("directoryCompanyFilter").value;
+      const filtered = allEmployees.filter((emp) => {
+        const matchesCompany = !companyFilter || emp.companyEntity === companyFilter;
+        const matchesTerm =
+          (emp.fullName || "").toLowerCase().includes(term) ||
+          (emp.empId || "").toLowerCase().includes(term) ||
+          (emp.department || "").toLowerCase().includes(term) ||
+          (emp.jobTitle || emp.position || "").toLowerCase().includes(term);
+        return matchesCompany && matchesTerm;
+      });
+      renderDirectory(filtered);
+    }
+
+    document.getElementById("directorySearch").addEventListener("input", filterAndRenderDirectory);
+    document.getElementById("directoryCompanyFilter").addEventListener("change", filterAndRenderDirectory);
+
     function renderDirectory(list) {
       const tbody = document.getElementById("directoryTableBody");
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No employees found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400">No employees found.</td></tr>`;
         return;
       }
 
@@ -506,16 +1402,17 @@
         <tr class="hover:bg-slate-50 transition cursor-pointer" data-uid="${emp.uid}">
           <td class="py-3 px-4 font-semibold text-slate-900">${emp.empId || "-"}</td>
           <td class="py-3 px-4 font-medium">${emp.fullName || "-"}</td>
-          <td class="py-3 px-4 text-slate-600">${emp.department || "-"} ${emp.position ? `&bull; ${emp.position}` : ""}</td>
+          <td class="py-3 px-4 text-slate-600 text-xs">${emp.companyEntity || "-"}</td>
+          <td class="py-3 px-4 text-slate-600">${emp.department || "-"} ${(emp.jobTitle || emp.position) ? `&bull; ${emp.jobTitle || emp.position}` : ""}</td>
           <td class="py-3 px-4 text-slate-600">${emp.phone || "-"}</td>
-          <td class="py-3 px-4 text-slate-600">${emp.joinDate || "-"}</td>
+          <td class="py-3 px-4 text-slate-600">${formatDisplayDate(emp.joinDate)}</td>
           <td class="py-3 px-4">
             <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
-              ${emp.status || "Active"}
+              ${emp.status || "Confirmed / Permanent"}
             </span>
           </td>
           <td class="py-3 px-4 text-right">
-            <button class="text-blue-600 hover:underline font-medium text-xs">View Details</button>
+            <button type="button" class="text-blue-600 hover:underline font-medium text-xs">View Details</button>
           </td>
         </tr>
       `).join("");
@@ -525,35 +1422,25 @@
       });
     }
 
-    document.getElementById("directorySearch").addEventListener("input", (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allEmployees.filter((emp) =>
-        (emp.fullName || "").toLowerCase().includes(term) ||
-        (emp.empId || "").toLowerCase().includes(term) ||
-        (emp.department || "").toLowerCase().includes(term)
-      );
-      renderDirectory(filtered);
-    });
-
     function renderProbationTracker(list) {
-      const probationStaff = list.filter((e) => e.status === "Probation");
-      document.getElementById("probationCountBadge").textContent = probationStaff.length;
+      const trackedStaff = list.filter((e) => e.status === "Probation" || e.status === "Intern");
+      document.getElementById("probationCountBadge").textContent = trackedStaff.length;
       const container = document.getElementById("probationList");
 
-      if (probationStaff.length === 0) {
-        container.innerHTML = `<p class="text-sm text-slate-500 col-span-2">No employees are currently under probation.</p>`;
+      if (trackedStaff.length === 0) {
+        container.innerHTML = `<p class="text-sm text-slate-500 col-span-3">No employees are currently under internship or probation.</p>`;
         return;
       }
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      container.innerHTML = probationStaff.map((emp) => {
+      container.innerHTML = trackedStaff.map((emp) => {
         let daysText = "End date not set";
         let alertClass = "border-slate-200";
+        const end = parseAnyDate(emp.probationEndDate);
 
-        if (emp.probationEndDate) {
-          const end = new Date(emp.probationEndDate + "T00:00:00");
+        if (end) {
           const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
           if (diffDays < 0) {
             daysText = `Overdue by ${Math.abs(diffDays)} day(s)`;
@@ -569,16 +1456,16 @@
         return `
           <div class="border ${alertClass} rounded-xl p-4 flex flex-col justify-between gap-3">
             <div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500">${emp.empId}</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-slate-600">${emp.empId} &bull; ${emp.status}</span>
                 <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">${daysText}</span>
               </div>
               <h3 class="font-bold text-slate-900 mt-1">${emp.fullName}</h3>
-              <p class="text-xs text-slate-500">${emp.department || "-"} &bull; Joined: ${emp.joinDate || "-"}</p>
-              <p class="text-xs text-slate-700 mt-1">Probation Ends: <strong>${emp.probationEndDate || "-"}</strong></p>
+              <p class="text-xs text-slate-500">${emp.companyEntity || "-"} &bull; ${emp.department || "-"}</p>
+              <p class="text-xs text-slate-700 mt-1">Joined: <strong>${formatDisplayDate(emp.joinDate)}</strong> &bull; Ends: <strong>${formatDisplayDate(emp.probationEndDate)}</strong></p>
             </div>
-            <button data-uid="${emp.uid}" class="open-prob-modal self-start text-xs font-semibold text-blue-600 hover:underline">
-              Review / Confirm Probation &rarr;
+            <button type="button" data-uid="${emp.uid}" class="open-prob-modal self-start text-xs font-semibold text-blue-600 hover:underline">
+              Review / Confirm Status &rarr;
             </button>
           </div>
         `;
@@ -589,14 +1476,44 @@
       });
     }
 
-    function populateManagerDropdown(list) {
-      const select = document.getElementById("newEmpManager");
-      const managers = list.filter((e) => e.role === "manager" || e.role === "hr_admin");
-      select.innerHTML = `<option value="">-- None / Reports to Top Management --</option>` +
-        managers.map((m) => `<option value="${m.uid}">${m.empId} - ${m.fullName} (${m.department || "Management"})</option>`).join("");
+    function populateManagerDropdowns(list) {
+      const managers = list
+        .filter((e) => ["manager", "managing_director", "hr_admin"].includes(e.role))
+        .sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""));
+
+      const html = `<option value="">-- Reports to Top Management --</option>` +
+        managers.map((m) => `<option value="${m.uid}">${m.fullName} (${m.empId} - ${m.department || "Management"})</option>`).join("");
+
+      document.getElementById("newEmpManager").innerHTML = html;
+      document.getElementById("editManagerUid").innerHTML = html;
     }
 
-    // ==================== ADD NEW EMPLOYEE ====================
+    // ==================== ONBOARDING FORM: DYNAMIC DURATION & SUBMIT ====================
+    const newEmpStatus = document.getElementById("newEmpStatus");
+    const newEmpDurationMonths = document.getElementById("newEmpDurationMonths");
+    const newEmpJoinDate = document.getElementById("newEmpJoinDate");
+    const newEmpProbationEnd = document.getElementById("newEmpProbationEnd");
+
+    function updateOnboardingEndDate() {
+      const st = newEmpStatus.value;
+      const show = st === "Intern" || st === "Probation";
+      document.getElementById("newEmpMonthsWrapper").classList.toggle("hidden", !show);
+      document.getElementById("newEmpEndDateWrapper").classList.toggle("hidden", !show);
+
+      const joinObj = parseAnyDate(newEmpJoinDate.value);
+      const months = parseInt(newEmpDurationMonths.value, 10);
+      if (show && joinObj && months > 0) {
+        const endObj = new Date(joinObj.getFullYear(), joinObj.getMonth() + months, joinObj.getDate());
+        newEmpProbationEnd.value = formatDateObj(endObj);
+      } else {
+        newEmpProbationEnd.value = "";
+      }
+    }
+
+    newEmpStatus.addEventListener("change", updateOnboardingEndDate);
+    newEmpDurationMonths.addEventListener("input", updateOnboardingEndDate);
+    newEmpJoinDate.addEventListener("change", updateOnboardingEndDate);
+
     document.getElementById("addEmployeeForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const btn = document.getElementById("createEmpBtn");
@@ -606,56 +1523,88 @@
       const empId = document.getElementById("newEmpId").value.trim().toUpperCase();
       const password = document.getElementById("newEmpPassword").value.trim();
       const fullName = document.getElementById("newEmpName").value.trim().toUpperCase();
+      const nric = document.getElementById("newEmpNric").value.trim();
+      const passport = document.getElementById("newEmpPassport").value.trim().toUpperCase();
       const phone = document.getElementById("newEmpPhone").value.trim();
-      const department = document.getElementById("newEmpDept").value.trim();
-      const position = document.getElementById("newEmpPosition").value.trim();
+      const email = document.getElementById("newEmpEmail").value.trim();
+      const residentialAddress = document.getElementById("newEmpAddress").value.trim();
+
+      const ec1Name = document.getElementById("newEc1Name").value.trim().toUpperCase();
+      const ec1Rel = document.getElementById("newEc1Rel").value.trim();
+      const ec1Phone = document.getElementById("newEc1Phone").value.trim();
+      const ec2Name = document.getElementById("newEc2Name").value.trim().toUpperCase();
+      const ec2Rel = document.getElementById("newEc2Rel").value.trim();
+      const ec2Phone = document.getElementById("newEc2Phone").value.trim();
+      const ec3Name = document.getElementById("newEc3Name").value.trim().toUpperCase();
+      const ec3Rel = document.getElementById("newEc3Rel").value.trim();
+      const ec3Phone = document.getElementById("newEc3Phone").value.trim();
+
+      const companyEntity = document.getElementById("newEmpCompany").value;
+      const department = document.getElementById("newEmpDept").value;
+      const jobTitle = document.getElementById("newEmpJobTitle").value;
       const role = document.getElementById("newEmpRole").value;
       const managerUid = document.getElementById("newEmpManager").value;
-      const joinDate = document.getElementById("newEmpJoinDate").value;
-      const probMonths = parseInt(document.getElementById("newEmpProbationMonths").value, 10);
+      const joinDate = document.getElementById("newEmpJoinDate").value.trim();
+      const status = document.getElementById("newEmpStatus").value;
+      const durationMonths = (status === "Intern" || status === "Probation") ? document.getElementById("newEmpDurationMonths").value.trim() : "";
+      const probationEndDate = (status === "Intern" || status === "Probation") ? document.getElementById("newEmpProbationEnd").value.trim() : "";
 
-      let status = "Active";
-      let probationEndDate = "";
-
-      if (probMonths > 0 && joinDate) {
-        status = "Probation";
-        const d = new Date(joinDate + "T00:00:00");
-        d.setMonth(d.getMonth() + probMonths);
-        probationEndDate = d.toISOString().split("T")[0];
-      }
+      const leaveFields = {
+        leaveAnnual: document.getElementById("newLeaveAnnual").value.trim(),
+        leaveSick: document.getElementById("newLeaveSick").value.trim(),
+        leaveHospital: document.getElementById("newLeaveHospital").value.trim(),
+        leaveEmergency: document.getElementById("newLeaveEmergency").value.trim(),
+        leaveCompassionate: document.getElementById("newLeaveCompassionate").value.trim(),
+        leaveMarriage: document.getElementById("newLeaveMarriage").value.trim(),
+        leaveMaternity: document.getElementById("newLeaveMaternity").value.trim(),
+        leavePaternity: document.getElementById("newLeavePaternity").value.trim(),
+        leaveReplacement: document.getElementById("newLeaveReplacement").value.trim(),
+        leaveOther: document.getElementById("newLeaveOther").value.trim()
+      };
 
       const authEmail = `${empId.toLowerCase()}@onehax.internal`;
 
       try {
-        // Create Auth account using secondary app so HR remains signed in
         const cred = await createUserWithEmailAndPassword(secondaryAuth, authEmail, password);
         const newUid = cred.user.uid;
         await signOut(secondaryAuth);
 
-        // Save profile to Firestore under current HR Admin session
         await setDoc(doc(db, "employees", newUid), {
           empId,
           fullName,
           loginEmail: authEmail,
+          nric,
+          passport,
           phone,
+          email,
+          residentialAddress,
+          ec1Name, ec1Rel, ec1Phone,
+          ec2Name, ec2Rel, ec2Phone,
+          ec3Name, ec3Rel, ec3Phone,
+          companyEntity,
           department,
-          position,
+          jobTitle,
           role,
           managerUid,
           joinDate,
+          status,
+          durationMonths,
           probationEndDate,
-          status
+          ...leaveFields,
+          fieldHistory: {}
         });
 
         await addDoc(collection(db, "employees", newUid, "logs"), {
           action: "Employee Onboarded",
-          remarks: `Joined on ${joinDate} (${status})`,
+          remarks: `Joined ${companyEntity} on ${joinDate} (${status})`,
           createdBy: currentUserProfile.fullName,
-          createdAt: serverTimestamp()
+          createdAt: serverTimestamp(),
+          displayTime: formatNowTimestamp()
         });
 
         document.getElementById("addEmployeeForm").reset();
-        showToast(`Success! ${fullName} (${empId}) created and ready to log in.`);
+        updateOnboardingEndDate();
+        showToast(`Success! ${fullName} (${empId}) onboarded and ready to sign in.`);
         await loadEmployees();
         document.querySelector('[data-tab="directoryTab"]').click();
       } catch (err) {
@@ -666,45 +1615,120 @@
       }
     });
 
-    // ==================== EMPLOYEE MODAL & HR VAULT ====================
+    // ==================== EMPLOYEE MODAL, PER-FIELD EDIT AUDIT & HR VAULT ====================
     const empModal = document.getElementById("empModal");
     document.getElementById("closeModalBtn").addEventListener("click", () => empModal.classList.add("hidden"));
+
+    const EDITABLE_FIELD_IDS = {
+      empId: "editEmpId",
+      fullName: "editFullName",
+      companyEntity: "editCompanyEntity",
+      nric: "editNric",
+      passport: "editPassport",
+      phone: "editPhone",
+      email: "editEmail",
+      residentialAddress: "editAddress",
+      department: "editDepartment",
+      jobTitle: "editJobTitle",
+      role: "editRole",
+      managerUid: "editManagerUid",
+      joinDate: "editJoinDate",
+      status: "editStatus",
+      durationMonths: "editDurationMonths",
+      probationEndDate: "editProbationEndDate",
+      ec1Name: "editEc1Name",
+      ec1Rel: "editEc1Rel",
+      ec1Phone: "editEc1Phone",
+      ec2Name: "editEc2Name",
+      ec2Rel: "editEc2Rel",
+      ec2Phone: "editEc2Phone",
+      ec3Name: "editEc3Name",
+      ec3Rel: "editEc3Rel",
+      ec3Phone: "editEc3Phone",
+      leaveAnnual: "editLeaveAnnual",
+      leaveSick: "editLeaveSick",
+      leaveHospital: "editLeaveHospital",
+      leaveEmergency: "editLeaveEmergency",
+      leaveCompassionate: "editLeaveCompassionate",
+      leaveMarriage: "editLeaveMarriage",
+      leaveMaternity: "editLeaveMaternity",
+      leavePaternity: "editLeavePaternity",
+      leaveReplacement: "editLeaveReplacement",
+      leaveOther: "editLeaveOther"
+    };
 
     async function openEmployeeModal(uid) {
       selectedEmpUid = uid;
       const emp = allEmployees.find((e) => e.uid === uid);
       if (!emp) return;
 
+      const isAdmin = currentUserProfile.role === "hr_admin";
+      const jobTitleVal = emp.jobTitle || emp.position || "";
+
       document.getElementById("modalEmpName").textContent = emp.fullName || "-";
-      document.getElementById("modalEmpSub").textContent = `${emp.empId} • ${emp.department || "-"} • ${emp.position || "-"}`;
-      document.getElementById("modalEmpPhone").textContent = emp.phone || "-";
-      document.getElementById("modalEmpJoin").textContent = emp.joinDate || "-";
-      document.getElementById("modalEmpProbEnd").textContent = emp.probationEndDate || "N/A";
+      document.getElementById("modalEmpSub").textContent = `${emp.empId} • ${emp.companyEntity || "-"} • ${emp.department || "-"} • ${jobTitleVal || "-"}`;
 
       const badge = document.getElementById("modalEmpStatusBadge");
-      badge.textContent = emp.status || "Active";
+      badge.textContent = emp.status || "Confirmed / Permanent";
       badge.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}`;
 
+      // Populate all fields & show per-field audit history
+      const history = emp.fieldHistory || {};
+      Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
+        const el = document.getElementById(elId);
+        let val = emp[fieldKey] ?? "";
+        if (fieldKey === "jobTitle") val = jobTitleVal;
+        if (fieldKey === "joinDate" || fieldKey === "probationEndDate") {
+          val = val ? formatDisplayDate(val) : "";
+        }
+        el.value = val;
+        el.disabled = !isAdmin;
+
+        const histBox = document.getElementById(`hist-${fieldKey}`);
+        if (histBox) {
+          if (history[fieldKey]) {
+            const h = history[fieldKey];
+            histBox.textContent = `Previous: "${h.prevValue || "(Empty)"}" • Edited: ${h.editedAt}`;
+            histBox.classList.remove("hidden");
+          } else {
+            histBox.classList.add("hidden");
+          }
+        }
+      });
+
+      document.getElementById("saveProfileEditWrapper").classList.toggle("hidden", !isAdmin);
+
       const vaultSection = document.getElementById("hrVaultSection");
-      if (currentUserProfile.role === "hr_admin") {
+      if (isAdmin) {
         vaultSection.classList.remove("hidden");
-        document.getElementById("probNewEndDate").value = emp.probationEndDate || "";
+        document.getElementById("probNewEndDate").value = emp.probationEndDate ? formatDisplayDate(emp.probationEndDate) : "";
         document.getElementById("probActionRemarks").value = "";
+
+        const incTag = document.getElementById("vaultIncentiveStatusTag");
+        if (emp.status === "Confirmed / Permanent" || emp.status === "Active") {
+          incTag.textContent = "Eligible (Confirmed)";
+          incTag.className = "ml-1 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800";
+        } else {
+          incTag.textContent = `Pending (${emp.status || "Probation"})`;
+          incTag.className = "ml-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800";
+        }
 
         // Load Confidential Vault
         const vaultSnap = await getDoc(doc(db, "employees", uid, "vault", "compensation"));
-        const vData = vaultSnap.exists() ? vaultSnap.data() : {};
-        document.getElementById("vaultBasicSalary").value = vData.basicSalary || "";
-        document.getElementById("vaultDriveLink").value = vData.driveLink || "";
-        document.getElementById("vaultCompNotes").value = vData.compNotes || "";
+        currentVaultData = vaultSnap.exists() ? vaultSnap.data() : {};
+        document.getElementById("vaultBasicSalary").value = currentVaultData.basicSalary || "";
+        document.getElementById("vaultMonthlyIncentive").value = currentVaultData.monthlyIncentive || "";
+        document.getElementById("vaultDriveLink").value = currentVaultData.driveLink || "";
 
         const driveAnchor = document.getElementById("openDriveAnchor");
-        if (vData.driveLink) {
-          driveAnchor.href = vData.driveLink;
+        if (currentVaultData.driveLink) {
+          driveAnchor.href = currentVaultData.driveLink;
           driveAnchor.classList.remove("hidden");
         } else {
           driveAnchor.classList.add("hidden");
         }
+
+        renderVaultLedgers(emp);
 
         // Load Logs
         const logsSnap = await getDocs(query(collection(db, "employees", uid, "logs"), orderBy("createdAt", "desc")));
@@ -716,7 +1740,7 @@
             const l = d.data();
             return `<li class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
               <strong>${l.action}</strong> &mdash; ${l.remarks || ""}
-              <span class="block text-[11px] text-slate-400 mt-0.5">By ${l.createdBy || "HR"}</span>
+              <span class="block text-[11px] text-slate-400 mt-0.5">By ${l.createdBy || "HR"} ${l.displayTime ? `• ${l.displayTime}` : ""}</span>
             </li>`;
           }).join("");
         }
@@ -727,18 +1751,72 @@
       empModal.classList.remove("hidden");
     }
 
+    // Save Profile Edits + Record Per-Field Audit History
+    document.getElementById("saveProfileEditBtn").addEventListener("click", async () => {
+      if (!selectedEmpUid) return;
+      const emp = allEmployees.find((e) => e.uid === selectedEmpUid);
+      if (!emp) return;
+
+      const updates = {};
+      const updatedHistory = { ...(emp.fieldHistory || {}) };
+      const timestamp = formatNowTimestamp();
+      let changeCount = 0;
+
+      Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
+        const newVal = document.getElementById(elId).value.trim();
+        let oldVal = String(emp[fieldKey] ?? "").trim();
+        if (fieldKey === "jobTitle") oldVal = String(emp.jobTitle || emp.position || "").trim();
+        if (fieldKey === "joinDate" || fieldKey === "probationEndDate") {
+          oldVal = oldVal ? formatDisplayDate(oldVal) : "";
+        }
+
+        if (newVal !== oldVal) {
+          updates[fieldKey] = newVal;
+          updatedHistory[fieldKey] = {
+            prevValue: oldVal,
+            editedAt: timestamp,
+            editedBy: currentUserProfile.fullName
+          };
+          changeCount++;
+        }
+      });
+
+      if (changeCount === 0) {
+        showToast("No changes detected.");
+        return;
+      }
+
+      updates.fieldHistory = updatedHistory;
+
+      try {
+        await updateDoc(doc(db, "employees", selectedEmpUid), updates);
+        await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
+          action: "Employee Profile Edited",
+          remarks: `Updated ${changeCount} field(s)`,
+          createdBy: currentUserProfile.fullName,
+          createdAt: serverTimestamp(),
+          displayTime: timestamp
+        });
+
+        showToast(`Saved ${changeCount} field update(s) with audit history.`);
+        await loadEmployees();
+        await openEmployeeModal(selectedEmpUid);
+      } catch (err) {
+        showToast(`Error saving edits: ${err.message}`, true);
+      }
+    });
+
     // Save Probation / Status Action
     document.getElementById("saveProbActionBtn").addEventListener("click", async () => {
       if (!selectedEmpUid) return;
       const actionType = document.getElementById("probActionType").value;
-      const newEndDate = document.getElementById("probNewEndDate").value;
+      const newEndDate = document.getElementById("probNewEndDate").value.trim();
       const remarks = document.getElementById("probActionRemarks").value.trim();
 
       const updates = {};
-      if (actionType === "Confirmed") {
-        updates.status = "Active";
+      if (actionType === "Confirmed / Permanent") {
+        updates.status = "Confirmed / Permanent";
       } else if (actionType === "Extended") {
-        updates.status = "Probation";
         if (newEndDate) updates.probationEndDate = newEndDate;
       } else if (actionType === "Resigned") {
         updates.status = "Resigned";
@@ -750,10 +1828,11 @@
           action: `Status: ${actionType}`,
           remarks: remarks || (newEndDate ? `New end date: ${newEndDate}` : "Updated by HR"),
           createdBy: currentUserProfile.fullName,
-          createdAt: serverTimestamp()
+          createdAt: serverTimestamp(),
+          displayTime: formatNowTimestamp()
         });
 
-        showToast("Probation / employment status updated.");
+        showToast("Employment status updated.");
         await loadEmployees();
         await openEmployeeModal(selectedEmpUid);
       } catch (err) {
@@ -761,35 +1840,737 @@
       }
     });
 
-    // Save Confidential HR Vault
-    document.getElementById("saveVaultBtn").addEventListener("click", async () => {
+    // ==================== VAULT LEDGERS RENDERING & ACTIONS ====================
+    function renderVaultLedgers(emp) {
+      const increments = currentVaultData.increments || [];
+      const bonuses = currentVaultData.bonuses || [];
+      const angPaos = currentVaultData.angPaos || [];
+      const devices = currentVaultData.devices || [];
+
+      document.getElementById("incCountLabel").textContent = increments.length;
+      document.getElementById("bonusCountLabel").textContent = bonuses.length;
+      document.getElementById("angPaoCountLabel").textContent = angPaos.length;
+
+      // 1. Salary Increment Ledger (+ RM xxx, Total RM xxx)
+      const incList = document.getElementById("incrementLedgerList");
+      if (increments.length === 0) {
+        incList.innerHTML = `<p class="text-slate-400">No salary increments recorded yet.</p>`;
+      } else {
+        incList.innerHTML = increments.map((item, idx) => `
+          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <div>
+              <strong>${formatDisplayDate(item.effectiveDate)}</strong> &bull;
+              <span class="text-emerald-700 font-semibold">+ RM ${Number(item.addAmount).toFixed(2)}</span> &rarr;
+              <span class="font-bold text-slate-900">Total RM ${Number(item.newTotal).toFixed(2)}</span>
+            </div>
+            <button type="button" data-idx="${idx}" class="del-inc-btn text-red-500 hover:underline">Remove</button>
+          </div>
+        `).join("");
+        incList.querySelectorAll(".del-inc-btn").forEach((b) => {
+          b.addEventListener("click", () => deleteVaultItem("increments", parseInt(b.dataset.idx, 10)));
+        });
+      }
+
+      // 2. Bonus Ledger
+      const bonusList = document.getElementById("bonusLedgerList");
+      if (bonuses.length === 0) {
+        bonusList.innerHTML = `<p class="text-slate-400">No bonus records yet.</p>`;
+      } else {
+        bonusList.innerHTML = bonuses.map((item, idx) => `
+          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <div>
+              <strong>${formatDisplayDate(item.date)}</strong> &bull;
+              <span class="font-bold text-slate-900">RM ${Number(item.amount).toFixed(2)}</span> &bull;
+              <span>${item.method}</span>
+              ${item.receiptNo ? `&bull; <span class="text-slate-500">Receipt: ${item.receiptNo}</span>` : ""}
+            </div>
+            <button type="button" data-idx="${idx}" class="del-bonus-btn text-red-500 hover:underline">Remove</button>
+          </div>
+        `).join("");
+        bonusList.querySelectorAll(".del-bonus-btn").forEach((b) => {
+          b.addEventListener("click", () => deleteVaultItem("bonuses", parseInt(b.dataset.idx, 10)));
+        });
+      }
+
+      // 3. Ang Pao Ledger
+      const angPaoList = document.getElementById("angPaoLedgerList");
+      if (angPaos.length === 0) {
+        angPaoList.innerHTML = `<p class="text-slate-400">No Ang Pao records yet.</p>`;
+      } else {
+        angPaoList.innerHTML = angPaos.map((item, idx) => `
+          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <div>
+              <strong>${formatDisplayDate(item.date)}</strong> &bull;
+              <span class="font-bold text-slate-900">RM ${Number(item.amount).toFixed(2)}</span> &bull;
+              <span>${item.method}</span>
+              ${item.receiptNo ? `&bull; <span class="text-slate-500">Receipt: ${item.receiptNo}</span>` : ""}
+            </div>
+            <button type="button" data-idx="${idx}" class="del-angpao-btn text-red-500 hover:underline">Remove</button>
+          </div>
+        `).join("");
+        angPaoList.querySelectorAll(".del-angpao-btn").forEach((b) => {
+          b.addEventListener("click", () => deleteVaultItem("angPaos", parseInt(b.dataset.idx, 10)));
+        });
+      }
+
+      // 4. Device Allowance Tracker (Min 24 Months, forfeited if resigned early)
+      const devList = document.getElementById("deviceAllowanceList");
+      if (devices.length === 0) {
+        devList.innerHTML = `<p class="text-slate-400">No device allowance records yet.</p>`;
+      } else {
+        const now = new Date();
+        const isResigned = emp.status === "Resigned";
+
+        devList.innerHTML = devices.map((item, idx) => {
+          const totalAmt = Number(item.amount) || 0;
+          const months = Number(item.months) || 24;
+          const monthly = totalAmt / months;
+          const startObj = parseAnyDate(item.startDate) || now;
+          const endObj = new Date(startObj.getFullYear(), startObj.getMonth() + months, startObj.getDate());
+
+          let elapsed = (now.getFullYear() - startObj.getFullYear()) * 12 + (now.getMonth() - startObj.getMonth());
+          if (now.getDate() < startObj.getDate()) elapsed--;
+          elapsed = Math.max(0, Math.min(months, elapsed));
+
+          const paidSoFar = elapsed * monthly;
+          const remaining = Math.max(0, totalAmt - paidSoFar);
+
+          let statusHtml = `<span class="text-emerald-700 font-semibold">Active (${elapsed}/${months} mos paid &bull; Remaining: RM ${remaining.toFixed(2)})</span>`;
+          if (elapsed >= months) {
+            statusHtml = `<span class="text-slate-600 font-semibold">Completed (100% Paid)</span>`;
+          } else if (isResigned) {
+            statusHtml = `<span class="text-red-600 font-bold">Forfeited (Resigned early — Remaining RM ${remaining.toFixed(2)} stopped)</span>`;
+          }
+
+          return `
+            <div class="bg-white border border-slate-200 rounded-lg p-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <strong class="text-slate-900">${item.title}</strong> &mdash;
+                <span>Total: RM ${totalAmt.toFixed(2)} (${months} mos @ RM ${monthly.toFixed(2)}/mo)</span>
+                <span class="block text-slate-500 mt-0.5">Period: ${formatDateObj(startObj)} to ${formatDateObj(endObj)} &bull; ${statusHtml}</span>
+              </div>
+              <button type="button" data-idx="${idx}" class="del-dev-btn text-red-500 hover:underline">Remove</button>
+            </div>
+          `;
+        }).join("");
+
+        devList.querySelectorAll(".del-dev-btn").forEach((b) => {
+          b.addEventListener("click", () => deleteVaultItem("devices", parseInt(b.dataset.idx, 10)));
+        });
+      }
+    }
+
+    async function saveVaultDocument(updates, logAction, logRemarks) {
+      await setDoc(doc(db, "employees", selectedEmpUid, "vault", "compensation"), {
+        ...updates,
+        updatedBy: currentUserProfile.fullName,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+
+      await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
+        action: logAction,
+        remarks: logRemarks,
+        createdBy: currentUserProfile.fullName,
+        createdAt: serverTimestamp(),
+        displayTime: formatNowTimestamp()
+      });
+
+      await openEmployeeModal(selectedEmpUid);
+    }
+
+    async function deleteVaultItem(arrayKey, index) {
+      if (!confirm("Remove this ledger entry?")) return;
+      const arr = [...(currentVaultData[arrayKey] || [])];
+      arr.splice(index, 1);
+      await saveVaultDocument({ [arrayKey]: arr }, "HR Vault Entry Removed", `Removed item from ${arrayKey}`);
+      showToast("Entry removed.");
+    }
+
+    document.getElementById("saveCoreVaultBtn").addEventListener("click", async () => {
       if (!selectedEmpUid) return;
       const basicSalary = document.getElementById("vaultBasicSalary").value.trim();
+      const monthlyIncentive = document.getElementById("vaultMonthlyIncentive").value.trim();
       const driveLink = document.getElementById("vaultDriveLink").value.trim();
-      const compNotes = document.getElementById("vaultCompNotes").value.trim();
+      await saveVaultDocument({ basicSalary, monthlyIncentive, driveLink }, "HR Vault Updated", "Updated basic salary, incentive, or Drive link");
+      showToast("Core HR Vault details saved.");
+    });
+
+    document.getElementById("addIncrementBtn").addEventListener("click", async () => {
+      const effectiveDate = document.getElementById("incEffectiveDate").value.trim();
+      const addAmount = parseFloat(document.getElementById("incAddAmount").value);
+      if (!effectiveDate || isNaN(addAmount) || addAmount <= 0) {
+        showToast("Please select an Effective Date and valid Increment Amount.", true);
+        return;
+      }
+      const increments = [...(currentVaultData.increments || [])];
+      if (increments.length >= 50) {
+        showToast("Maximum 50 salary increment records reached.", true);
+        return;
+      }
+      const prevBase = increments.length > 0
+        ? Number(increments[increments.length - 1].newTotal)
+        : (parseFloat(document.getElementById("vaultBasicSalary").value) || 0);
+      const newTotal = prevBase + addAmount;
+
+      increments.push({ effectiveDate, addAmount, newTotal });
+      document.getElementById("incEffectiveDate").value = "";
+      document.getElementById("incAddAmount").value = "";
+
+      await saveVaultDocument(
+        { increments, basicSalary: String(newTotal) },
+        "Salary Increment Added",
+        `${effectiveDate}: + RM ${addAmount.toFixed(2)} (Total RM ${newTotal.toFixed(2)})`
+      );
+      showToast(`Increment added! New Basic Salary: RM ${newTotal.toFixed(2)}`);
+    });
+
+    document.getElementById("addBonusBtn").addEventListener("click", async () => {
+      const date = document.getElementById("bonusDate").value.trim();
+      const amount = parseFloat(document.getElementById("bonusAmount").value);
+      const method = document.getElementById("bonusMethod").value;
+      const receiptNo = document.getElementById("bonusReceipt").value.trim().toUpperCase();
+      if (!date || isNaN(amount) || amount <= 0) {
+        showToast("Please select a Date and valid Bonus Amount.", true);
+        return;
+      }
+      const bonuses = [...(currentVaultData.bonuses || [])];
+      if (bonuses.length >= 50) {
+        showToast("Maximum 50 bonus records reached.", true);
+        return;
+      }
+      bonuses.push({ date, amount, method, receiptNo });
+      document.getElementById("bonusDate").value = "";
+      document.getElementById("bonusAmount").value = "";
+      document.getElementById("bonusReceipt").value = "";
+
+      await saveVaultDocument({ bonuses }, "Bonus Recorded", `${date}: RM ${amount.toFixed(2)} (${method})`);
+      showToast("Bonus entry added.");
+    });
+
+    document.getElementById("addAngPaoBtn").addEventListener("click", async () => {
+      const date = document.getElementById("angPaoDate").value.trim();
+      const amount = parseFloat(document.getElementById("angPaoAmount").value);
+      const method = document.getElementById("angPaoMethod").value;
+      const receiptNo = document.getElementById("angPaoReceipt").value.trim().toUpperCase();
+      if (!date || isNaN(amount) || amount <= 0) {
+        showToast("Please select a Date and valid Ang Pao Amount.", true);
+        return;
+      }
+      const angPaos = [...(currentVaultData.angPaos || [])];
+      if (angPaos.length >= 50) {
+        showToast("Maximum 50 Ang Pao records reached.", true);
+        return;
+      }
+      angPaos.push({ date, amount, method, receiptNo });
+      document.getElementById("angPaoDate").value = "";
+      document.getElementById("angPaoAmount").value = "";
+      document.getElementById("angPaoReceipt").value = "";
+
+      await saveVaultDocument({ angPaos }, "Ang Pao Recorded", `${date}: RM ${amount.toFixed(2)} (${method})`);
+      showToast("Ang Pao entry added.");
+    });
+
+    document.getElementById("addDeviceBtn").addEventListener("click", async () => {
+      const title = document.getElementById("devTitle").value.trim();
+      const amount = parseFloat(document.getElementById("devAmount").value);
+      const months = parseInt(document.getElementById("devMonths").value, 10) || 24;
+      const startDate = document.getElementById("devStartDate").value.trim();
+      if (!title || isNaN(amount) || amount <= 0 || !startDate) {
+        showToast("Please fill in Device Title, Total Amount, and Start Date.", true);
+        return;
+      }
+      const devices = [...(currentVaultData.devices || [])];
+      devices.push({ title, amount, months, startDate });
+      document.getElementById("devTitle").value = "";
+      document.getElementById("devAmount").value = "";
+      document.getElementById("devMonths").value = "24";
+      document.getElementById("devStartDate").value = "";
+
+      await saveVaultDocument({ devices }, "Device Allowance Added", `${title}: RM ${amount.toFixed(2)} over ${months} months`);
+      showToast("Device allowance added.");
+    });
+
+    // ==================== PHASE 3: MONTHLY KPI MODULE (MUIZ RUBRIC + YEAR DUPLICATION) ====================
+    const kpiEmployeeSelect = document.getElementById("kpiEmployeeSelect");
+    const kpiYearSelect = document.getElementById("kpiYearSelect");
+    const kpiMonthSelect = document.getElementById("kpiMonthSelect");
+    let activeKpiTemplate = { individualFocus: "", goals: [] };
+    let activeMonthlyKpi = null;
+
+    function populateKpiEmployeeSelector(list) {
+      kpiEmployeeSelect.innerHTML = list.map((e) =>
+        `<option value="${e.uid}">${e.empId} - ${e.fullName} (${e.companyEntity || "OneHax"})</option>`
+      ).join("");
+      if (list.length > 0) loadKpiWorkspace();
+    }
+
+    kpiEmployeeSelect.addEventListener("change", loadKpiWorkspace);
+    kpiYearSelect.addEventListener("change", loadKpiWorkspace);
+    kpiMonthSelect.addEventListener("change", loadKpiWorkspace);
+
+    document.getElementById("toggleKpiTemplateBtn").addEventListener("click", () => {
+      document.getElementById("kpiTemplateCard").classList.toggle("hidden");
+    });
+
+    document.getElementById("openDuplicateYearBtn").addEventListener("click", () => {
+      document.getElementById("duplicateYearModal").classList.remove("hidden");
+    });
+    document.getElementById("cancelDuplicateBtn").addEventListener("click", () => {
+      document.getElementById("duplicateYearModal").classList.add("hidden");
+    });
+
+    function canManageKpiFor(emp) {
+      if (!emp) return false;
+      const role = currentUserProfile.role;
+      return role === "hr_admin" || role === "managing_director" || emp.managerUid === currentUserUid;
+    }
+
+    async function loadKpiWorkspace() {
+      const empUid = kpiEmployeeSelect.value;
+      const year = kpiYearSelect.value;
+      const month = kpiMonthSelect.value;
+      const monthName = MONTHS_SHORT[parseInt(month, 10) - 1];
+      const emp = allEmployees.find((e) => e.uid === empUid);
+      if (!emp) return;
+
+      const isManagerOrAdmin = canManageKpiFor(emp);
+      document.getElementById("kpiSelectedEmpInfo").textContent = `${emp.fullName} (${emp.empId}) • ${emp.companyEntity || "-"} • ${emp.department || "-"}`;
+      document.getElementById("templateYearLabel").textContent = year;
+      document.getElementById("kpiActivePeriodLabel").textContent = `${monthName}-${year}`;
+
+      // Show template editing & duplication buttons to Manager/Admin
+      document.getElementById("openDuplicateYearBtn").classList.toggle("hidden", !isManagerOrAdmin);
+      document.getElementById("loadSampleGoalsBtn").classList.toggle("hidden", !isManagerOrAdmin);
+      document.getElementById("addGoalRowBtn").classList.toggle("hidden", !isManagerOrAdmin);
+      document.getElementById("kpiTemplateActions").classList.toggle("hidden", !isManagerOrAdmin);
+
+      // Admin-only Confirmed Monthly Incentive preview
+      const incBox = document.getElementById("kpiAdminIncentiveBox");
+      if (currentUserProfile.role === "hr_admin") {
+        incBox.classList.remove("hidden");
+        const vSnap = await getDoc(doc(db, "employees", empUid, "vault", "compensation"));
+        const vData = vSnap.exists() ? vSnap.data() : {};
+        const isConfirmed = emp.status === "Confirmed / Permanent" || emp.status === "Active";
+        const amt = Number(vData.monthlyIncentive || 0);
+        document.getElementById("kpiAdminIncentiveValue").textContent = isConfirmed
+          ? `RM ${amt.toFixed(2)} (Confirmed)`
+          : `RM ${amt.toFixed(2)} (Pending Confirmation)`;
+      } else {
+        incBox.classList.add("hidden");
+      }
+
+      // 1. Load Annual Template (`kpis/{empUid}_template_{year}`)
+      const templateDocId = `${empUid}_template_${year}`;
+      const tSnap = await getDoc(doc(db, "kpis", templateDocId));
+      activeKpiTemplate = tSnap.exists()
+        ? tSnap.data()
+        : { employeeUid: empUid, managerUid: emp.managerUid || "", year, individualFocus: "", goals: [] };
+
+      renderKpiTemplateEditor(isManagerOrAdmin);
+
+      // 2. Load Monthly Record (`kpis/{empUid}_{year}_{month}`)
+      const monthlyDocId = `${empUid}_${year}_${month}`;
+      const mSnap = await getDoc(doc(db, "kpis", monthlyDocId));
+      activeMonthlyKpi = mSnap.exists() ? mSnap.data() : null;
+
+      renderMonthlyScorecard(emp, isManagerOrAdmin);
+    }
+
+    function renderKpiTemplateEditor(canEdit) {
+      document.getElementById("kpiIndividualFocus").value = activeKpiTemplate.individualFocus || "";
+      document.getElementById("kpiIndividualFocus").disabled = !canEdit;
+      document.getElementById("kpiFocusDisplay").textContent = `Individual Focus: ${activeKpiTemplate.individualFocus || "Not set yet"}`;
+
+      const container = document.getElementById("kpiTemplateRows");
+      const goals = activeKpiTemplate.goals || [];
+
+      if (goals.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500">No goals defined for ${kpiYearSelect.value} yet. Click "+ Add Goal Row" or "Load Atlas Sample Goals".</p>`;
+        updateTemplateWeightBadge();
+        return;
+      }
+
+      container.innerHTML = goals.map((g, idx) => `
+        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60 space-y-3" data-goal-idx="${idx}">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold text-blue-700">Goal #${idx + 1}</span>
+            ${canEdit ? `<button type="button" data-idx="${idx}" class="remove-goal-row text-xs text-red-600 hover:underline font-semibold">Remove Goal</button>` : ""}
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Goal Title *</label>
+              <input type="text" value="${(g.title || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="e.g. Production Efficiency" class="tpl-title force-sentence w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
+            </div>
+            <div class="md:col-span-2">
+              <label class="block font-semibold text-slate-700 mb-1">Objectives / Deliverables *</label>
+              <input type="text" value="${(g.objectives || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="e.g. Maintain rejection rate <2% and complete daily schedules" class="tpl-obj force-sentence w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Weightage (%) *</label>
+              <input type="number" min="1" max="100" value="${g.weight || ""}" ${canEdit ? "" : "disabled"} placeholder="25" class="tpl-weight w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-[11px]">
+            <div>
+              <label class="block font-semibold text-emerald-700 mb-0.5">Score 5 (Exceeds)</label>
+              <input type="text" value="${(g.t5 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="0% defect, ahead of schedule" class="tpl-t5 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-blue-700 mb-0.5">Score 4 (Above Target)</label>
+              <input type="text" value="${(g.t4 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="<1% defect, on time" class="tpl-t4 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-0.5">Score 3 (Meets Target)</label>
+              <input type="text" value="${(g.t3 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="2% defect, standard SLA" class="tpl-t3 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-amber-700 mb-0.5">Score 2 (Below Target)</label>
+              <input type="text" value="${(g.t2 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="3-4% defect, minor delay" class="tpl-t2 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-red-700 mb-0.5">Score 1 (Unsatisfactory)</label>
+              <input type="text" value="${(g.t1 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder=">5% defect, major delay" class="tpl-t1 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      container.querySelectorAll(".remove-goal-row").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          collectTemplateFromDom();
+          activeKpiTemplate.goals.splice(parseInt(btn.dataset.idx, 10), 1);
+          renderKpiTemplateEditor(canEdit);
+        });
+      });
+
+      container.querySelectorAll(".tpl-weight").forEach((inp) => {
+        inp.addEventListener("input", updateTemplateWeightBadge);
+      });
+
+      updateTemplateWeightBadge();
+    }
+
+    function collectTemplateFromDom() {
+      activeKpiTemplate.individualFocus = document.getElementById("kpiIndividualFocus").value.trim();
+      const cards = document.querySelectorAll("#kpiTemplateRows [data-goal-idx]");
+      activeKpiTemplate.goals = Array.from(cards).map((card) => ({
+        title: card.querySelector(".tpl-title").value.trim(),
+        objectives: card.querySelector(".tpl-obj").value.trim(),
+        weight: parseFloat(card.querySelector(".tpl-weight").value) || 0,
+        t5: card.querySelector(".tpl-t5").value.trim(),
+        t4: card.querySelector(".tpl-t4").value.trim(),
+        t3: card.querySelector(".tpl-t3").value.trim(),
+        t2: card.querySelector(".tpl-t2").value.trim(),
+        t1: card.querySelector(".tpl-t1").value.trim()
+      }));
+    }
+
+    function updateTemplateWeightBadge() {
+      const weights = Array.from(document.querySelectorAll("#kpiTemplateRows .tpl-weight"))
+        .map((i) => parseFloat(i.value) || 0);
+      const sum = weights.reduce((a, b) => a + b, 0);
+      const badge = document.getElementById("templateWeightBadge");
+      badge.textContent = `Total Weightage: ${sum}%`;
+      badge.className = sum === 100
+        ? "text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800"
+        : "text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800";
+    }
+
+    document.getElementById("addGoalRowBtn").addEventListener("click", () => {
+      collectTemplateFromDom();
+      activeKpiTemplate.goals.push({ title: "", objectives: "", weight: 0, t5: "", t4: "", t3: "", t2: "", t1: "" });
+      renderKpiTemplateEditor(true);
+    });
+
+    // Muiz-style Atlas Marking Production Sample (100% Weightage, Zero TICA)
+    document.getElementById("loadSampleGoalsBtn").addEventListener("click", () => {
+      document.getElementById("kpiIndividualFocus").value = "Quality Control, Scheduling, Operations ISO, and Customer Satisfaction.";
+      activeKpiTemplate.individualFocus = document.getElementById("kpiIndividualFocus").value;
+      activeKpiTemplate.goals = [
+        {
+          title: "Production Efficiency",
+          objectives: "Increase overall production output by 10%, keep reject rate below 2%, and complete scheduled maintenance.",
+          weight: 30,
+          t5: "Output +15%, 0% defect, ahead of schedule, zero downtime",
+          t4: "Output +15%, 1% defect, on-time release, maintenance on time",
+          t3: "Output +10%, 2% defect, 100% scheduled maintenance done",
+          t2: "Output +5%, 3-4% defect, delayed up to 3 days",
+          t1: "Output <5%, >5% defect, delayed 1 week or breakdown"
+        },
+        {
+          title: "Operations ISO & SOP Compliance",
+          objectives: "Maintain accurate documentation, follow SOP procedures with zero major audit NCRs, and implement improvements.",
+          weight: 20,
+          t5: "100% accurate same-day updates, zero NCRs, >=4 improvements",
+          t4: "100% accurate within 2-3 days, compliant, >=3 improvements",
+          t3: "100% accurate within same week, compliant, >=2 improvements",
+          t2: "1-5 minor inaccuracies, delayed 3 days, 1 minor idea",
+          t1: ">5 inaccuracies, delayed >5 days, no initiative"
+        },
+        {
+          title: "Self & Team Performance",
+          objectives: "Ensure operators run machines independently with high quality pass rate and strong team coordination.",
+          weight: 25,
+          t5: "Master level, zero errors, trains staff, 98% pass 1 wk early",
+          t4: "Independent operation, resolves minor errors, >98% pass 3d early",
+          t3: "Operators run independently without mistakes, 98% pass on time",
+          t2: "Needs occasional help, 1-3 mistakes, 95% pass 3d late",
+          t1: "Requires constant supervision, >3 mistakes, delayed 1 wk"
+        },
+        {
+          title: "Customer Satisfaction & Support",
+          objectives: "Ensure on-site & remote customer support meets requirements with zero rejections and timely delivery.",
+          weight: 15,
+          t5: "Zero rejections, Google review 5.0, resolved within 1 hour",
+          t4: "Zero rejections, Google review 4.9, resolved within half day",
+          t3: "Max 1-2 minor issues, Google review 4.8, on-time delivery",
+          t2: "3-4 rejections or 1+ day response delay",
+          t1: ">4 rejections or unaddressed customer requests"
+        },
+        {
+          title: "Attendance & Punctuality",
+          objectives: "Zero unexcused absences, minimal EL/MC, and consistent punctuality.",
+          weight: 10,
+          t5: "Perfect attendance & punctuality; sets strong team discipline",
+          t4: "Perfect attendance; fully punctual",
+          t3: "0 days unexcused absence; minor occasional lateness",
+          t2: "2-3 days unexcused absence",
+          t1: ">3 days unexcused absence"
+        }
+      ];
+      renderKpiTemplateEditor(true);
+      showToast("Loaded Atlas sample goals (100% weightage, zero TICA). Click Save Annual Goal Template to apply.");
+    });
+
+    document.getElementById("saveKpiTemplateBtn").addEventListener("click", async () => {
+      collectTemplateFromDom();
+      const totalWt = activeKpiTemplate.goals.reduce((s, g) => s + (Number(g.weight) || 0), 0);
+      if (totalWt !== 100) {
+        showToast(`Total Weightage is currently ${totalWt}%. Please adjust weights to equal 100%.`, true);
+        return;
+      }
+
+      const empUid = kpiEmployeeSelect.value;
+      const year = kpiYearSelect.value;
+      const emp = allEmployees.find((e) => e.uid === empUid);
 
       try {
-        await setDoc(doc(db, "employees", selectedEmpUid, "vault", "compensation"), {
-          basicSalary,
-          driveLink,
-          compNotes,
+        await setDoc(doc(db, "kpis", `${empUid}_template_${year}`), {
+          type: "template",
+          employeeUid: empUid,
+          managerUid: emp?.managerUid || "",
+          year,
+          individualFocus: activeKpiTemplate.individualFocus,
+          goals: activeKpiTemplate.goals,
           updatedBy: currentUserProfile.fullName,
           updatedAt: serverTimestamp()
-        }, { merge: true });
-
-        await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
-          action: "HR Vault Updated",
-          remarks: "Updated compensation / confidential notes",
-          createdBy: currentUserProfile.fullName,
-          createdAt: serverTimestamp()
         });
-
-        showToast("Confidential HR Vault saved.");
-        await openEmployeeModal(selectedEmpUid);
+        showToast(`Saved ${year} KPI Goal Template for ${emp?.fullName}.`);
+        document.getElementById("kpiTemplateCard").classList.add("hidden");
+        await loadKpiWorkspace();
       } catch (err) {
-        showToast(`Error saving vault: ${err.message}`, true);
+        showToast(`Error saving KPI template: ${err.message}`, true);
       }
     });
+
+    // Duplicate Annual Goals to Another Year
+    document.getElementById("confirmDuplicateBtn").addEventListener("click", async () => {
+      collectTemplateFromDom();
+      if (!activeKpiTemplate.goals || activeKpiTemplate.goals.length === 0) {
+        showToast("Current year has no goals to duplicate.", true);
+        return;
+      }
+      const empUid = kpiEmployeeSelect.value;
+      const targetYear = document.getElementById("duplicateTargetYear").value;
+      const emp = allEmployees.find((e) => e.uid === empUid);
+
+      try {
+        await setDoc(doc(db, "kpis", `${empUid}_template_${targetYear}`), {
+          type: "template",
+          employeeUid: empUid,
+          managerUid: emp?.managerUid || "",
+          year: targetYear,
+          individualFocus: activeKpiTemplate.individualFocus,
+          goals: activeKpiTemplate.goals,
+          duplicatedFrom: kpiYearSelect.value,
+          updatedBy: currentUserProfile.fullName,
+          updatedAt: serverTimestamp()
+        });
+        document.getElementById("duplicateYearModal").classList.add("hidden");
+        kpiYearSelect.value = targetYear;
+        showToast(`Duplicated goals to ${targetYear}! You can now edit, remove, or add items.`);
+        await loadKpiWorkspace();
+        document.getElementById("kpiTemplateCard").classList.remove("hidden");
+      } catch (err) {
+        showToast(`Error duplicating goals: ${err.message}`, true);
+      }
+    });
+
+    // Render Monthly Scorecard & Grading
+    function renderMonthlyScorecard(emp, isManagerOrAdmin) {
+      const body = document.getElementById("kpiEvaluationBody");
+      const footer = document.getElementById("kpiFooterControls");
+      const statusBadge = document.getElementById("kpiStatusBadge");
+
+      const goals = activeKpiTemplate.goals || [];
+      if (goals.length === 0) {
+        body.innerHTML = `<p class="text-sm text-slate-500">No annual KPI goals configured for ${kpiYearSelect.value}. Click <strong>"Manage Annual Goal Template"</strong> above to set up goals first.</p>`;
+        footer.classList.add("hidden");
+        document.getElementById("kpiTotalScoreDisplay").textContent = "0.00 / 5.00 (0%)";
+        return;
+      }
+
+      const status = activeMonthlyKpi?.status || "Draft";
+      statusBadge.textContent = status;
+      statusBadge.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+        status === "Approved" ? "bg-emerald-100 text-emerald-800" :
+        status === "Submitted" ? "bg-blue-100 text-blue-800" :
+        status === "Returned" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700"
+      }`;
+
+      const isSelf = emp.uid === currentUserUid;
+      const canEditSelf = isSelf && (status === "Draft" || status === "Returned");
+      const canGradeManager = isManagerOrAdmin;
+
+      const savedItems = activeMonthlyKpi?.items || [];
+
+      body.innerHTML = goals.map((g, idx) => {
+        const saved = savedItems[idx] || {};
+        const selfScore = saved.selfScore ?? "";
+        const mgrScore = saved.mgrScore ?? "";
+
+        return `
+          <div class="border border-slate-200 rounded-xl p-4 space-y-3" data-eval-idx="${idx}" data-weight="${g.weight}">
+            <div class="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold uppercase text-blue-700">${g.title} (Weight: ${g.weight}%)</span>
+                <p class="text-xs text-slate-600 mt-0.5">${g.objectives}</p>
+              </div>
+              <div class="text-right text-xs">
+                <span class="text-slate-500">Weighted Points:</span>
+                <strong class="eval-row-points text-slate-900">0.00</strong>
+              </div>
+            </div>
+
+            <!-- 1-5 Target Rubric Guide -->
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-1.5 text-[11px] bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+              <div><strong class="text-emerald-700">5:</strong> ${g.t5 || "-"}</div>
+              <div><strong class="text-blue-700">4:</strong> ${g.t4 || "-"}</div>
+              <div><strong class="text-slate-700">3:</strong> ${g.t3 || "-"}</div>
+              <div><strong class="text-amber-700">2:</strong> ${g.t2 || "-"}</div>
+              <div><strong class="text-red-700">1:</strong> ${g.t1 || "-"}</div>
+            </div>
+
+            <!-- Monthly Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-xs pt-1">
+              <div class="md:col-span-2">
+                <label class="block font-semibold text-slate-700 mb-1">Self Rating (1–5)</label>
+                <select ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} class="eval-self-score w-full px-2.5 py-2 border border-slate-300 rounded-lg bg-white">
+                  <option value="">--</option>
+                  ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1].map((n) => `<option value="${n}" ${Number(selfScore) === n ? "selected" : ""}>${n.toFixed(1)}</option>`).join("")}
+                </select>
+              </div>
+
+              <div class="md:col-span-4">
+                <label class="block font-semibold text-slate-700 mb-1">Where We Are (Actual Progress)</label>
+                <input type="text" value="${(saved.whereWeAre || "").replace(/"/g, "&quot;")}" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Actual output / achievement this month..." class="eval-where force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              </div>
+
+              <div class="md:col-span-4">
+                <label class="block font-semibold text-slate-700 mb-1">Next Steps (How Do We Get There)</label>
+                <input type="text" value="${(saved.nextSteps || "").replace(/"/g, "&quot;")}" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Action plan / Drive link..." class="eval-next force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+              </div>
+
+              <div class="md:col-span-2">
+                <label class="block font-semibold text-blue-800 mb-1">Manager Rating (1–5)</label>
+                <select ${canGradeManager ? "" : "disabled"} class="eval-mgr-score w-full px-2.5 py-2 border border-blue-300 rounded-lg bg-blue-50/40 font-semibold">
+                  <option value="">Pending</option>
+                  ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1].map((n) => `<option value="${n}" ${Number(mgrScore) === n ? "selected" : ""}>${n.toFixed(1)}</option>`).join("")}
+                </select>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      body.querySelectorAll(".eval-self-score, .eval-mgr-score").forEach((sel) => {
+        sel.addEventListener("change", recalculateMonthlyKpiScore);
+      });
+
+      document.getElementById("kpiManagerRemarks").value = activeMonthlyKpi?.managerRemarks || "";
+      document.getElementById("kpiManagerRemarks").disabled = !canGradeManager;
+      document.getElementById("kpiAuditSummary").textContent = activeMonthlyKpi?.lastActionSummary || "";
+
+      footer.classList.remove("hidden");
+      document.getElementById("saveKpiDraftBtn").classList.toggle("hidden", !canEditSelf && !isManagerOrAdmin);
+      document.getElementById("submitKpiBtn").classList.toggle("hidden", !canEditSelf);
+      document.getElementById("returnKpiBtn").classList.toggle("hidden", !canGradeManager);
+      document.getElementById("approveKpiBtn").classList.toggle("hidden", !canGradeManager);
+
+      recalculateMonthlyKpiScore();
+    }
+
+    function recalculateMonthlyKpiScore() {
+      let totalWeighted = 0;
+      document.querySelectorAll("#kpiEvaluationBody [data-eval-idx]").forEach((card) => {
+        const wt = parseFloat(card.dataset.weight) || 0;
+        const mgrVal = parseFloat(card.querySelector(".eval-mgr-score").value);
+        const selfVal = parseFloat(card.querySelector(".eval-self-score").value);
+        const effectiveScore = !isNaN(mgrVal) ? mgrVal : (!isNaN(selfVal) ? selfVal : 0);
+        const pts = effectiveScore * (wt / 100);
+        card.querySelector(".eval-row-points").textContent = pts.toFixed(2);
+        totalWeighted += pts;
+      });
+
+      const pct = Math.round((totalWeighted / 5) * 100);
+      document.getElementById("kpiTotalScoreDisplay").textContent = `${totalWeighted.toFixed(2)} / 5.00 (${pct}%)`;
+      return { totalWeighted: Number(totalWeighted.toFixed(2)), pct };
+    }
+
+    async function saveMonthlyKpi(newStatus) {
+      const empUid = kpiEmployeeSelect.value;
+      const year = kpiYearSelect.value;
+      const month = kpiMonthSelect.value;
+      const emp = allEmployees.find((e) => e.uid === empUid);
+      if (!emp) return;
+
+      const items = Array.from(document.querySelectorAll("#kpiEvaluationBody [data-eval-idx]")).map((card) => ({
+        selfScore: card.querySelector(".eval-self-score").value,
+        whereWeAre: card.querySelector(".eval-where").value.trim(),
+        nextSteps: card.querySelector(".eval-next").value.trim(),
+        mgrScore: card.querySelector(".eval-mgr-score").value
+      }));
+
+      const { totalWeighted, pct } = recalculateMonthlyKpiScore();
+      const managerRemarks = document.getElementById("kpiManagerRemarks").value.trim();
+      const summary = `${newStatus} by ${currentUserProfile.fullName} on ${formatNowTimestamp()}`;
+
+      try {
+        await setDoc(doc(db, "kpis", `${empUid}_${year}_${month}`), {
+          type: "monthly",
+          employeeUid: empUid,
+          managerUid: emp.managerUid || "",
+          year,
+          month,
+          status: newStatus,
+          items,
+          totalScore: totalWeighted,
+          percentage: pct,
+          managerRemarks,
+          lastActionSummary: summary,
+          updatedAt: serverTimestamp()
+        });
+        showToast(`Monthly KPI saved (${newStatus} — ${totalWeighted.toFixed(2)} / 5.00 • ${pct}%).`);
+        await loadKpiWorkspace();
+      } catch (err) {
+        showToast(`Error saving Monthly KPI: ${err.message}`, true);
+      }
+    }
+
+    document.getElementById("saveKpiDraftBtn").addEventListener("click", () => saveMonthlyKpi("Draft"));
+    document.getElementById("submitKpiBtn").addEventListener("click", () => saveMonthlyKpi("Submitted"));
+    document.getElementById("returnKpiBtn").addEventListener("click", () => saveMonthlyKpi("Returned"));
+    document.getElementById("approveKpiBtn").addEventListener("click", () => saveMonthlyKpi("Approved"));
   </script>
 </body>
 </html>
