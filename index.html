@@ -21,100 +21,312 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
+<body class="bg-slate-100 min-h-screen font-sans text-slate-800">
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginView" class="w-full max-w-md bg-white rounded-xl shadow-md p-8 border border-slate-200">
-    <div class="mb-6 text-center">
-      <h1 class="text-2xl font-bold text-slate-900">OneHax HR Portal</h1>
-      <p class="text-sm text-slate-500 mt-1">Sign in with your Login ID and Password</p>
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="loginView" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-xl shadow-md p-8 border border-slate-200">
+      <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-slate-900">OneHax HR Portal</h1>
+        <p class="text-sm text-slate-500 mt-1">Sign in with your Login ID and Password</p>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Login ID</label>
+          <input
+            type="text"
+            id="loginIdInput"
+            placeholder="e.g. EMP001"
+            required
+            autocomplete="off"
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+          <input
+            type="password"
+            id="passwordInput"
+            placeholder="Enter password"
+            required
+            autocomplete="new-password"
+            class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <p id="loginError" class="text-sm text-red-600 hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
+
+        <button
+          type="submit"
+          id="loginBtn"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition"
+        >
+          Sign In
+        </button>
+      </form>
     </div>
-
-    <form id="loginForm" class="space-y-4">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Login ID</label>
-        <input
-          type="text"
-          id="loginIdInput"
-          placeholder="e.g. EMP001"
-          required
-          autocomplete="off"
-          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-        <input
-          type="password"
-          id="passwordInput"
-          placeholder="Enter password"
-          required
-          autocomplete="new-password"
-          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-      </div>
-
-      <p id="loginError" class="text-sm text-red-600 hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
-
-      <button
-        type="submit"
-        id="loginBtn"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition"
-      >
-        Sign In
-      </button>
-    </form>
   </div>
 
-  <!-- AUTHENTICATED DASHBOARD SHELL -->
-  <div id="appView" class="hidden w-full max-w-4xl bg-white rounded-xl shadow-md p-6 border border-slate-200">
-    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+  <!-- ==================== MAIN PORTAL ==================== -->
+  <div id="appView" class="hidden max-w-6xl mx-auto p-4 md:p-6">
+    <!-- Top Header -->
+    <header class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
-        <h2 class="text-xl font-bold text-slate-900">Welcome, <span id="userNameDisplay">-</span></h2>
-        <p class="text-sm text-slate-500">
-          ID: <span id="userIdDisplay" class="font-medium">-</span> &bull;
-          Role: <span id="userRoleDisplay" class="uppercase font-semibold text-blue-600">-</span> &bull;
-          Mobile: <span id="userPhoneDisplay">-</span>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-xl font-bold text-slate-900">OneHax HR Portal</h1>
+          <span id="userRoleBadge" class="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">-</span>
+        </div>
+        <p class="text-sm text-slate-500 mt-1">
+          Logged in as <strong id="userNameDisplay" class="text-slate-800">-</strong>
+          (<span id="userIdDisplay">-</span>) &bull; Mobile: <span id="userPhoneDisplay">-</span>
         </p>
       </div>
       <button
         id="logoutBtn"
-        class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg"
+        class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
       >
         Logout
       </button>
-    </div>
+    </header>
 
-    <div class="mt-6 bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-emerald-900">
-      <strong>Connection Verified!</strong> Your GitHub Pages frontend and Firebase Firestore database are connected and secured.
-    </div>
+    <!-- Navigation Tabs -->
+    <nav class="flex flex-wrap gap-2 mb-6">
+      <button data-tab="directoryTab" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">
+        Employee Directory
+      </button>
+      <button data-tab="probationTab" class="tab-btn bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
+        Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800">0</span>
+      </button>
+      <button id="navAddEmployeeBtn" data-tab="addEmployeeTab" class="tab-btn hidden bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
+        + Add New Employee
+      </button>
+    </nav>
 
-    <!-- Preview of Strict Formatting Rules -->
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Employee Name (Auto ALL CAPS)</label>
+    <!-- Global Toast Banner -->
+    <div id="toastBanner" class="hidden mb-6 p-4 rounded-xl border text-sm font-medium"></div>
+
+    <!-- ==================== TAB 1: EMPLOYEE DIRECTORY ==================== -->
+    <section id="directoryTab" class="tab-panel bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Employee Directory</h2>
+          <p class="text-sm text-slate-500">Click any employee row to view details, probation history, or confidential HR records.</p>
+        </div>
         <input
           type="text"
-          class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg"
-          placeholder="Type any name..."
+          id="directorySearch"
+          placeholder="Search name, ID, or department..."
+          class="w-full sm:w-72 px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
         />
       </div>
-      <div>
-        <label class="block text-sm font-medium text-slate-700 mb-1">Remarks / Notes (Auto First Word Capital)</label>
-        <input
-          type="text"
-          class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg"
-          placeholder="we should do in this way"
-        />
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 text-xs uppercase text-slate-500 bg-slate-50">
+              <th class="py-3 px-4 font-semibold">Login ID</th>
+              <th class="py-3 px-4 font-semibold">Full Name</th>
+              <th class="py-3 px-4 font-semibold">Department / Position</th>
+              <th class="py-3 px-4 font-semibold">Mobile</th>
+              <th class="py-3 px-4 font-semibold">Join Date</th>
+              <th class="py-3 px-4 font-semibold">Status</th>
+              <th class="py-3 px-4 font-semibold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="directoryTableBody" class="divide-y divide-slate-100 text-sm">
+            <tr><td colspan="7" class="py-6 text-center text-slate-400">Loading employees...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: PROBATION TRACKER ==================== -->
+    <section id="probationTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="mb-5">
+        <h2 class="text-lg font-bold text-slate-900">Probation Tracker</h2>
+        <p class="text-sm text-slate-500">Monitor staff currently on probation, confirm permanent employment, or log extensions.</p>
+      </div>
+
+      <div id="probationList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p class="text-sm text-slate-400">Checking probation records...</p>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: ADD NEW EMPLOYEE (HR ADMIN) ==================== -->
+    <section id="addEmployeeTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <div class="mb-5">
+        <h2 class="text-lg font-bold text-slate-900">Onboard New Employee</h2>
+        <p class="text-sm text-slate-500">Creates a Login ID & Password immediately so the employee can sign in right away.</p>
+      </div>
+
+      <form id="addEmployeeForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Login ID * (e.g. EMP001)</label>
+          <input type="text" id="newEmpId" required placeholder="EMP001" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Initial Password * (Min 6 chars)</label>
+          <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Full Name * (Auto ALL CAPS)</label>
+          <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
+          <input type="text" id="newEmpPhone" required placeholder="60123456789" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Department *</label>
+          <input type="text" id="newEmpDept" required placeholder="Operations" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Position / Job Title *</label>
+          <input type="text" id="newEmpPosition" required placeholder="Production supervisor" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">System Access Role *</label>
+          <select id="newEmpRole" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
+            <option value="employee">Employee (View own profile & KPIs)</option>
+            <option value="manager">Manager / HOD (View team & approve KPIs)</option>
+            <option value="hr_admin">HR Admin (Full access & confidential vault)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Reporting Manager</label>
+          <select id="newEmpManager" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
+            <option value="">-- None / Reports to Top Management --</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Join Date *</label>
+          <input type="date" id="newEmpJoinDate" required class="w-full px-3.5 py-2 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Employment Status & Probation *</label>
+          <select id="newEmpProbationMonths" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg bg-white">
+            <option value="3">On Probation - 3 Months</option>
+            <option value="6">On Probation - 6 Months</option>
+            <option value="0">Confirmed / Permanent (No Probation)</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2 pt-2">
+          <button type="submit" id="createEmpBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+            Create Employee Account
+          </button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- ==================== EMPLOYEE DETAIL & HR VAULT MODAL ==================== -->
+  <div id="empModal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6">
+      <div class="flex items-start justify-between border-b border-slate-200 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 id="modalEmpName" class="text-xl font-bold text-slate-900">-</h3>
+            <span id="modalEmpStatusBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full">-</span>
+          </div>
+          <p id="modalEmpSub" class="text-sm text-slate-500 mt-0.5">-</p>
+        </div>
+        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 text-xl font-bold px-2">&times;</button>
+      </div>
+
+      <!-- General Info Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 py-4 border-b border-slate-200 text-sm">
+        <div>
+          <span class="text-slate-400 block text-xs">Mobile</span>
+          <strong id="modalEmpPhone" class="text-slate-800">-</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-xs">Join Date</span>
+          <strong id="modalEmpJoin" class="text-slate-800">-</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-xs">Probation End Date</span>
+          <strong id="modalEmpProbEnd" class="text-slate-800">-</strong>
+        </div>
+      </div>
+
+      <!-- HR ADMIN ONLY: PROBATION ACTION + CONFIDENTIAL VAULT -->
+      <div id="hrVaultSection" class="hidden mt-5 space-y-6">
+        <!-- Probation Action Box -->
+        <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4">
+          <h4 class="text-sm font-bold text-amber-900 mb-3">Probation Action & Extension Log</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select id="probActionType" class="px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white">
+              <option value="Confirmed">Confirm Permanent Staff</option>
+              <option value="Extended">Extend Probation</option>
+              <option value="Resigned">Mark Resigned / Inactive</option>
+            </select>
+            <input type="date" id="probNewEndDate" title="New Probation End Date (if extending)" class="px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
+            <input type="text" id="probActionRemarks" placeholder="Reason / remarks..." class="force-sentence px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
+          </div>
+          <button id="saveProbActionBtn" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+            Update Status & Save Log
+          </button>
+        </div>
+
+        <!-- Confidential Compensation & Drive Vault -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-bold text-slate-900">HR Confidential Vault (Admin Only)</h4>
+            <span class="text-xs text-slate-500">Hidden from Managers & Staff</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Current Basic Salary (RM)</label>
+              <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
+              <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-slate-600 mb-1">Salary Increment & Bonus / Angpao Notes</label>
+              <input type="text" id="vaultCompNotes" placeholder="2026 increment +RM200, CNY Angpao RM500..." class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+            </div>
+          </div>
+
+          <div class="mt-3 flex items-center gap-3">
+            <button id="saveVaultBtn" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+              Save Confidential Vault
+            </button>
+            <a id="openDriveAnchor" href="#" target="_blank" class="hidden text-xs font-semibold text-blue-600 hover:underline">
+              Open Google Drive Folder &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Audit / History Logs -->
+        <div>
+          <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">HR Activity & Probation Logs</h4>
+          <ul id="empLogsList" class="space-y-2 text-xs text-slate-600">
+            <li class="text-slate-400">No logs recorded yet.</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDFtUhpv9nfkeE0s7jLIDuCBNXFrFDmtO0",
@@ -129,8 +341,17 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Global Input Guards: No mouse-wheel scroll, ALL CAPS for names, Sentence case for other fields
-    document.addEventListener("wheel", (e) => {
+    // Secondary Firebase app so HR can create employee logins without getting logged out
+    const secondaryApp = initializeApp(firebaseConfig, "EmployeeCreator");
+    const secondaryAuth = getAuth(secondaryApp);
+
+    let currentUserProfile = null;
+    let currentUserUid = null;
+    let allEmployees = [];
+    let selectedEmpUid = null;
+
+    // ==================== GLOBAL INPUT GUARDS ====================
+    document.addEventListener("wheel", () => {
       if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
         document.activeElement.blur();
       }
@@ -149,13 +370,38 @@
       }
     });
 
+    function showToast(msg, isError = false) {
+      const banner = document.getElementById("toastBanner");
+      banner.textContent = msg;
+      banner.className = `mb-6 p-4 rounded-xl border text-sm font-medium ${
+        isError ? "bg-red-50 border-red-200 text-red-700" : "bg-emerald-50 border-emerald-200 text-emerald-800"
+      }`;
+      banner.classList.remove("hidden");
+      setTimeout(() => banner.classList.add("hidden"), 5000);
+    }
+
+    // ==================== TAB NAVIGATION ====================
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => {
+          b.classList.remove("bg-blue-600", "text-white", "shadow-sm");
+          b.classList.add("bg-white", "text-slate-700", "border", "border-slate-200");
+        });
+        btn.classList.remove("bg-white", "text-slate-700", "border", "border-slate-200");
+        btn.classList.add("bg-blue-600", "text-white", "shadow-sm");
+
+        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
+        document.getElementById(btn.dataset.tab).classList.remove("hidden");
+      });
+    });
+
+    // ==================== AUTHENTICATION ====================
     const loginView = document.getElementById("loginView");
     const appView = document.getElementById("appView");
-    const loginForm = document.getElementById("loginForm");
     const loginError = document.getElementById("loginError");
     const loginBtn = document.getElementById("loginBtn");
 
-    loginForm.addEventListener("submit", async (e) => {
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       loginError.classList.add("hidden");
       loginBtn.disabled = true;
@@ -168,7 +414,7 @@
       try {
         await signInWithEmailAndPassword(auth, authEmail, password);
       } catch (err) {
-        loginError.textContent = `Login Error (${err.code}): ${err.message}`;
+        loginError.textContent = `Login failed (${err.code}). Please check your Login ID and Password.`;
         loginError.classList.remove("hidden");
       } finally {
         loginBtn.disabled = false;
@@ -188,24 +434,360 @@
       try {
         const snap = await getDoc(doc(db, "employees", user.uid));
         if (!snap.exists()) {
-          loginError.textContent = `Account signed in, but no employee record found for UID: ${user.uid}`;
+          loginError.textContent = `No employee record found for UID: ${user.uid}`;
           loginError.classList.remove("hidden");
           await signOut(auth);
           return;
         }
 
-        const profile = snap.data();
-        document.getElementById("userNameDisplay").textContent = profile.fullName || "-";
-        document.getElementById("userIdDisplay").textContent = profile.empId || "-";
-        document.getElementById("userRoleDisplay").textContent = profile.role || "-";
-        document.getElementById("userPhoneDisplay").textContent = profile.phone || "-";
+        currentUserUid = user.uid;
+        currentUserProfile = snap.data();
+
+        document.getElementById("userNameDisplay").textContent = currentUserProfile.fullName || "-";
+        document.getElementById("userIdDisplay").textContent = currentUserProfile.empId || "-";
+        document.getElementById("userRoleBadge").textContent = currentUserProfile.role || "-";
+        document.getElementById("userPhoneDisplay").textContent = currentUserProfile.phone || "-";
+
+        if (currentUserProfile.role === "hr_admin") {
+          document.getElementById("navAddEmployeeBtn").classList.remove("hidden");
+        } else {
+          document.getElementById("navAddEmployeeBtn").classList.add("hidden");
+        }
 
         loginView.classList.add("hidden");
         appView.classList.remove("hidden");
+        await loadEmployees();
       } catch (err) {
-        loginError.textContent = `Database Error (${err.code}): ${err.message}`;
+        loginError.textContent = `Error loading profile (${err.code}): ${err.message}`;
         loginError.classList.remove("hidden");
         await signOut(auth);
+      }
+    });
+
+    // ==================== LOAD & RENDER EMPLOYEES ====================
+    async function loadEmployees() {
+      allEmployees = [];
+      const role = currentUserProfile.role;
+
+      if (role === "hr_admin") {
+        const snap = await getDocs(collection(db, "employees"));
+        snap.forEach((d) => allEmployees.push({ uid: d.id, ...d.data() }));
+      } else if (role === "manager") {
+        const selfSnap = await getDoc(doc(db, "employees", currentUserUid));
+        if (selfSnap.exists()) allEmployees.push({ uid: selfSnap.id, ...selfSnap.data() });
+        const teamSnap = await getDocs(query(collection(db, "employees"), where("managerUid", "==", currentUserUid)));
+        teamSnap.forEach((d) => {
+          if (d.id !== currentUserUid) allEmployees.push({ uid: d.id, ...d.data() });
+        });
+      } else {
+        allEmployees.push({ uid: currentUserUid, ...currentUserProfile });
+      }
+
+      allEmployees.sort((a, b) => (a.empId || "").localeCompare(b.empId || ""));
+      renderDirectory(allEmployees);
+      renderProbationTracker(allEmployees);
+      populateManagerDropdown(allEmployees);
+    }
+
+    function getStatusBadgeClass(status) {
+      if (status === "Probation") return "bg-amber-100 text-amber-800";
+      if (status === "Resigned") return "bg-red-100 text-red-700";
+      return "bg-emerald-100 text-emerald-800";
+    }
+
+    function renderDirectory(list) {
+      const tbody = document.getElementById("directoryTableBody");
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-400">No employees found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map((emp) => `
+        <tr class="hover:bg-slate-50 transition cursor-pointer" data-uid="${emp.uid}">
+          <td class="py-3 px-4 font-semibold text-slate-900">${emp.empId || "-"}</td>
+          <td class="py-3 px-4 font-medium">${emp.fullName || "-"}</td>
+          <td class="py-3 px-4 text-slate-600">${emp.department || "-"} ${emp.position ? `&bull; ${emp.position}` : ""}</td>
+          <td class="py-3 px-4 text-slate-600">${emp.phone || "-"}</td>
+          <td class="py-3 px-4 text-slate-600">${emp.joinDate || "-"}</td>
+          <td class="py-3 px-4">
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
+              ${emp.status || "Active"}
+            </span>
+          </td>
+          <td class="py-3 px-4 text-right">
+            <button class="text-blue-600 hover:underline font-medium text-xs">View Details</button>
+          </td>
+        </tr>
+      `).join("");
+
+      tbody.querySelectorAll("tr[data-uid]").forEach((row) => {
+        row.addEventListener("click", () => openEmployeeModal(row.dataset.uid));
+      });
+    }
+
+    document.getElementById("directorySearch").addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allEmployees.filter((emp) =>
+        (emp.fullName || "").toLowerCase().includes(term) ||
+        (emp.empId || "").toLowerCase().includes(term) ||
+        (emp.department || "").toLowerCase().includes(term)
+      );
+      renderDirectory(filtered);
+    });
+
+    function renderProbationTracker(list) {
+      const probationStaff = list.filter((e) => e.status === "Probation");
+      document.getElementById("probationCountBadge").textContent = probationStaff.length;
+      const container = document.getElementById("probationList");
+
+      if (probationStaff.length === 0) {
+        container.innerHTML = `<p class="text-sm text-slate-500 col-span-2">No employees are currently under probation.</p>`;
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      container.innerHTML = probationStaff.map((emp) => {
+        let daysText = "End date not set";
+        let alertClass = "border-slate-200";
+
+        if (emp.probationEndDate) {
+          const end = new Date(emp.probationEndDate + "T00:00:00");
+          const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+          if (diffDays < 0) {
+            daysText = `Overdue by ${Math.abs(diffDays)} day(s)`;
+            alertClass = "border-red-300 bg-red-50/40";
+          } else if (diffDays <= 14) {
+            daysText = `Due in ${diffDays} day(s)`;
+            alertClass = "border-amber-300 bg-amber-50/40";
+          } else {
+            daysText = `${diffDays} days remaining`;
+          }
+        }
+
+        return `
+          <div class="border ${alertClass} rounded-xl p-4 flex flex-col justify-between gap-3">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-500">${emp.empId}</span>
+                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">${daysText}</span>
+              </div>
+              <h3 class="font-bold text-slate-900 mt-1">${emp.fullName}</h3>
+              <p class="text-xs text-slate-500">${emp.department || "-"} &bull; Joined: ${emp.joinDate || "-"}</p>
+              <p class="text-xs text-slate-700 mt-1">Probation Ends: <strong>${emp.probationEndDate || "-"}</strong></p>
+            </div>
+            <button data-uid="${emp.uid}" class="open-prob-modal self-start text-xs font-semibold text-blue-600 hover:underline">
+              Review / Confirm Probation &rarr;
+            </button>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".open-prob-modal").forEach((btn) => {
+        btn.addEventListener("click", () => openEmployeeModal(btn.dataset.uid));
+      });
+    }
+
+    function populateManagerDropdown(list) {
+      const select = document.getElementById("newEmpManager");
+      const managers = list.filter((e) => e.role === "manager" || e.role === "hr_admin");
+      select.innerHTML = `<option value="">-- None / Reports to Top Management --</option>` +
+        managers.map((m) => `<option value="${m.uid}">${m.empId} - ${m.fullName} (${m.department || "Management"})</option>`).join("");
+    }
+
+    // ==================== ADD NEW EMPLOYEE ====================
+    document.getElementById("addEmployeeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("createEmpBtn");
+      btn.disabled = true;
+      btn.textContent = "Creating account...";
+
+      const empId = document.getElementById("newEmpId").value.trim().toUpperCase();
+      const password = document.getElementById("newEmpPassword").value.trim();
+      const fullName = document.getElementById("newEmpName").value.trim().toUpperCase();
+      const phone = document.getElementById("newEmpPhone").value.trim();
+      const department = document.getElementById("newEmpDept").value.trim();
+      const position = document.getElementById("newEmpPosition").value.trim();
+      const role = document.getElementById("newEmpRole").value;
+      const managerUid = document.getElementById("newEmpManager").value;
+      const joinDate = document.getElementById("newEmpJoinDate").value;
+      const probMonths = parseInt(document.getElementById("newEmpProbationMonths").value, 10);
+
+      let status = "Active";
+      let probationEndDate = "";
+
+      if (probMonths > 0 && joinDate) {
+        status = "Probation";
+        const d = new Date(joinDate + "T00:00:00");
+        d.setMonth(d.getMonth() + probMonths);
+        probationEndDate = d.toISOString().split("T")[0];
+      }
+
+      const authEmail = `${empId.toLowerCase()}@onehax.internal`;
+
+      try {
+        // Create Auth account using secondary app so HR remains signed in
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, authEmail, password);
+        const newUid = cred.user.uid;
+        await signOut(secondaryAuth);
+
+        // Save profile to Firestore under current HR Admin session
+        await setDoc(doc(db, "employees", newUid), {
+          empId,
+          fullName,
+          loginEmail: authEmail,
+          phone,
+          department,
+          position,
+          role,
+          managerUid,
+          joinDate,
+          probationEndDate,
+          status
+        });
+
+        await addDoc(collection(db, "employees", newUid, "logs"), {
+          action: "Employee Onboarded",
+          remarks: `Joined on ${joinDate} (${status})`,
+          createdBy: currentUserProfile.fullName,
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById("addEmployeeForm").reset();
+        showToast(`Success! ${fullName} (${empId}) created and ready to log in.`);
+        await loadEmployees();
+        document.querySelector('[data-tab="directoryTab"]').click();
+      } catch (err) {
+        showToast(`Failed to create employee (${err.code}): ${err.message}`, true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Create Employee Account";
+      }
+    });
+
+    // ==================== EMPLOYEE MODAL & HR VAULT ====================
+    const empModal = document.getElementById("empModal");
+    document.getElementById("closeModalBtn").addEventListener("click", () => empModal.classList.add("hidden"));
+
+    async function openEmployeeModal(uid) {
+      selectedEmpUid = uid;
+      const emp = allEmployees.find((e) => e.uid === uid);
+      if (!emp) return;
+
+      document.getElementById("modalEmpName").textContent = emp.fullName || "-";
+      document.getElementById("modalEmpSub").textContent = `${emp.empId} • ${emp.department || "-"} • ${emp.position || "-"}`;
+      document.getElementById("modalEmpPhone").textContent = emp.phone || "-";
+      document.getElementById("modalEmpJoin").textContent = emp.joinDate || "-";
+      document.getElementById("modalEmpProbEnd").textContent = emp.probationEndDate || "N/A";
+
+      const badge = document.getElementById("modalEmpStatusBadge");
+      badge.textContent = emp.status || "Active";
+      badge.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}`;
+
+      const vaultSection = document.getElementById("hrVaultSection");
+      if (currentUserProfile.role === "hr_admin") {
+        vaultSection.classList.remove("hidden");
+        document.getElementById("probNewEndDate").value = emp.probationEndDate || "";
+        document.getElementById("probActionRemarks").value = "";
+
+        // Load Confidential Vault
+        const vaultSnap = await getDoc(doc(db, "employees", uid, "vault", "compensation"));
+        const vData = vaultSnap.exists() ? vaultSnap.data() : {};
+        document.getElementById("vaultBasicSalary").value = vData.basicSalary || "";
+        document.getElementById("vaultDriveLink").value = vData.driveLink || "";
+        document.getElementById("vaultCompNotes").value = vData.compNotes || "";
+
+        const driveAnchor = document.getElementById("openDriveAnchor");
+        if (vData.driveLink) {
+          driveAnchor.href = vData.driveLink;
+          driveAnchor.classList.remove("hidden");
+        } else {
+          driveAnchor.classList.add("hidden");
+        }
+
+        // Load Logs
+        const logsSnap = await getDocs(query(collection(db, "employees", uid, "logs"), orderBy("createdAt", "desc")));
+        const logsList = document.getElementById("empLogsList");
+        if (logsSnap.empty) {
+          logsList.innerHTML = `<li class="text-slate-400">No logs recorded yet.</li>`;
+        } else {
+          logsList.innerHTML = logsSnap.docs.map((d) => {
+            const l = d.data();
+            return `<li class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+              <strong>${l.action}</strong> &mdash; ${l.remarks || ""}
+              <span class="block text-[11px] text-slate-400 mt-0.5">By ${l.createdBy || "HR"}</span>
+            </li>`;
+          }).join("");
+        }
+      } else {
+        vaultSection.classList.add("hidden");
+      }
+
+      empModal.classList.remove("hidden");
+    }
+
+    // Save Probation / Status Action
+    document.getElementById("saveProbActionBtn").addEventListener("click", async () => {
+      if (!selectedEmpUid) return;
+      const actionType = document.getElementById("probActionType").value;
+      const newEndDate = document.getElementById("probNewEndDate").value;
+      const remarks = document.getElementById("probActionRemarks").value.trim();
+
+      const updates = {};
+      if (actionType === "Confirmed") {
+        updates.status = "Active";
+      } else if (actionType === "Extended") {
+        updates.status = "Probation";
+        if (newEndDate) updates.probationEndDate = newEndDate;
+      } else if (actionType === "Resigned") {
+        updates.status = "Resigned";
+      }
+
+      try {
+        await updateDoc(doc(db, "employees", selectedEmpUid), updates);
+        await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
+          action: `Status: ${actionType}`,
+          remarks: remarks || (newEndDate ? `New end date: ${newEndDate}` : "Updated by HR"),
+          createdBy: currentUserProfile.fullName,
+          createdAt: serverTimestamp()
+        });
+
+        showToast("Probation / employment status updated.");
+        await loadEmployees();
+        await openEmployeeModal(selectedEmpUid);
+      } catch (err) {
+        showToast(`Error updating status: ${err.message}`, true);
+      }
+    });
+
+    // Save Confidential HR Vault
+    document.getElementById("saveVaultBtn").addEventListener("click", async () => {
+      if (!selectedEmpUid) return;
+      const basicSalary = document.getElementById("vaultBasicSalary").value.trim();
+      const driveLink = document.getElementById("vaultDriveLink").value.trim();
+      const compNotes = document.getElementById("vaultCompNotes").value.trim();
+
+      try {
+        await setDoc(doc(db, "employees", selectedEmpUid, "vault", "compensation"), {
+          basicSalary,
+          driveLink,
+          compNotes,
+          updatedBy: currentUserProfile.fullName,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
+          action: "HR Vault Updated",
+          remarks: "Updated compensation / confidential notes",
+          createdBy: currentUserProfile.fullName,
+          createdAt: serverTimestamp()
+        });
+
+        showToast("Confidential HR Vault saved.");
+        await openEmployeeModal(selectedEmpUid);
+      } catch (err) {
+        showToast(`Error saving vault: ${err.message}`, true);
       }
     });
   </script>
