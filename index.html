@@ -38,7 +38,7 @@
           id="loginIdInput"
           placeholder="e.g. EMP001"
           required
-          autocomplete="username"
+          autocomplete="off"
           class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
         />
       </div>
@@ -50,12 +50,12 @@
           id="passwordInput"
           placeholder="Enter password"
           required
-          autocomplete="current-password"
+          autocomplete="new-password"
           class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
         />
       </div>
 
-      <p id="loginError" class="text-sm text-red-600 hidden"></p>
+      <p id="loginError" class="text-sm text-red-600 hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
 
       <button
         type="submit"
@@ -163,13 +163,12 @@
 
       const rawId = document.getElementById("loginIdInput").value.trim().toLowerCase();
       const password = document.getElementById("passwordInput").value;
-      // Supports full email (e.g. sun@packtica.com) OR staff Login ID (e.g. EMP001 -> emp001@onehax.internal)
       const authEmail = rawId.includes("@") ? rawId : `${rawId}@onehax.internal`;
 
       try {
         await signInWithEmailAndPassword(auth, authEmail, password);
       } catch (err) {
-        loginError.textContent = "Invalid Login ID or Password. Please try again.";
+        loginError.textContent = `Login Error (${err.code}): ${err.message}`;
         loginError.classList.remove("hidden");
       } finally {
         loginBtn.disabled = false;
@@ -189,7 +188,7 @@
       try {
         const snap = await getDoc(doc(db, "employees", user.uid));
         if (!snap.exists()) {
-          loginError.textContent = "Account found, but employee profile is missing in Firestore.";
+          loginError.textContent = `Account signed in, but no employee record found for UID: ${user.uid}`;
           loginError.classList.remove("hidden");
           await signOut(auth);
           return;
@@ -204,7 +203,7 @@
         loginView.classList.add("hidden");
         appView.classList.remove("hidden");
       } catch (err) {
-        loginError.textContent = "Permission error loading profile. Check Firestore Rules.";
+        loginError.textContent = `Database Error (${err.code}): ${err.message}`;
         loginError.classList.remove("hidden");
         await signOut(auth);
       }
