@@ -7,9 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     /* Strict Rule: Zero up/down scrollbars or number spinners on any field */
-    input, textarea, select {
+    input, select {
       overflow: hidden !important;
+    }
+    textarea {
       resize: none !important;
+      overflow-y: auto;
     }
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
@@ -28,12 +31,12 @@
     <div class="w-full max-w-md bg-white rounded-xl shadow-md p-8 border border-slate-200">
       <div class="mb-6 text-center">
         <h1 class="text-2xl font-bold text-slate-900">OneHax HR Portal</h1>
-        <p class="text-sm text-slate-500 mt-1">Sign in with your Login ID and Password</p>
+        <p class="text-sm font-medium text-slate-700 mt-1">Sign in with your Login ID and Password</p>
       </div>
 
       <form id="loginForm" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Login ID</label>
+          <label class="block text-sm font-semibold text-slate-800 mb-1">Login ID <span class="text-red-600 font-bold">*</span></label>
           <input
             type="text"
             id="loginIdInput"
@@ -45,7 +48,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+          <label class="block text-sm font-semibold text-slate-800 mb-1">Password <span class="text-red-600 font-bold">*</span></label>
           <input
             type="password"
             id="passwordInput"
@@ -56,7 +59,7 @@
           />
         </div>
 
-        <p id="loginError" class="text-sm text-red-600 hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
+        <p id="loginError" class="text-sm font-medium text-red-700 hidden bg-red-50 border border-red-200 rounded-lg p-3"></p>
 
         <button
           type="submit"
@@ -72,53 +75,78 @@
   <!-- ==================== MAIN PORTAL ==================== -->
   <div id="appView" class="hidden max-w-7xl mx-auto p-4 md:p-6">
     <!-- Top Header -->
-    <header class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+    <header class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mb-5 flex flex-wrap items-center justify-between gap-4">
       <div>
         <div class="flex items-center gap-2.5">
           <h1 class="text-xl font-bold text-slate-900">OneHax HR Portal</h1>
-          <span id="userRoleBadge" class="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">-</span>
+          <span id="userRoleBadge" class="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800">-</span>
         </div>
-        <p class="text-sm text-slate-500 mt-1">
-          Logged in as <strong id="userNameDisplay" class="text-slate-800">-</strong>
-          (<span id="userIdDisplay">-</span>) &bull; Mobile: <span id="userPhoneDisplay">-</span>
+        <p class="text-sm font-medium text-slate-700 mt-1">
+          Logged in as <strong id="userNameDisplay" class="text-slate-900">-</strong>
+          (<span id="userIdDisplay" class="font-semibold">-</span>) &bull; Mobile: <span id="userPhoneDisplay" class="font-semibold">-</span>
         </p>
       </div>
       <button
         id="logoutBtn"
-        class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+        class="px-4 py-2 text-sm font-semibold text-slate-800 bg-slate-200 hover:bg-slate-300 rounded-lg transition"
       >
         Logout
       </button>
     </header>
 
-    <!-- Consistent Navigation Tabs -->
-    <nav class="flex flex-wrap gap-2 mb-6">
-      <button data-tab="directoryTab" class="tab-btn bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold shadow-sm">
+    <!-- Happy Distinct-Colored Navigation Tabs (Zero Hover Invisibility) -->
+    <nav class="flex flex-wrap gap-2.5 mb-6">
+      <button
+        type="button"
+        data-tab="directoryTab"
+        data-active-cls="bg-sky-600 text-white border-sky-600 shadow-sm hover:bg-sky-700"
+        data-inactive-cls="bg-sky-50 text-sky-900 border-sky-300 hover:bg-sky-100 hover:text-sky-950"
+        class="tab-btn border px-4 py-2.5 rounded-lg text-sm font-bold transition bg-sky-600 text-white border-sky-600 shadow-sm hover:bg-sky-700"
+      >
         Employee Directory
       </button>
-      <button data-tab="probationTab" class="tab-btn bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
-        Intern / Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs rounded-full bg-amber-100 text-amber-800">0</span>
+      <button
+        type="button"
+        data-tab="probationTab"
+        data-active-cls="bg-amber-500 text-white border-amber-500 shadow-sm hover:bg-amber-600"
+        data-inactive-cls="bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+        class="tab-btn border px-4 py-2.5 rounded-lg text-sm font-bold transition bg-amber-50 text-amber-900 border-amber-300 hover:bg-amber-100 hover:text-amber-950"
+      >
+        Intern / Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs font-extrabold rounded-full bg-white text-amber-900 border border-amber-300">0</span>
       </button>
-      <button data-tab="kpiTab" class="tab-btn bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
+      <button
+        type="button"
+        data-tab="kpiTab"
+        data-active-cls="bg-emerald-600 text-white border-emerald-600 shadow-sm hover:bg-emerald-700"
+        data-inactive-cls="bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100 hover:text-emerald-950"
+        class="tab-btn border px-4 py-2.5 rounded-lg text-sm font-bold transition bg-emerald-50 text-emerald-900 border-emerald-300 hover:bg-emerald-100 hover:text-emerald-950"
+      >
         Monthly KPI
       </button>
-      <button id="navAddEmployeeBtn" data-tab="addEmployeeTab" class="tab-btn hidden bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-4 py-2 rounded-lg text-sm font-semibold">
+      <button
+        type="button"
+        id="navAddEmployeeBtn"
+        data-tab="addEmployeeTab"
+        data-active-cls="bg-violet-600 text-white border-violet-600 shadow-sm hover:bg-violet-700"
+        data-inactive-cls="bg-violet-50 text-violet-900 border-violet-300 hover:bg-violet-100 hover:text-violet-950"
+        class="tab-btn hidden border px-4 py-2.5 rounded-lg text-sm font-bold transition bg-violet-50 text-violet-900 border-violet-300 hover:bg-violet-100 hover:text-violet-950"
+      >
         + Add New Employee
       </button>
     </nav>
 
     <!-- Global Toast Banner -->
-    <div id="toastBanner" class="hidden mb-6 p-4 rounded-xl border text-sm font-medium"></div>
+    <div id="toastBanner" class="hidden mb-6 p-4 rounded-xl border text-sm font-semibold"></div>
 
     <!-- ==================== TAB 1: EMPLOYEE DIRECTORY ==================== -->
     <section id="directoryTab" class="tab-panel bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
         <div>
           <h2 class="text-lg font-bold text-slate-900">Employee Directory</h2>
-          <p class="text-sm text-slate-500">Click any employee row to view details, edit records, or access the HR Confidential Vault.</p>
+          <p class="text-sm font-medium text-slate-700">Click any employee row to view details, edit records, or access the HR Confidential Vault.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <select id="directoryCompanyFilter" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+          <select id="directoryCompanyFilter" class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-800 bg-white">
             <option value="">All Companies</option>
             <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
             <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
@@ -128,7 +156,7 @@
             type="text"
             id="directorySearch"
             placeholder="Search name, ID, or department..."
-            class="w-full sm:w-64 px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            class="w-full sm:w-64 px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-600"
           />
         </div>
       </div>
@@ -136,19 +164,19 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b border-slate-200 text-xs uppercase text-slate-500 bg-slate-50">
-              <th class="py-3 px-4 font-semibold">Login ID</th>
-              <th class="py-3 px-4 font-semibold">Full Name</th>
-              <th class="py-3 px-4 font-semibold">Company Entity</th>
-              <th class="py-3 px-4 font-semibold">Department / Job Title</th>
-              <th class="py-3 px-4 font-semibold">Mobile Number</th>
-              <th class="py-3 px-4 font-semibold">Join Date</th>
-              <th class="py-3 px-4 font-semibold">Status</th>
-              <th class="py-3 px-4 font-semibold text-right">Action</th>
+            <tr class="border-b border-slate-200 text-xs uppercase text-slate-700 bg-slate-100">
+              <th class="py-3 px-4 font-bold">Login ID</th>
+              <th class="py-3 px-4 font-bold">Full Name</th>
+              <th class="py-3 px-4 font-bold">Company Entity</th>
+              <th class="py-3 px-4 font-bold">Department / Job Title</th>
+              <th class="py-3 px-4 font-bold">Mobile Number</th>
+              <th class="py-3 px-4 font-bold">Join Date</th>
+              <th class="py-3 px-4 font-bold">Status</th>
+              <th class="py-3 px-4 font-bold text-right">Action</th>
             </tr>
           </thead>
-          <tbody id="directoryTableBody" class="divide-y divide-slate-100 text-sm">
-            <tr><td colspan="8" class="py-6 text-center text-slate-400">Loading employees...</td></tr>
+          <tbody id="directoryTableBody" class="divide-y divide-slate-200 text-sm text-slate-800">
+            <tr><td colspan="8" class="py-6 text-center font-medium text-slate-700">Loading employees...</td></tr>
           </tbody>
         </table>
       </div>
@@ -158,100 +186,125 @@
     <section id="probationTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div class="mb-5">
         <h2 class="text-lg font-bold text-slate-900">Intern / Probation Tracker</h2>
-        <p class="text-sm text-slate-500">Monitor staff currently under internship or probation, confirm permanent employment, or log extensions.</p>
+        <p class="text-sm font-medium text-slate-700">Monitor staff currently under internship or probation, confirm permanent employment, or log extensions.</p>
       </div>
 
       <div id="probationList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <p class="text-sm text-slate-400">Checking intern and probation records...</p>
+        <p class="text-sm font-medium text-slate-700">Checking intern and probation records...</p>
       </div>
     </section>
 
-    <!-- ==================== TAB 3: MONTHLY KPI ==================== -->
+    <!-- ==================== TAB 3: MONTHLY KPI (UNIVERSAL FROZEN TOP BAR) ==================== -->
     <section id="kpiTab" class="tab-panel hidden space-y-6">
-      <!-- KPI Control Bar -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-wrap items-end justify-between gap-4">
+      <!-- UNIVERSAL STICKY TOP BAR FOR ALL ROLES (Employees, Managers, MD, HR Admin) -->
+      <div class="sticky top-2 z-30 bg-white/95 backdrop-blur rounded-xl shadow-md border-2 border-emerald-300 p-4 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-bold text-slate-900">Monthly KPI &amp; Performance Evaluation</h2>
-            <p class="text-sm text-slate-500">Weighted 1–5 goal evaluation (Score out of 5.00 &amp; percentage equivalent).</p>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-extrabold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-900">Active Review</span>
+              <h2 id="kpiFrozenEmpName" class="text-base md:text-lg font-extrabold text-slate-900">-</h2>
+              <span id="kpiStatusBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800">Draft</span>
+            </div>
+            <p id="kpiFrozenEmpMeta" class="text-xs md:text-sm font-semibold text-slate-700 mt-0.5">
+              Company Entity: - &bull; Job Title: - &bull; Period: Nov-2026
+            </p>
           </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
-              <select id="kpiEmployeeSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white min-w-[220px]"></select>
+
+          <!-- Score & Template Weightage Callouts -->
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span id="templateWeightBadge" class="hidden text-xs font-extrabold px-3 py-1.5 rounded-lg bg-amber-100 text-amber-950 border border-amber-300">
+              Template Weightage: 0%
+            </span>
+
+            <div id="kpiAdminIncentiveBox" class="hidden bg-emerald-50 border border-emerald-300 rounded-lg px-3 py-1.5 text-right">
+              <span class="block text-[10px] font-bold text-emerald-800 uppercase">HR Admin: Monthly Incentive</span>
+              <strong id="kpiAdminIncentiveValue" class="text-xs md:text-sm font-extrabold text-emerald-950">-</strong>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Goal Year</label>
-              <select id="kpiYearSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-                <option value="2025">2025</option>
-                <option value="2026" selected>2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Evaluation Month</label>
-              <select id="kpiMonthSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-                <option value="01">Jan</option>
-                <option value="02">Feb</option>
-                <option value="03">Mar</option>
-                <option value="04">Apr</option>
-                <option value="05">May</option>
-                <option value="06">Jun</option>
-                <option value="07">Jul</option>
-                <option value="08">Aug</option>
-                <option value="09">Sep</option>
-                <option value="10">Oct</option>
-                <option value="11" selected>Nov</option>
-                <option value="12">Dec</option>
-              </select>
+
+            <div class="bg-slate-900 text-white rounded-lg px-3.5 py-1.5 text-right">
+              <span class="block text-[10px] font-semibold text-slate-200 uppercase">Weighted Score</span>
+              <strong id="kpiTotalScoreDisplay" class="text-sm md:text-base font-extrabold">0.00 / 5.00 (0%)</strong>
             </div>
           </div>
         </div>
 
-        <!-- Employee KPI Header Summary -->
-        <div id="kpiEmpHeaderBanner" class="mt-5 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4 text-sm">
-          <div>
-            <span class="text-slate-500">Selected Staff:</span> <strong id="kpiSelectedEmpInfo">-</strong>
-          </div>
+        <!-- Selector & Sticky Quick-Action Buttons -->
+        <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
           <div class="flex flex-wrap items-center gap-2">
-            <button id="toggleKpiTemplateBtn" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700">
+            <select id="kpiEmployeeSelect" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs md:text-sm font-semibold text-slate-800 bg-white min-w-[200px]"></select>
+            <select id="kpiYearSelect" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs md:text-sm font-semibold text-slate-800 bg-white">
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
+              <option value="2027">2027</option>
+              <option value="2028">2028</option>
+            </select>
+            <select id="kpiMonthSelect" class="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs md:text-sm font-semibold text-slate-800 bg-white">
+              <option value="01">Jan</option>
+              <option value="02">Feb</option>
+              <option value="03">Mar</option>
+              <option value="04">Apr</option>
+              <option value="05">May</option>
+              <option value="06">Jun</option>
+              <option value="07">Jul</option>
+              <option value="08">Aug</option>
+              <option value="09">Sep</option>
+              <option value="10">Oct</option>
+              <option value="11" selected>Nov</option>
+              <option value="12">Dec</option>
+            </select>
+          </div>
+
+          <!-- Frozen Action Buttons (Always accessible without scrolling up) -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="toggleKpiTemplateBtn" class="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-900">
               Manage Annual Goal Template
             </button>
-            <button id="openDuplicateYearBtn" class="hidden px-3.5 py-1.5 text-xs font-semibold rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700">
-              Duplicate Goals to Another Year
+            <button type="button" id="frozenAddGoalRowBtn" class="hidden px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-sm">
+              + Add Goal Row
+            </button>
+            <button type="button" id="frozenSaveTemplateBtn" class="hidden px-3 py-1.5 text-xs font-bold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm">
+              Save Template
+            </button>
+            <button type="button" id="openDuplicateYearBtn" class="hidden px-3 py-1.5 text-xs font-bold rounded-lg border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-900">
+              Duplicate to Another Year
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Annual KPI Goal Template Editor (Collapsible) -->
-      <div id="kpiTemplateCard" class="hidden bg-white rounded-xl shadow-sm border border-blue-200 p-6">
-        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <!-- Annual KPI Goal Template Editor (Collapsible, Stacked Full-Width Multi-Line Fields) -->
+      <div id="kpiTemplateCard" class="hidden bg-white rounded-xl shadow-sm border-2 border-blue-300 p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200">
           <div>
             <h3 class="text-base font-bold text-slate-900">Annual KPI Goal Template (<span id="templateYearLabel">2026</span>)</h3>
-            <p class="text-xs text-slate-500">Define measurable job goals and 1–5 targets (Total Weightage must equal 100%).</p>
+            <p class="text-sm font-semibold text-slate-800 mt-0.5">
+              Important: Define measurable job goals and 1–5 targets (Total Weightage must equal 100%).
+            </p>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <span id="templateWeightBadge" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-700">Total Weightage: 0%</span>
-            <button type="button" id="loadSampleGoalsBtn" class="hidden px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">
+            <button type="button" id="loadSampleGoalsBtn" class="hidden px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900">
               Load Atlas Sample Goals
             </button>
-            <button type="button" id="addGoalRowBtn" class="hidden px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
+            <button type="button" id="addGoalRowBtn" class="hidden px-3.5 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
               + Add Goal Row
             </button>
           </div>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Individual Focus Summary</label>
-          <input type="text" id="kpiIndividualFocus" placeholder="e.g. Quality Control, Scheduling, and Customer Satisfaction..." class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+        <div class="mb-5">
+          <label class="block text-xs font-bold uppercase text-slate-800 mb-1">Individual Focus Summary</label>
+          <textarea
+            id="kpiIndividualFocus"
+            rows="2"
+            placeholder="e.g. Quality Control, Scheduling, and Customer Satisfaction..."
+            class="auto-expand-textarea force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 leading-relaxed"
+          ></textarea>
         </div>
 
-        <div id="kpiTemplateRows" class="space-y-4"></div>
+        <div id="kpiTemplateRows" class="space-y-6"></div>
 
-        <div id="kpiTemplateActions" class="hidden mt-4 pt-4 border-t border-slate-200 flex justify-end gap-3">
-          <button type="button" id="saveKpiTemplateBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg">
+        <div id="kpiTemplateActions" class="hidden mt-6 pt-4 border-t border-slate-200 flex justify-end gap-3">
+          <button type="button" id="saveKpiTemplateBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg">
             Save Annual Goal Template
           </button>
         </div>
@@ -261,10 +314,10 @@
       <div id="duplicateYearModal" class="hidden fixed inset-0 bg-slate-900/50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md p-6">
           <h3 class="text-lg font-bold text-slate-900">Duplicate KPI Goals to Another Year</h3>
-          <p class="text-xs text-slate-500 mt-1">Copies all goals, objectives, weightages, and 1–5 targets so you can keep what remains, remove old items, or add new ones.</p>
+          <p class="text-sm font-medium text-slate-700 mt-1">Copies all goals, objectives, weightages, and 1–5 targets so you can keep what remains, remove old items, or add new ones.</p>
           <div class="mt-4">
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Target Year</label>
-            <select id="duplicateTargetYear" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+            <label class="block text-xs font-bold text-slate-800 mb-1">Target Year <span class="text-red-600 font-bold">*</span></label>
+            <select id="duplicateTargetYear" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-800 bg-white">
               <option value="2026">2026</option>
               <option value="2027" selected>2027</option>
               <option value="2028">2028</option>
@@ -272,61 +325,48 @@
             </select>
           </div>
           <div class="mt-5 flex justify-end gap-2">
-            <button type="button" id="cancelDuplicateBtn" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 rounded-lg">Cancel</button>
-            <button type="button" id="confirmDuplicateBtn" class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Duplicate Goals</button>
+            <button type="button" id="cancelDuplicateBtn" class="px-4 py-2 text-xs font-bold text-slate-800 bg-slate-200 hover:bg-slate-300 rounded-lg">Cancel</button>
+            <button type="button" id="confirmDuplicateBtn" class="px-4 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg">Duplicate Goals</button>
           </div>
         </div>
       </div>
 
       <!-- Monthly Evaluation Scorecard -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
-          <div>
-            <div class="flex items-center gap-2.5">
-              <h3 class="text-base font-bold text-slate-900">Monthly Scorecard: <span id="kpiActivePeriodLabel">Nov-2026</span></h3>
-              <span id="kpiStatusBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">Not Started</span>
-            </div>
-            <p id="kpiFocusDisplay" class="text-xs text-slate-500 mt-1">Individual Focus: -</p>
-          </div>
-
-          <div class="flex flex-wrap items-center gap-4">
-            <!-- Admin-Only Confirmed Incentive Callout -->
-            <div id="kpiAdminIncentiveBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-lg px-3.5 py-2 text-right">
-              <span class="block text-[11px] font-semibold text-emerald-700 uppercase">HR Admin: Monthly Incentive</span>
-              <strong id="kpiAdminIncentiveValue" class="text-sm text-emerald-900">-</strong>
-            </div>
-
-            <div class="bg-slate-900 text-white rounded-lg px-4 py-2 text-right">
-              <span class="block text-[11px] text-slate-300 uppercase">Weighted Score</span>
-              <strong id="kpiTotalScoreDisplay" class="text-lg font-bold">0.00 / 5.00 (0%)</strong>
-            </div>
-          </div>
+        <div class="pb-4 border-b border-slate-200">
+          <h3 class="text-base font-bold text-slate-900">Monthly Evaluation Scorecard: <span id="kpiActivePeriodLabel">Nov-2026</span></h3>
+          <p id="kpiFocusDisplay" class="text-sm font-medium text-slate-800 mt-1">Individual Focus: -</p>
         </div>
 
-        <div id="kpiEvaluationBody" class="mt-5 space-y-4">
-          <p class="text-sm text-slate-400">Select an employee and period to load KPI items.</p>
+        <div id="kpiEvaluationBody" class="mt-5 space-y-6">
+          <p class="text-sm font-medium text-slate-700">Select an employee and period to load KPI items.</p>
         </div>
 
         <!-- Manager Remarks & Action Buttons -->
         <div id="kpiFooterControls" class="hidden mt-6 pt-5 border-t border-slate-200 space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Reporting Manager / HOD Overall Remarks</label>
-            <input type="text" id="kpiManagerRemarks" placeholder="Manager feedback or revision notes..." class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+            <label class="block text-xs font-bold uppercase text-slate-800 mb-1">Reporting Manager / HOD Overall Remarks</label>
+            <textarea
+              id="kpiManagerRemarks"
+              rows="2"
+              placeholder="Manager feedback or revision notes..."
+              class="auto-expand-textarea force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 leading-relaxed"
+            ></textarea>
           </div>
 
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <span id="kpiAuditSummary" class="text-xs text-slate-400"></span>
+            <span id="kpiAuditSummary" class="text-xs font-semibold text-slate-700"></span>
             <div class="flex flex-wrap gap-2">
-              <button type="button" id="saveKpiDraftBtn" class="hidden px-4 py-2 text-sm font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800">
+              <button type="button" id="saveKpiDraftBtn" class="hidden px-4 py-2 text-sm font-bold rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-900">
                 Save Draft
               </button>
-              <button type="button" id="submitKpiBtn" class="hidden px-5 py-2 text-sm font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
+              <button type="button" id="submitKpiBtn" class="hidden px-5 py-2 text-sm font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
                 Submit to Manager
               </button>
-              <button type="button" id="returnKpiBtn" class="hidden px-4 py-2 text-sm font-semibold rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900">
+              <button type="button" id="returnKpiBtn" class="hidden px-4 py-2 text-sm font-bold rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300">
                 Return for Revision
               </button>
-              <button type="button" id="approveKpiBtn" class="hidden px-5 py-2 text-sm font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white">
+              <button type="button" id="approveKpiBtn" class="hidden px-5 py-2 text-sm font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white">
                 Approve Monthly KPI
               </button>
             </div>
@@ -339,95 +379,118 @@
     <section id="addEmployeeTab" class="tab-panel hidden bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <div class="mb-6">
         <h2 class="text-lg font-bold text-slate-900">Onboard New Employee</h2>
-        <p class="text-sm text-slate-500">Creates a Login ID &amp; Password immediately so the employee can sign in right away.</p>
+        <p class="text-sm font-medium text-slate-700">Creates a Login ID &amp; Password immediately so the employee can sign in right away. Fields marked with <span class="text-red-600 font-bold">*</span> are mandatory.</p>
       </div>
 
       <form id="addEmployeeForm" class="space-y-8">
-        <!-- Section 1: Identity & Personal Contact -->
+        <!-- Section 1: Identity & Residential Details -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">1. Identity &amp; Residential Details</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-violet-800 border-b border-slate-200 pb-2 mb-4">1. Identity &amp; Residential Details</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Login ID * (e.g. EMP001)</label>
-              <input type="text" id="newEmpId" required placeholder="EMP001" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Login ID <span class="text-red-600 font-bold">*</span> (e.g. EMP001)</label>
+              <input type="text" id="newEmpId" required placeholder="EMP001" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Initial Password * (Min 6 chars)</label>
-              <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Initial Password <span class="text-red-600 font-bold">*</span> (Min 6 chars)</label>
+              <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name * (Auto ALL CAPS)</label>
-              <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Full Name <span class="text-red-600 font-bold">*</span> (Auto ALL CAPS)</label>
+              <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">NRIC Number *</label>
-              <input type="text" id="newEmpNric" required placeholder="950812-14-5521" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Nationality <span class="text-red-600 font-bold">*</span></label>
+              <select id="newEmpNationality" required class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white">
+                <option value="Indonesian">Indonesian</option>
+                <option value="Malaysian" selected>Malaysian</option>
+                <option value="Philippine / Filipino">Philippine / Filipino</option>
+                <option value="Thai">Thai</option>
+              </select>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Passport Number (Optional)</label>
-              <input type="text" id="newEmpPassport" placeholder="A12345678" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label id="newEmpNricLabel" class="block text-xs font-bold text-slate-800 mb-1">NRIC Number <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" id="newEmpNric" required placeholder="950812-14-5521" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number *</label>
-              <input type="text" id="newEmpPhone" required placeholder="60123456789" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label id="newEmpPassportLabel" class="block text-xs font-bold text-slate-800 mb-1">Passport Number (Optional)</label>
+              <input type="text" id="newEmpPassport" placeholder="A12345678" class="force-caps w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Email Address (Optional)</label>
-              <input type="email" id="newEmpEmail" placeholder="staff@company.com" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Mobile Number <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" id="newEmpPhone" required placeholder="+60 12-345 6789" class="mobile-format-input w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
+              <span id="newEmpPhoneHint" class="block text-[11px] font-semibold text-slate-700 mt-1">Malaysia: 011 (8 digits), 012/013 (7–8 digits), others (7 digits)</span>
             </div>
+
             <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Residential Address *</label>
-              <input type="text" id="newEmpAddress" required placeholder="No. 12, Jalan Utama, Taman Perindustrian, 43300 Seri Kembangan, Selangor" class="force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Email Address (Optional)</label>
+              <input type="email" id="newEmpEmail" placeholder="staff@company.com" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
+            </div>
+
+            <!-- Full-Width Residential Address (Nothing Side-by-Side, Auto ALL CAPS, Multi-Country Postcode) -->
+            <div class="md:col-span-3">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Residential Address <span class="text-red-600 font-bold">*</span> (Auto ALL CAPS &mdash; Supports MY / ID / PH / TH Postcodes)</label>
+              <input
+                type="text"
+                id="newEmpAddress"
+                required
+                placeholder="NO. 12, JALAN UTAMA, TAMAN PERINDUSTRIAN, 43300 SERI KEMBANGAN, SELANGOR"
+                class="force-caps w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm text-slate-900"
+              />
             </div>
           </div>
         </div>
 
         <!-- Section 2: Emergency Contacts -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">2. Emergency Contacts (Contact 1 Mandatory, 2–3 Optional)</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-violet-800 border-b border-slate-200 pb-2 mb-4">2. Emergency Contacts (Contact 1 Mandatory, 2–3 Optional)</h3>
           <div class="space-y-3">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-50 p-3.5 rounded-lg border border-slate-200">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Emergency Contact 1 Name *</label>
+                <label class="block text-xs font-bold text-slate-800 mb-1">Emergency Contact 1 Name <span class="text-red-600 font-bold">*</span></label>
                 <input type="text" id="newEc1Name" required placeholder="LIM MEI LING" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Relationship *</label>
-                <input type="text" id="newEc1Rel" required placeholder="Spouse" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+                <label class="block text-xs font-bold text-slate-800 mb-1">Relationship <span class="text-red-600 font-bold">*</span></label>
+                <select id="newEc1Rel" required class="rel-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Contact Number *</label>
-                <input type="text" id="newEc1Phone" required placeholder="60129876543" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+                <label class="block text-xs font-bold text-slate-800 mb-1">Contact Number <span class="text-red-600 font-bold">*</span></label>
+                <input type="text" id="newEc1Phone" required placeholder="+60 12-987 6543" class="ec-phone-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3.5 rounded-lg border border-slate-200">
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Emergency Contact 2 Name (Optional)</label>
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Emergency Contact 2 Name (Optional)</label>
                 <input type="text" id="newEc2Name" placeholder="TAN AH KOW" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Relationship (Optional)</label>
-                <input type="text" id="newEc2Rel" placeholder="Father" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Relationship (Optional)</label>
+                <select id="newEc2Rel" class="rel-select-opt alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Contact Number (Optional)</label>
-                <input type="text" id="newEc2Phone" placeholder="60161234567" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Contact Number (Optional)</label>
+                <input type="text" id="newEc2Phone" placeholder="+60 16-123 4567" class="ec-phone-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-3.5 rounded-lg border border-slate-200">
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Emergency Contact 3 Name (Optional)</label>
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Emergency Contact 3 Name (Optional)</label>
                 <input type="text" id="newEc3Name" placeholder="TAN SIEW LAN" class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Relationship (Optional)</label>
-                <input type="text" id="newEc3Rel" placeholder="Sister" class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Relationship (Optional)</label>
+                <select id="newEc3Rel" class="rel-select-opt alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Contact Number (Optional)</label>
-                <input type="text" id="newEc3Phone" placeholder="60177654321" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+                <label class="block text-xs font-semibold text-slate-800 mb-1">Contact Number (Optional)</label>
+                <input type="text" id="newEc3Phone" placeholder="+60 17-765 4321" class="ec-phone-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
               </div>
             </div>
           </div>
@@ -435,11 +498,11 @@
 
         <!-- Section 3: Employment & Reporting Structure -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-4">3. Employment &amp; Reporting Structure</h3>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-violet-800 border-b border-slate-200 pb-2 mb-4">3. Employment &amp; Reporting Structure</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Company Entity *</label>
-              <select id="newEmpCompany" required class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Company Entity <span class="text-red-600 font-bold">*</span></label>
+              <select id="newEmpCompany" required class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white">
                 <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
                 <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
                 <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
@@ -447,26 +510,26 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Department *</label>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Department <span class="text-red-600 font-bold">*</span></label>
               <div class="flex gap-1.5">
-                <select id="newEmpDept" required class="dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
-                <button type="button" data-lookup="departments" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100" title="Add Department">+ Add</button>
-                <button type="button" data-lookup="departments" data-target="newEmpDept" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100" title="Remove Selected Department">&times;</button>
+                <select id="newEmpDept" required class="dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white"></select>
+                <button type="button" data-lookup="departments" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300 rounded-lg hover:bg-blue-100" title="Add Department">+ Add</button>
+                <button type="button" data-lookup="departments" data-target="newEmpDept" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-700 border border-red-300 rounded-lg hover:bg-red-100" title="Remove Selected Department">&times;</button>
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Job Title *</label>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Job Title <span class="text-red-600 font-bold">*</span></label>
               <div class="flex gap-1.5">
-                <select id="newEmpJobTitle" required class="job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"></select>
-                <button type="button" data-lookup="jobTitles" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100" title="Add Job Title">+ Add</button>
-                <button type="button" data-lookup="jobTitles" data-target="newEmpJobTitle" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100" title="Remove Selected Job Title">&times;</button>
+                <select id="newEmpJobTitle" required class="job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white"></select>
+                <button type="button" data-lookup="jobTitles" class="add-lookup-btn px-2.5 py-2 text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300 rounded-lg hover:bg-blue-100" title="Add Job Title">+ Add</button>
+                <button type="button" data-lookup="jobTitles" data-target="newEmpJobTitle" class="remove-lookup-btn px-2.5 py-2 text-xs font-bold bg-red-50 text-red-700 border border-red-300 rounded-lg hover:bg-red-100" title="Remove Selected Job Title">&times;</button>
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">System Access Role *</label>
-              <select id="newEmpRole" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">System Access Role <span class="text-red-600 font-bold">*</span></label>
+              <select id="newEmpRole" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white">
                 <option value="employee">Employee</option>
                 <option value="hr_admin">HR Admin</option>
                 <option value="manager">Manager / HOD</option>
@@ -475,20 +538,20 @@
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Reporting Manager (Reports To)</label>
-              <select id="newEmpManager" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Reporting Manager (Reports To)</label>
+              <select id="newEmpManager" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white">
                 <option value="">-- Reports to Top Management --</option>
               </select>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Join Date * (dd-mmm-yyyy)</label>
-              <input type="text" id="newEmpJoinDate" readonly required placeholder="Select date..." class="date-picker-input cursor-pointer w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Join Date <span class="text-red-600 font-bold">*</span> (dd-mmm-yyyy)</label>
+              <input type="text" id="newEmpJoinDate" readonly required placeholder="Select date..." class="date-picker-input cursor-pointer w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white" />
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Employment Status *</label>
-              <select id="newEmpStatus" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Employment Status <span class="text-red-600 font-bold">*</span></label>
+              <select id="newEmpStatus" class="alpha-select w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white">
                 <option value="Confirmed / Permanent">Confirmed / Permanent</option>
                 <option value="Intern">Intern</option>
                 <option value="Part Time / Contract">Part Time / Contract</option>
@@ -497,67 +560,67 @@
             </div>
 
             <div id="newEmpMonthsWrapper" class="hidden">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Duration (Months) *</label>
-              <input type="number" id="newEmpDurationMonths" min="1" max="36" placeholder="e.g. 3 or 6" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm bg-white" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Duration (Months) <span class="text-red-600 font-bold">*</span></label>
+              <input type="number" id="newEmpDurationMonths" min="1" max="36" placeholder="e.g. 3 or 6" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white" />
             </div>
 
             <div id="newEmpEndDateWrapper" class="hidden">
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Calculated End Date</label>
-              <input type="text" id="newEmpProbationEnd" readonly placeholder="Auto-calculated" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 text-slate-600" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Calculated End Date</label>
+              <input type="text" id="newEmpProbationEnd" readonly placeholder="Auto-calculated" class="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm font-semibold bg-slate-100 text-slate-800" />
             </div>
           </div>
         </div>
 
-        <!-- Section 4: Annual Leave Entitlements (Malaysian Leave Types - Blank Fields for HR) -->
+        <!-- Section 4: Leave Entitlements — Days Per Year (Auto appends "Days") -->
         <div>
-          <h3 class="text-sm font-bold uppercase tracking-wide text-blue-700 border-b border-slate-200 pb-2 mb-1">4. Leave Entitlements (Days / Year)</h3>
-          <p class="text-xs text-slate-500 mb-4">Key in the entitled days per year for this employee (leave blank if not applicable).</p>
+          <h3 class="text-sm font-bold uppercase tracking-wide text-violet-800 border-b border-slate-200 pb-2 mb-1">4. Leave Entitlements &mdash; Days Per Year</h3>
+          <p class="text-xs font-semibold text-slate-800 mb-4">Key in the entitled number of days per year (e.g. type <strong>14</strong> and it auto-formats to <strong>14 Days</strong>; leave blank if not applicable).</p>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Annual Leave</label>
-              <input type="number" step="0.5" id="newLeaveAnnual" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Annual Leave</label>
+              <input type="text" id="newLeaveAnnual" placeholder="e.g. 14" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Sick Leave (MC)</label>
-              <input type="number" step="0.5" id="newLeaveSick" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Sick Leave (MC)</label>
+              <input type="text" id="newLeaveSick" placeholder="e.g. 14" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Hospitalisation Leave</label>
-              <input type="number" step="0.5" id="newLeaveHospital" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Hospitalisation Leave</label>
+              <input type="text" id="newLeaveHospital" placeholder="e.g. 60" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Emergency Leave</label>
-              <input type="number" step="0.5" id="newLeaveEmergency" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Emergency Leave</label>
+              <input type="text" id="newLeaveEmergency" placeholder="e.g. 3" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Compassionate Leave</label>
-              <input type="number" step="0.5" id="newLeaveCompassionate" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Compassionate Leave</label>
+              <input type="text" id="newLeaveCompassionate" placeholder="e.g. 3" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Marriage Leave</label>
-              <input type="number" step="0.5" id="newLeaveMarriage" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Marriage Leave</label>
+              <input type="text" id="newLeaveMarriage" placeholder="e.g. 3" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Maternity Leave</label>
-              <input type="number" step="0.5" id="newLeaveMaternity" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Maternity Leave</label>
+              <input type="text" id="newLeaveMaternity" placeholder="e.g. 98" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Paternity Leave</label>
-              <input type="number" step="0.5" id="newLeavePaternity" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Paternity Leave</label>
+              <input type="text" id="newLeavePaternity" placeholder="e.g. 7" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Replacement Leave</label>
-              <input type="number" step="0.5" id="newLeaveReplacement" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Replacement Leave</label>
+              <input type="text" id="newLeaveReplacement" placeholder="e.g. 2" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1">Other Leave (Days)</label>
-              <input type="number" step="0.5" id="newLeaveOther" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" />
+              <label class="block text-xs font-bold text-slate-800 mb-1">Other Leave</label>
+              <input type="text" id="newLeaveOther" placeholder="e.g. 2" class="leave-days-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900" />
             </div>
           </div>
         </div>
 
         <div class="pt-2">
-          <button type="submit" id="createEmpBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+          <button type="submit" id="createEmpBtn" class="bg-violet-600 hover:bg-violet-700 text-white font-bold px-6 py-2.5 rounded-lg transition">
             Create Employee Account
           </button>
         </div>
@@ -565,282 +628,301 @@
     </section>
   </div>
 
-  <!-- ==================== VIEW DETAILS & FULL EDIT MODAL ==================== -->
-  <div id="empModal" class="hidden fixed inset-0 bg-slate-900/50 z-40 flex items-center justify-center p-3 md:p-6">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-5xl max-h-[92vh] overflow-y-auto p-6">
-      <div class="flex items-start justify-between border-b border-slate-200 pb-4">
+  <!-- ==================== VIEW DETAILS MODAL (UNIVERSAL FROZEN TOP HEADER + BOTTOM SAVE/CLOSE BAR) ==================== -->
+  <div id="empModal" class="hidden fixed inset-0 bg-slate-900/60 z-40 flex items-center justify-center p-2 md:p-5">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-300 w-full max-w-5xl max-h-[94vh] flex flex-col overflow-hidden">
+      <!-- FROZEN TOP HEADER (Visible for Everybody while scrolling) -->
+      <div class="shrink-0 bg-slate-900 text-white px-6 py-4 flex items-center justify-between gap-4 border-b border-slate-700">
         <div>
-          <div class="flex items-center gap-2.5">
-            <h3 id="modalEmpName" class="text-xl font-bold text-slate-900">-</h3>
-            <span id="modalEmpStatusBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full">-</span>
+          <div class="flex flex-wrap items-center gap-2.5">
+            <h3 id="modalEmpName" class="text-lg md:text-xl font-extrabold tracking-wide">-</h3>
+            <span id="modalEmpStatusBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full">-</span>
           </div>
-          <p id="modalEmpSub" class="text-sm text-slate-500 mt-0.5">-</p>
+          <p id="modalEmpSub" class="text-xs md:text-sm font-medium text-slate-200 mt-0.5">-</p>
         </div>
-        <button id="closeModalBtn" class="text-slate-400 hover:text-slate-700 text-2xl font-bold px-2 leading-none">&times;</button>
+        <button type="button" id="closeModalTopBtn" class="text-slate-300 hover:text-white text-2xl font-bold px-2 leading-none" title="Close">&times;</button>
       </div>
 
-      <!-- Full Editable Employee Profile Form -->
-      <div class="mt-5 space-y-6">
+      <!-- SCROLLABLE BODY -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6">
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Employee Profile &amp; Contact Information</h4>
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-blue-800 mb-3">Employee Profile &amp; Contact Information</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Login ID</label>
-              <input type="text" data-edit-field="empId" id="editEmpId" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-empId" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Login ID <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" data-edit-field="empId" id="editEmpId" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-empId" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
-              <input type="text" data-edit-field="fullName" id="editFullName" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-fullName" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Full Name <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" data-edit-field="fullName" id="editFullName" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-fullName" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Company Entity</label>
-              <select data-edit-field="companyEntity" id="editCompanyEntity" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Company Entity <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="companyEntity" id="editCompanyEntity" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white">
                 <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
                 <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
                 <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
               </select>
-              <div id="hist-companyEntity" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <div id="hist-companyEntity" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">NRIC Number</label>
-              <input type="text" data-edit-field="nric" id="editNric" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-nric" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Nationality <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="nationality" id="editNationality" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white">
+                <option value="Indonesian">Indonesian</option>
+                <option value="Malaysian">Malaysian</option>
+                <option value="Philippine / Filipino">Philippine / Filipino</option>
+                <option value="Thai">Thai</option>
+              </select>
+              <div id="hist-nationality" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Passport Number</label>
-              <input type="text" data-edit-field="passport" id="editPassport" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-passport" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label id="editNricLabel" class="block text-xs font-bold text-slate-800 mb-1">NRIC Number <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" data-edit-field="nric" id="editNric" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-nric" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Mobile Number</label>
-              <input type="text" data-edit-field="phone" id="editPhone" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-phone" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label id="editPassportLabel" class="block text-xs font-bold text-slate-800 mb-1">Passport Number (Optional)</label>
+              <input type="text" data-edit-field="passport" id="editPassport" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-passport" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
-              <input type="email" data-edit-field="email" id="editEmail" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-email" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Mobile Number <span class="text-red-600 font-bold">*</span></label>
+              <input type="text" data-edit-field="phone" id="editPhone" class="emp-edit-input mobile-format-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-phone" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div class="sm:col-span-2">
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Residential Address</label>
-              <input type="text" data-edit-field="residentialAddress" id="editAddress" class="emp-edit-input force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-residentialAddress" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Email Address (Optional)</label>
+              <input type="email" data-edit-field="email" id="editEmail" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-email" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Department</label>
-              <select data-edit-field="department" id="editDepartment" class="emp-edit-input dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
-              <div id="hist-department" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+
+            <!-- Full-Width Residential Address (ALL CAPS) -->
+            <div class="sm:col-span-2 md:col-span-3">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Residential Address <span class="text-red-600 font-bold">*</span> (Auto ALL CAPS)</label>
+              <input type="text" data-edit-field="residentialAddress" id="editAddress" class="emp-edit-input force-caps w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-residentialAddress" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Job Title</label>
-              <select data-edit-field="jobTitle" id="editJobTitle" class="emp-edit-input job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
-              <div id="hist-jobTitle" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Department <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="department" id="editDepartment" class="emp-edit-input dept-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white"></select>
+              <div id="hist-department" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">System Access Role</label>
-              <select data-edit-field="role" id="editRole" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Job Title <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="jobTitle" id="editJobTitle" class="emp-edit-input job-select alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white"></select>
+              <div id="hist-jobTitle" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">System Access Role <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="role" id="editRole" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white">
                 <option value="employee">Employee</option>
                 <option value="hr_admin">HR Admin</option>
                 <option value="manager">Manager / HOD</option>
                 <option value="managing_director">Managing Director</option>
               </select>
-              <div id="hist-role" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <div id="hist-role" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Reporting Manager</label>
-              <select data-edit-field="managerUid" id="editManagerUid" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg bg-white"></select>
-              <div id="hist-managerUid" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Reporting Manager</label>
+              <select data-edit-field="managerUid" id="editManagerUid" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white"></select>
+              <div id="hist-managerUid" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Join Date (dd-mmm-yyyy)</label>
-              <input type="text" readonly data-edit-field="joinDate" id="editJoinDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-              <div id="hist-joinDate" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Join Date <span class="text-red-600 font-bold">*</span> (dd-mmm-yyyy)</label>
+              <input type="text" readonly data-edit-field="joinDate" id="editJoinDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white" />
+              <div id="hist-joinDate" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Employment Status</label>
-              <select data-edit-field="status" id="editStatus" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg bg-white">
+              <label class="block text-xs font-bold text-slate-800 mb-1">Employment Status <span class="text-red-600 font-bold">*</span></label>
+              <select data-edit-field="status" id="editStatus" class="emp-edit-input alpha-select w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white">
                 <option value="Confirmed / Permanent">Confirmed / Permanent</option>
                 <option value="Intern">Intern</option>
                 <option value="Part Time / Contract">Part Time / Contract</option>
                 <option value="Probation">Probation</option>
                 <option value="Resigned">Resigned</option>
               </select>
-              <div id="hist-status" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <div id="hist-status" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Intern / Probation Months</label>
-              <input type="number" data-edit-field="durationMonths" id="editDurationMonths" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg" />
-              <div id="hist-durationMonths" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Intern / Probation Months</label>
+              <input type="number" data-edit-field="durationMonths" id="editDurationMonths" class="emp-edit-input w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900" />
+              <div id="hist-durationMonths" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
+
             <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Intern / Probation End Date</label>
-              <input type="text" readonly data-edit-field="probationEndDate" id="editProbationEndDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-              <div id="hist-probationEndDate" class="hidden mt-1 text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <label class="block text-xs font-bold text-slate-800 mb-1">Intern / Probation End Date</label>
+              <input type="text" readonly data-edit-field="probationEndDate" id="editProbationEndDate" class="emp-edit-input date-picker-input cursor-pointer w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white" />
+              <div id="hist-probationEndDate" class="hidden mt-1 text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
           </div>
         </div>
 
         <!-- Emergency Contacts in Modal -->
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Emergency Contacts</h4>
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-blue-800 mb-3">Emergency Contacts</h4>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-            <div class="p-3 border border-slate-200 rounded-lg space-y-2">
-              <strong class="text-slate-700">Contact 1 (Primary)</strong>
-              <input type="text" data-edit-field="ec1Name" id="editEc1Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec1Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec1Rel" id="editEc1Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec1Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec1Phone" id="editEc1Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec1Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+            <div class="p-3 border border-slate-200 rounded-lg space-y-2 bg-slate-50/70">
+              <strong class="text-slate-900">Contact 1 (Primary) <span class="text-red-600 font-bold">*</span></strong>
+              <input type="text" data-edit-field="ec1Name" id="editEc1Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <div id="hist-ec1Name" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <select data-edit-field="ec1Rel" id="editEc1Rel" class="emp-edit-input rel-select alpha-select w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white"></select>
+              <div id="hist-ec1Rel" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec1Phone" id="editEc1Phone" placeholder="Phone" class="emp-edit-input ec-phone-input w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <div id="hist-ec1Phone" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
             <div class="p-3 border border-slate-200 rounded-lg space-y-2">
-              <strong class="text-slate-700">Contact 2 (Optional)</strong>
+              <strong class="text-slate-800">Contact 2 (Optional)</strong>
               <input type="text" data-edit-field="ec2Name" id="editEc2Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec2Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec2Rel" id="editEc2Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec2Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec2Phone" id="editEc2Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec2Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <div id="hist-ec2Name" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <select data-edit-field="ec2Rel" id="editEc2Rel" class="emp-edit-input rel-select-opt alpha-select w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white"></select>
+              <div id="hist-ec2Rel" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec2Phone" id="editEc2Phone" placeholder="Phone" class="emp-edit-input ec-phone-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec2Phone" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
             <div class="p-3 border border-slate-200 rounded-lg space-y-2">
-              <strong class="text-slate-700">Contact 3 (Optional)</strong>
+              <strong class="text-slate-800">Contact 3 (Optional)</strong>
               <input type="text" data-edit-field="ec3Name" id="editEc3Name" placeholder="Name" class="emp-edit-input force-caps w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec3Name" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec3Rel" id="editEc3Rel" placeholder="Relationship" class="emp-edit-input force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec3Rel" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
-              <input type="text" data-edit-field="ec3Phone" id="editEc3Phone" placeholder="Phone" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-ec3Phone" class="hidden text-[11px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-2 py-1"></div>
+              <div id="hist-ec3Name" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <select data-edit-field="ec3Rel" id="editEc3Rel" class="emp-edit-input rel-select-opt alpha-select w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white"></select>
+              <div id="hist-ec3Rel" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
+              <input type="text" data-edit-field="ec3Phone" id="editEc3Phone" placeholder="Phone" class="emp-edit-input ec-phone-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
+              <div id="hist-ec3Phone" class="hidden text-[11px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-2 py-1"></div>
             </div>
           </div>
         </div>
 
         <!-- Leave Entitlements in Modal -->
         <div>
-          <h4 class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-3">Annual Leave Entitlements (Days / Year)</h4>
+          <h4 class="text-xs font-extrabold uppercase tracking-wider text-blue-800 mb-3">Leave Entitlements &mdash; Days Per Year</h4>
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
             <div>
-              <label class="block text-slate-600 mb-1">Annual Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveAnnual" id="editLeaveAnnual" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveAnnual" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Annual Leave</label>
+              <input type="text" data-edit-field="leaveAnnual" id="editLeaveAnnual" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveAnnual" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Sick Leave (MC)</label>
-              <input type="number" step="0.5" data-edit-field="leaveSick" id="editLeaveSick" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveSick" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Sick Leave (MC)</label>
+              <input type="text" data-edit-field="leaveSick" id="editLeaveSick" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveSick" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Hospitalisation</label>
-              <input type="number" step="0.5" data-edit-field="leaveHospital" id="editLeaveHospital" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveHospital" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Hospitalisation</label>
+              <input type="text" data-edit-field="leaveHospital" id="editLeaveHospital" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveHospital" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Emergency Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveEmergency" id="editLeaveEmergency" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveEmergency" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Emergency Leave</label>
+              <input type="text" data-edit-field="leaveEmergency" id="editLeaveEmergency" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveEmergency" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Compassionate</label>
-              <input type="number" step="0.5" data-edit-field="leaveCompassionate" id="editLeaveCompassionate" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveCompassionate" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Compassionate</label>
+              <input type="text" data-edit-field="leaveCompassionate" id="editLeaveCompassionate" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveCompassionate" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Marriage Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveMarriage" id="editLeaveMarriage" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveMarriage" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Marriage Leave</label>
+              <input type="text" data-edit-field="leaveMarriage" id="editLeaveMarriage" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveMarriage" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Maternity Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveMaternity" id="editLeaveMaternity" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveMaternity" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Maternity Leave</label>
+              <input type="text" data-edit-field="leaveMaternity" id="editLeaveMaternity" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveMaternity" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Paternity Leave</label>
-              <input type="number" step="0.5" data-edit-field="leavePaternity" id="editLeavePaternity" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leavePaternity" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Paternity Leave</label>
+              <input type="text" data-edit-field="leavePaternity" id="editLeavePaternity" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leavePaternity" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Replacement Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveReplacement" id="editLeaveReplacement" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveReplacement" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Replacement Leave</label>
+              <input type="text" data-edit-field="leaveReplacement" id="editLeaveReplacement" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveReplacement" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
             <div>
-              <label class="block text-slate-600 mb-1">Other Leave</label>
-              <input type="number" step="0.5" data-edit-field="leaveOther" id="editLeaveOther" class="emp-edit-input w-full px-2.5 py-1.5 border border-slate-300 rounded" />
-              <div id="hist-leaveOther" class="hidden mt-1 text-[10px] bg-amber-50 border border-amber-200 text-amber-900 rounded px-1.5 py-0.5"></div>
+              <label class="block font-bold text-slate-800 mb-1">Other Leave</label>
+              <input type="text" data-edit-field="leaveOther" id="editLeaveOther" class="emp-edit-input leave-days-input w-full px-2.5 py-1.5 border border-slate-300 rounded text-slate-900" />
+              <div id="hist-leaveOther" class="hidden mt-1 text-[10px] font-medium bg-amber-50 border border-amber-300 text-amber-950 rounded px-1.5 py-0.5"></div>
             </div>
           </div>
         </div>
 
-        <!-- Save Profile Edit Button (HR Admin Only) -->
-        <div id="saveProfileEditWrapper" class="hidden pt-2 border-b border-slate-200 pb-5">
-          <button type="button" id="saveProfileEditBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg">
-            Save Profile Changes &amp; Record Edit History
-          </button>
-        </div>
-
         <!-- ==================== HR ADMIN ONLY: CONFIDENTIAL VAULT ==================== -->
-        <div id="hrVaultSection" class="hidden space-y-6">
+        <div id="hrVaultSection" class="hidden space-y-6 pt-4 border-t border-slate-200">
           <!-- Quick Intern / Probation Action Box -->
-          <div class="bg-amber-50/70 border border-amber-200 rounded-xl p-4">
-            <h4 class="text-sm font-bold text-amber-900 mb-3">Intern / Probation Quick Action</h4>
+          <div class="bg-amber-50 border border-amber-300 rounded-xl p-4">
+            <h4 class="text-sm font-bold text-amber-950 mb-3">Intern / Probation Quick Action</h4>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <select id="probActionType" class="alpha-select px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white">
+              <select id="probActionType" class="alpha-select px-3 py-2 border border-amber-400 rounded-lg text-sm font-medium text-slate-900 bg-white">
                 <option value="Confirmed / Permanent">Confirm Permanent Staff</option>
                 <option value="Extended">Extend Intern / Probation</option>
                 <option value="Resigned">Mark Resigned</option>
               </select>
-              <input type="text" readonly id="probNewEndDate" placeholder="New End Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
-              <input type="text" id="probActionRemarks" placeholder="Reason / remarks..." class="force-sentence px-3 py-2 border border-amber-300 rounded-lg text-sm bg-white" />
+              <input type="text" readonly id="probNewEndDate" placeholder="New End Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-2 border border-amber-400 rounded-lg text-sm font-medium text-slate-900 bg-white" />
+              <input type="text" id="probActionRemarks" placeholder="Reason / remarks..." class="force-sentence px-3 py-2 border border-amber-400 rounded-lg text-sm text-slate-900 bg-white" />
             </div>
-            <button type="button" id="saveProbActionBtn" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+            <button type="button" id="saveProbActionBtn" class="mt-3 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-lg">
               Update Status &amp; Save Log
             </button>
           </div>
 
           <!-- Core Compensation, Confirmed Incentive & Drive Link -->
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-5">
+          <div class="bg-slate-50 border border-slate-300 rounded-xl p-5 space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
               <div>
                 <h4 class="text-base font-bold text-slate-900">HR Confidential Vault (Admin Only)</h4>
-                <p class="text-xs text-slate-500">Strictly hidden from Managers, Managing Director, and Staff.</p>
+                <p class="text-xs font-semibold text-slate-700">Strictly hidden from Managers, Managing Director, and Staff.</p>
               </div>
-              <a id="openDriveAnchor" href="#" target="_blank" class="hidden text-xs font-semibold text-blue-600 hover:underline">
+              <a id="openDriveAnchor" href="#" target="_blank" class="hidden text-xs font-bold text-blue-700 hover:underline">
                 Open Google Drive Folder &rarr;
               </a>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Current Basic Salary (RM)</label>
-                <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                <label class="block text-xs font-bold text-slate-800 mb-1">Current Basic Salary (RM)</label>
+                <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white" />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                <label class="block text-xs font-bold text-slate-800 mb-1">
                   Confirmed Monthly Incentive (RM)
-                  <span id="vaultIncentiveStatusTag" class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">-</span>
+                  <span id="vaultIncentiveStatusTag" class="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-800">-</span>
                 </label>
-                <input type="number" step="0.01" id="vaultMonthlyIncentive" placeholder="e.g. 500" class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                <input type="number" step="0.01" id="vaultMonthlyIncentive" placeholder="e.g. 500" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white" />
               </div>
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
-                <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
+                <label class="block text-xs font-bold text-slate-800 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
+                <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-slate-900 bg-white" />
               </div>
             </div>
-            <button type="button" id="saveCoreVaultBtn" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg">
+            <button type="button" id="saveCoreVaultBtn" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg">
               Save Basic Salary, Incentive &amp; Drive Link
             </button>
 
             <!-- 1. Salary Increment Ledger (Up to 50 times) -->
             <div class="pt-4 border-t border-slate-200">
               <div class="flex items-center justify-between mb-2">
-                <h5 class="text-xs font-bold uppercase text-slate-800">Salary Increment Ledger (<span id="incCountLabel">0</span> / 50)</h5>
+                <h5 class="text-xs font-extrabold uppercase text-slate-900">Salary Increment Ledger (<span id="incCountLabel">0</span> / 50)</h5>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
-                <input type="text" readonly id="incEffectiveDate" placeholder="Effective Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="number" step="0.01" id="incAddAmount" placeholder="Add Increment RM (e.g. 300)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <button type="button" id="addIncrementBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                <input type="text" readonly id="incEffectiveDate" placeholder="Effective Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white" />
+                <input type="number" step="0.01" id="incAddAmount" placeholder="Add Increment RM (e.g. 300)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <button type="button" id="addIncrementBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
                   + Add Increment
                 </button>
               </div>
@@ -850,18 +932,18 @@
             <!-- 2. Bonus Ledger (Up to 50 times) -->
             <div class="pt-4 border-t border-slate-200">
               <div class="flex items-center justify-between mb-2">
-                <h5 class="text-xs font-bold uppercase text-slate-800">Bonus Ledger (<span id="bonusCountLabel">0</span> / 50)</h5>
+                <h5 class="text-xs font-extrabold uppercase text-slate-900">Bonus Ledger (<span id="bonusCountLabel">0</span> / 50)</h5>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
-                <input type="text" readonly id="bonusDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="number" step="0.01" id="bonusAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <select id="bonusMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white">
+                <input type="text" readonly id="bonusDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white" />
+                <input type="number" step="0.01" id="bonusAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <select id="bonusMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white">
                   <option value="Cash">Cash</option>
                   <option value="Cheque">Cheque</option>
                   <option value="Online Banking">Online Banking</option>
                 </select>
-                <input type="text" id="bonusReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <button type="button" id="addBonusBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                <input type="text" id="bonusReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <button type="button" id="addBonusBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
                   + Add Bonus
                 </button>
               </div>
@@ -871,18 +953,18 @@
             <!-- 3. Ang Pao Ledger (Up to 50 times) -->
             <div class="pt-4 border-t border-slate-200">
               <div class="flex items-center justify-between mb-2">
-                <h5 class="text-xs font-bold uppercase text-slate-800">Ang Pao Ledger (<span id="angPaoCountLabel">0</span> / 50)</h5>
+                <h5 class="text-xs font-extrabold uppercase text-slate-900">Ang Pao Ledger (<span id="angPaoCountLabel">0</span> / 50)</h5>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
-                <input type="text" readonly id="angPaoDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="number" step="0.01" id="angPaoAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <select id="angPaoMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white">
+                <input type="text" readonly id="angPaoDate" placeholder="Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white" />
+                <input type="number" step="0.01" id="angPaoAmount" placeholder="Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <select id="angPaoMethod" class="alpha-select px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white">
                   <option value="Cash">Cash</option>
                   <option value="Cheque">Cheque</option>
                   <option value="Online Banking">Online Banking</option>
                 </select>
-                <input type="text" id="angPaoReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <button type="button" id="addAngPaoBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                <input type="text" id="angPaoReceipt" placeholder="Official Receipt No. (Opt)" class="force-caps px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <button type="button" id="addAngPaoBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
                   + Add Ang Pao
                 </button>
               </div>
@@ -892,14 +974,14 @@
             <!-- 4. Device Allowance Tracker (Minimum 24 Months) -->
             <div class="pt-4 border-t border-slate-200">
               <div class="mb-2">
-                <h5 class="text-xs font-bold uppercase text-slate-800">Device Allowance Reimbursement (Min 24 Months — Remaining Forfeited if Resigned Early)</h5>
+                <h5 class="text-xs font-extrabold uppercase text-slate-900">Device Allowance Reimbursement (Min 24 Months &mdash; Remaining Forfeited if Resigned Early)</h5>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-3">
-                <input type="text" id="devTitle" placeholder="Device Title (e.g. iPhone 15)" class="force-sentence px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="number" step="0.01" id="devAmount" placeholder="Total Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="number" min="1" id="devMonths" value="24" placeholder="Months (e.g. 24)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <input type="text" readonly id="devStartDate" placeholder="Start Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs bg-white" />
-                <button type="button" id="addDeviceBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                <input type="text" id="devTitle" placeholder="Device Title (e.g. iPhone 15)" class="force-sentence px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <input type="number" step="0.01" id="devAmount" placeholder="Total Amount RM" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <input type="number" min="1" id="devMonths" value="24" placeholder="Months (e.g. 24)" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs text-slate-900 bg-white" />
+                <input type="text" readonly id="devStartDate" placeholder="Start Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-900 bg-white" />
+                <button type="button" id="addDeviceBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
                   + Add Device
                 </button>
               </div>
@@ -909,33 +991,46 @@
 
           <!-- HR Activity & Status Logs -->
           <div>
-            <h4 class="text-xs font-bold uppercase text-slate-500 mb-2">HR Activity &amp; Status History</h4>
-            <ul id="empLogsList" class="space-y-2 text-xs text-slate-600">
-              <li class="text-slate-400">No logs recorded yet.</li>
+            <h4 class="text-xs font-extrabold uppercase text-slate-800 mb-2">HR Activity &amp; Status History</h4>
+            <ul id="empLogsList" class="space-y-2 text-xs text-slate-800">
+              <li class="font-medium text-slate-700">No logs recorded yet.</li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      <!-- FROZEN BOTTOM ACTION BAR (Save & Close pinned at the bottom) -->
+      <div class="shrink-0 bg-slate-100 border-t border-slate-300 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-xs font-semibold text-slate-700">Viewing: <strong id="modalFooterEmpName" class="text-slate-900">-</strong></span>
+        <div class="flex items-center gap-3">
+          <button type="button" id="closeModalBottomBtn" class="px-5 py-2 text-sm font-bold text-slate-800 bg-white hover:bg-slate-200 border border-slate-300 rounded-lg transition">
+            Close
+          </button>
+          <button type="button" id="saveProfileEditBtn" class="hidden bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-6 py-2 rounded-lg shadow-sm transition">
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- ==================== CUSTOM CALENDAR POPUP (dd-mmm-yyyy) ==================== -->
-  <div id="customCalendarPopup" class="hidden fixed z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 w-72 select-none">
+  <div id="customCalendarPopup" class="hidden fixed z-50 bg-white rounded-xl shadow-2xl border border-slate-300 p-4 w-72 select-none">
     <div class="flex items-center justify-between gap-1 mb-3">
-      <button type="button" id="calPrevMonth" class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-100">&lt;</button>
+      <button type="button" id="calPrevMonth" class="px-2 py-1 text-xs font-bold text-slate-800 rounded hover:bg-slate-100">&lt;</button>
       <div class="flex gap-1">
-        <select id="calMonthSelect" class="text-xs font-semibold border border-slate-200 rounded px-1.5 py-1 bg-white"></select>
-        <select id="calYearSelect" class="text-xs font-semibold border border-slate-200 rounded px-1.5 py-1 bg-white"></select>
+        <select id="calMonthSelect" class="text-xs font-bold text-slate-900 border border-slate-300 rounded px-1.5 py-1 bg-white"></select>
+        <select id="calYearSelect" class="text-xs font-bold text-slate-900 border border-slate-300 rounded px-1.5 py-1 bg-white"></select>
       </div>
-      <button type="button" id="calNextMonth" class="px-2 py-1 text-xs font-bold rounded hover:bg-slate-100">&gt;</button>
+      <button type="button" id="calNextMonth" class="px-2 py-1 text-xs font-bold text-slate-800 rounded hover:bg-slate-100">&gt;</button>
     </div>
-    <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-400 mb-1">
+    <div class="grid grid-cols-7 text-center text-[11px] font-bold text-slate-700 mb-1">
       <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
     </div>
     <div id="calDaysGrid" class="grid grid-cols-7 gap-1 text-center text-xs"></div>
-    <div class="mt-3 pt-2 border-t border-slate-100 flex justify-between text-xs">
-      <button type="button" id="calClearBtn" class="text-slate-500 hover:text-red-600 font-medium">Clear</button>
-      <button type="button" id="calTodayBtn" class="text-blue-600 hover:underline font-semibold">Today</button>
+    <div class="mt-3 pt-2 border-t border-slate-200 flex justify-between text-xs">
+      <button type="button" id="calClearBtn" class="text-slate-700 hover:text-red-600 font-semibold">Clear</button>
+      <button type="button" id="calTodayBtn" class="text-blue-700 hover:underline font-bold">Today</button>
     </div>
   </div>
 
@@ -967,13 +1062,211 @@
     let selectedEmpUid = null;
     let currentVaultData = {};
 
-    // Default alphabetical lookups
+    // Consistent Title Case default lookups
     let lookupData = {
-      departments: ["Accounts", "Administration", "Human Resources", "Logistics", "Operations", "Production", "QA / QC", "Sales & Marketing"],
-      jobTitles: ["Executive", "Manager", "Operator", "Supervisor", "Technician"]
+      departments: ["Accounts", "Administration", "Human Resources", "Logistics", "Management", "Marketing", "Operations", "Production", "QA / QC", "Sales", "Sales & Marketing"],
+      jobTitles: ["Executive", "Manager", "Marketing Executive", "Operator", "Sales Executive", "Sales Manager", "Supervisor", "Technician"]
     };
 
+    const RELATIONSHIPS = [
+      "Aunt", "Brother", "Child", "Cousin", "Father", "Friend", "Guardian",
+      "Husband", "Mother", "Other", "Parent", "Relative", "Sibling",
+      "Sister", "Spouse", "Uncle", "Wife"
+    ];
+
     const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    // ==================== TITLE CASE NORMALIZER ====================
+    function toTitleCaseClean(str) {
+      if (!str) return "";
+      const keepUpper = ["HR", "QA", "QC", "HOD", "IT", "CEO", "MD", "ISO"];
+      return String(str).trim().split(/\s+/).map((word) => {
+        if (word === "/" || word === "&" || word === "-") return word;
+        const cleanUpper = word.replace(/[^A-Za-z]/g, "").toUpperCase();
+        if (keepUpper.includes(cleanUpper)) return word.toUpperCase();
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }).join(" ");
+    }
+
+    // ==================== COUNTRY-SPECIFIC MOBILE NUMBER FORMATTER & VALIDATOR ====================
+    function formatMobileByNationality(raw, nationality) {
+      if (!raw) return "";
+      let digits = String(raw).replace(/\D/g, "");
+      if (!digits) return "";
+
+      if (nationality === "Malaysian") {
+        if (digits.startsWith("60")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        if (!digits) return "+60 ";
+
+        const p2 = digits.slice(0, 2);
+        const maxSub = (p2 === "11" || p2 === "12" || p2 === "13") ? 8 : 7;
+        digits = digits.slice(0, 2 + maxSub);
+
+        if (digits.length <= 2) return `+60 ${digits}`;
+        const sub = digits.slice(2);
+        if (sub.length <= 3) return `+60 ${p2}-${sub}`;
+        if (sub.length <= 7) return `+60 ${p2}-${sub.slice(0, 3)} ${sub.slice(3)}`;
+        return `+60 ${p2}-${sub.slice(0, 4)} ${sub.slice(4)}`;
+      }
+
+      if (nationality === "Indonesian") {
+        if (digits.startsWith("62")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        digits = digits.slice(0, 12);
+        if (digits.length <= 3) return `+62 ${digits}`;
+        if (digits.length <= 7) return `+62 ${digits.slice(0, 3)}-${digits.slice(3)}`;
+        return `+62 ${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+      }
+
+      if (nationality === "Philippine / Filipino") {
+        if (digits.startsWith("63")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        digits = digits.slice(0, 10);
+        if (digits.length <= 3) return `+63 ${digits}`;
+        if (digits.length <= 6) return `+63 ${digits.slice(0, 3)} ${digits.slice(3)}`;
+        return `+63 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+      }
+
+      if (nationality === "Thai") {
+        if (digits.startsWith("66")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        digits = digits.slice(0, 9);
+        if (digits.length <= 2) return `+66 ${digits}`;
+        if (digits.length <= 5) return `+66 ${digits.slice(0, 2)} ${digits.slice(2)}`;
+        return `+66 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
+      }
+
+      return raw;
+    }
+
+    function validateMobileByNationality(formatted, nationality) {
+      let digits = String(formatted || "").replace(/\D/g, "");
+      if (nationality === "Malaysian") {
+        if (digits.startsWith("60")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        if (!digits.startsWith("1")) return "Malaysian mobile number must start with 01x.";
+        const p2 = digits.slice(0, 2);
+        const subLen = digits.length - 2;
+        if (p2 === "11" && subLen !== 8) return "Malaysian 011 numbers must have 8 digits after 011 (e.g. +60 11-1234 5678).";
+        if ((p2 === "12" || p2 === "13") && (subLen < 7 || subLen > 8)) return `Malaysian 0${p2} numbers must have 7 or 8 digits after 0${p2}.`;
+        if (!["11", "12", "13"].includes(p2) && subLen !== 7) return `Malaysian 0${p2} numbers must have 7 digits after 0${p2}.`;
+        return "";
+      }
+      if (nationality === "Indonesian") {
+        if (digits.startsWith("62")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        if (!digits.startsWith("8") || digits.length < 9 || digits.length > 12) {
+          return "Indonesian mobile numbers must start with 08/8 and have 9–12 digits after +62.";
+        }
+        return "";
+      }
+      if (nationality === "Philippine / Filipino") {
+        if (digits.startsWith("63")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        if (!digits.startsWith("9") || digits.length !== 10) {
+          return "Philippine mobile numbers must start with 09/9 and have 10 digits after +63.";
+        }
+        return "";
+      }
+      if (nationality === "Thai") {
+        if (digits.startsWith("66")) digits = digits.slice(2);
+        else if (digits.startsWith("0")) digits = digits.slice(1);
+        if (!["6", "8", "9"].includes(digits[0]) || digits.length !== 9) {
+          return "Thai mobile numbers must start with 06/08/09 and have 9 digits after +66.";
+        }
+        return "";
+      }
+      return "";
+    }
+
+    function formatGenericPhoneSpacing(raw) {
+      if (!raw) return "";
+      const digits = String(raw).replace(/\D/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("60") || digits.startsWith("01")) return formatMobileByNationality(digits, "Malaysian");
+      if (digits.startsWith("62") || digits.startsWith("08")) return formatMobileByNationality(digits, "Indonesian");
+      if (digits.startsWith("63") || digits.startsWith("09")) return formatMobileByNationality(digits, "Philippine / Filipino");
+      if (digits.startsWith("66")) return formatMobileByNationality(digits, "Thai");
+      return digits.replace(/(\d{3,4})(?=\d)/g, "$1 ").trim();
+    }
+
+    // ==================== CONDITIONAL NATIONALITY (NRIC vs PASSPORT + PHONE HINT) ====================
+    function applyNationalityRules(natSelectId, nricLabelId, nricInputId, passportLabelId, passportInputId, phoneInputId, phoneHintId) {
+      const nat = document.getElementById(natSelectId).value;
+      const nricLabel = document.getElementById(nricLabelId);
+      const nricInput = document.getElementById(nricInputId);
+      const passLabel = document.getElementById(passportLabelId);
+      const passInput = document.getElementById(passportInputId);
+      const phoneInput = document.getElementById(phoneInputId);
+      const phoneHint = phoneHintId ? document.getElementById(phoneHintId) : null;
+
+      if (nat === "Malaysian") {
+        nricLabel.innerHTML = `NRIC Number <span class="text-red-600 font-bold">*</span>`;
+        nricInput.required = true;
+        passLabel.innerHTML = `Passport Number (Optional)`;
+        passInput.required = false;
+        phoneInput.placeholder = "+60 12-345 6789";
+        if (phoneHint) phoneHint.textContent = "Malaysia: 011 (8 digits), 012/013 (7–8 digits), other 01x (7 digits)";
+      } else {
+        nricLabel.innerHTML = `NRIC Number (Optional)`;
+        nricInput.required = false;
+        passLabel.innerHTML = `Passport Number <span class="text-red-600 font-bold">*</span>`;
+        passInput.required = true;
+        if (nat === "Indonesian") {
+          phoneInput.placeholder = "+62 812-3456-7890";
+          if (phoneHint) phoneHint.textContent = "Indonesia: Starts with 08, 9–12 digits after +62";
+        } else if (nat === "Philippine / Filipino") {
+          phoneInput.placeholder = "+63 917 123 4567";
+          if (phoneHint) phoneHint.textContent = "Philippines: Starts with 09, 10 digits after +63";
+        } else if (nat === "Thai") {
+          phoneInput.placeholder = "+66 81 234 5678";
+          if (phoneHint) phoneHint.textContent = "Thailand: Starts with 06/08/09, 9 digits after +66";
+        }
+      }
+
+      if (phoneInput.value.trim()) {
+        phoneInput.value = formatMobileByNationality(phoneInput.value, nat);
+      }
+    }
+
+    document.getElementById("newEmpNationality").addEventListener("change", () => {
+      applyNationalityRules("newEmpNationality", "newEmpNricLabel", "newEmpNric", "newEmpPassportLabel", "newEmpPassport", "newEmpPhone", "newEmpPhoneHint");
+    });
+    document.getElementById("editNationality").addEventListener("change", () => {
+      applyNationalityRules("editNationality", "editNricLabel", "editNric", "editPassportLabel", "editPassport", "editPhone", null);
+    });
+
+    // ==================== LEAVE DAYS AUTO-FORMAT ("14" -> "14 Days") ====================
+    function formatLeaveDaysDisplay(val) {
+      const num = String(val || "").replace(/[^0-9.]/g, "");
+      if (!num) return "";
+      return parseFloat(num) === 1 ? `${num} Day` : `${num} Days`;
+    }
+
+    document.addEventListener("focusin", (e) => {
+      if (e.target.classList.contains("leave-days-input") && !e.target.disabled) {
+        e.target.value = String(e.target.value || "").replace(/[^0-9.]/g, "");
+      }
+    });
+
+    document.addEventListener("focusout", (e) => {
+      if (e.target.classList.contains("leave-days-input") && !e.target.disabled) {
+        e.target.value = formatLeaveDaysDisplay(e.target.value);
+      }
+    });
+
+    // ==================== AUTO-EXPANDING MULTI-LINE KPI TEXTAREAS (UP TO 8 LINES) ====================
+    function autoResizeTextarea(ta) {
+      if (!ta) return;
+      ta.style.height = "auto";
+      const maxPx = 210; // ~8 lines tall
+      ta.style.height = Math.min(ta.scrollHeight, maxPx) + "px";
+    }
+
+    function resizeAllKpiTextareas() {
+      document.querySelectorAll(".auto-expand-textarea").forEach(autoResizeTextarea);
+    }
 
     // ==================== DATE & TIMESTAMP HELPERS (dd-mmm-yyyy) ====================
     function formatDateObj(date) {
@@ -986,7 +1279,6 @@
 
     function parseAnyDate(str) {
       if (!str) return null;
-      // Handle dd-mmm-yyyy (e.g. 11-Oct-2026)
       const m1 = String(str).trim().match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
       if (m1) {
         const day = parseInt(m1[1], 10);
@@ -994,7 +1286,6 @@
         const year = parseInt(m1[3], 10);
         if (mIdx >= 0) return new Date(year, mIdx, day);
       }
-      // Handle YYYY-MM-DD
       const m2 = String(str).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
       if (m2) {
         return new Date(parseInt(m2[1], 10), parseInt(m2[2], 10) - 1, parseInt(m2[3], 10));
@@ -1060,8 +1351,8 @@
           selectedDate.getMonth() === calViewMonth &&
           selectedDate.getFullYear() === calViewYear;
 
-        btn.className = `py-1 rounded font-medium ${
-          isSelected ? "bg-blue-600 text-white font-bold" : "hover:bg-blue-50 text-slate-700"
+        btn.className = `py-1 rounded font-semibold ${
+          isSelected ? "bg-blue-600 text-white font-bold" : "hover:bg-blue-100 text-slate-800"
         }`;
 
         btn.addEventListener("click", () => {
@@ -1122,17 +1413,39 @@
       calPopup.classList.add("hidden");
     });
 
-    // ==================== GLOBAL INPUT & CURSOR GUARDS ====================
+    // ==================== GLOBAL INPUT, CURSOR LOCK & MOBILE SPACING GUARDS ====================
     document.addEventListener("wheel", () => {
-      if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+      if (document.activeElement && ["INPUT", "SELECT"].includes(document.activeElement.tagName)) {
         document.activeElement.blur();
       }
     }, { passive: true });
 
     document.addEventListener("input", (e) => {
       const el = e.target;
-      // Never rewrite value when user is deleting text so cursor never jumps
+
+      if (el.classList.contains("auto-expand-textarea")) {
+        autoResizeTextarea(el);
+      }
+
+      // Never rewrite value when user is deleting text so cursor stays put
       if (e.inputType && e.inputType.startsWith("delete")) return;
+
+      if (el.classList.contains("mobile-format-input")) {
+        const nat = document.getElementById("newEmpNationality").value;
+        el.value = formatMobileByNationality(el.value, nat);
+        return;
+      }
+
+      if (el.classList.contains("mobile-format-edit-input")) {
+        const nat = document.getElementById("editNationality").value;
+        el.value = formatMobileByNationality(el.value, nat);
+        return;
+      }
+
+      if (el.classList.contains("ec-phone-input")) {
+        el.value = formatGenericPhoneSpacing(el.value);
+        return;
+      }
 
       if (el.classList.contains("force-caps")) {
         const upper = el.value.toUpperCase();
@@ -1169,29 +1482,48 @@
       document.querySelectorAll(".alpha-select").forEach(sortSelectOptions);
     }
 
+    function populateRelationshipDropdowns() {
+      const sortedRels = [...RELATIONSHIPS].sort((a, b) => a.localeCompare(b));
+      document.querySelectorAll(".rel-select").forEach((sel) => {
+        const prev = sel.value;
+        sel.innerHTML = sortedRels.map((r) => `<option value="${r}">${r}</option>`).join("");
+        sel.value = prev && sortedRels.includes(prev) ? prev : "Spouse";
+      });
+      document.querySelectorAll(".rel-select-opt").forEach((sel) => {
+        const prev = sel.value;
+        sel.innerHTML = `<option value="">-- Select Relationship --</option>` +
+          sortedRels.map((r) => `<option value="${r}">${r}</option>`).join("");
+        if (prev && sortedRels.includes(prev)) sel.value = prev;
+      });
+    }
+
     function showToast(msg, isError = false) {
       const banner = document.getElementById("toastBanner");
       banner.textContent = msg;
-      banner.className = `mb-6 p-4 rounded-xl border text-sm font-medium ${
-        isError ? "bg-red-50 border-red-200 text-red-700" : "bg-emerald-50 border-emerald-200 text-emerald-800"
+      banner.className = `mb-6 p-4 rounded-xl border text-sm font-bold ${
+        isError ? "bg-red-50 border-red-300 text-red-800" : "bg-emerald-50 border-emerald-300 text-emerald-900"
       }`;
       banner.classList.remove("hidden");
-      setTimeout(() => banner.classList.add("hidden"), 5000);
+      setTimeout(() => banner.classList.add("hidden"), 5500);
     }
 
-    // ==================== TAB NAVIGATION ====================
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => {
-          b.classList.remove("bg-blue-600", "text-white", "shadow-sm");
-          b.classList.add("bg-white", "text-slate-700", "border", "border-slate-200");
-        });
-        btn.classList.remove("bg-white", "text-slate-700", "border", "border-slate-200");
-        btn.classList.add("bg-blue-600", "text-white", "shadow-sm");
-
-        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
-        document.getElementById(btn.dataset.tab).classList.remove("hidden");
+    // ==================== HAPPY TAB NAVIGATION (DISTINCT COLORS + CLEAN HOVER) ====================
+    function switchTab(targetTabId) {
+      document.querySelectorAll(".tab-btn").forEach((b) => {
+        const isTarget = b.dataset.tab === targetTabId;
+        const activeClasses = b.dataset.activeCls.split(" ");
+        const inactiveClasses = b.dataset.inactiveCls.split(" ");
+        b.classList.remove(...activeClasses, ...inactiveClasses);
+        b.classList.add(...(isTarget ? activeClasses : inactiveClasses));
       });
+
+      document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
+      document.getElementById(targetTabId).classList.remove("hidden");
+      if (targetTabId === "kpiTab") resizeAllKpiTextareas();
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab));
     });
 
     // ==================== AUTHENTICATION ====================
@@ -1253,7 +1585,9 @@
           document.getElementById("navAddEmployeeBtn").classList.add("hidden");
         }
 
+        populateRelationshipDropdowns();
         sortAllAlphabeticalDropdowns();
+        applyNationalityRules("newEmpNationality", "newEmpNricLabel", "newEmpNric", "newEmpPassportLabel", "newEmpPassport", "newEmpPhone", "newEmpPhoneHint");
         await loadLookups();
         await loadEmployees();
 
@@ -1266,15 +1600,19 @@
       }
     });
 
-    // ==================== DYNAMIC LOOKUPS (DEPARTMENTS & JOB TITLES) ====================
+    // ==================== DYNAMIC LOOKUPS (CONSISTENT TITLE CASE DEPARTMENTS & JOB TITLES) ====================
     async function loadLookups() {
       if (currentUserProfile.role === "hr_admin") {
         try {
           const snap = await getDoc(doc(db, "employees", currentUserUid, "vault", "lookups"));
           if (snap.exists()) {
             const data = snap.data();
-            if (Array.isArray(data.departments) && data.departments.length) lookupData.departments = data.departments;
-            if (Array.isArray(data.jobTitles) && data.jobTitles.length) lookupData.jobTitles = data.jobTitles;
+            if (Array.isArray(data.departments) && data.departments.length) {
+              lookupData.departments = [...new Set(data.departments.map(toTitleCaseClean))];
+            }
+            if (Array.isArray(data.jobTitles) && data.jobTitles.length) {
+              lookupData.jobTitles = [...new Set(data.jobTitles.map(toTitleCaseClean))];
+            }
           }
         } catch (err) { /* fallback to defaults */ }
       }
@@ -1282,17 +1620,17 @@
     }
 
     function renderLookupSelects() {
-      const sortedDepts = [...new Set(lookupData.departments)].sort((a, b) => a.localeCompare(b));
-      const sortedJobs = [...new Set(lookupData.jobTitles)].sort((a, b) => a.localeCompare(b));
+      const sortedDepts = [...new Set(lookupData.departments.map(toTitleCaseClean))].sort((a, b) => a.localeCompare(b));
+      const sortedJobs = [...new Set(lookupData.jobTitles.map(toTitleCaseClean))].sort((a, b) => a.localeCompare(b));
 
       document.querySelectorAll(".dept-select").forEach((sel) => {
-        const prev = sel.value;
+        const prev = toTitleCaseClean(sel.value);
         sel.innerHTML = sortedDepts.map((d) => `<option value="${d}">${d}</option>`).join("");
         if (prev && sortedDepts.includes(prev)) sel.value = prev;
       });
 
       document.querySelectorAll(".job-select").forEach((sel) => {
-        const prev = sel.value;
+        const prev = toTitleCaseClean(sel.value);
         sel.innerHTML = sortedJobs.map((j) => `<option value="${j}">${j}</option>`).join("");
         if (prev && sortedJobs.includes(prev)) sel.value = prev;
       });
@@ -1309,7 +1647,7 @@
         const label = key === "departments" ? "Department" : "Job Title";
         const raw = prompt(`Enter new ${label} name:`);
         if (!raw || !raw.trim()) return;
-        const formatted = raw.trim().charAt(0).toUpperCase() + raw.trim().slice(1);
+        const formatted = toTitleCaseClean(raw);
         if (!lookupData[key].includes(formatted)) {
           lookupData[key].push(formatted);
           renderLookupSelects();
@@ -1352,11 +1690,17 @@
         allEmployees.push({ uid: currentUserUid, ...currentUserProfile });
       }
 
-      // Merge any custom departments/job titles from existing employee docs
+      // Normalize existing departments/job titles into clean Title Case
       allEmployees.forEach((e) => {
-        if (e.department && !lookupData.departments.includes(e.department)) lookupData.departments.push(e.department);
+        if (e.department) {
+          const cleanD = toTitleCaseClean(e.department);
+          if (!lookupData.departments.includes(cleanD)) lookupData.departments.push(cleanD);
+        }
         const jt = e.jobTitle || e.position;
-        if (jt && !lookupData.jobTitles.includes(jt)) lookupData.jobTitles.push(jt);
+        if (jt) {
+          const cleanJ = toTitleCaseClean(jt);
+          if (!lookupData.jobTitles.includes(cleanJ)) lookupData.jobTitles.push(cleanJ);
+        }
       });
       renderLookupSelects();
 
@@ -1368,9 +1712,9 @@
     }
 
     function getStatusBadgeClass(status) {
-      if (status === "Probation" || status === "Intern") return "bg-amber-100 text-amber-800";
-      if (status === "Resigned") return "bg-red-100 text-red-700";
-      return "bg-emerald-100 text-emerald-800";
+      if (status === "Probation" || status === "Intern") return "bg-amber-100 text-amber-900 border border-amber-300";
+      if (status === "Resigned") return "bg-red-100 text-red-800 border border-red-300";
+      return "bg-emerald-100 text-emerald-900 border border-emerald-300";
     }
 
     function filterAndRenderDirectory() {
@@ -1394,28 +1738,32 @@
     function renderDirectory(list) {
       const tbody = document.getElementById("directoryTableBody");
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center text-slate-400">No employees found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-medium text-slate-700">No employees found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map((emp) => `
-        <tr class="hover:bg-slate-50 transition cursor-pointer" data-uid="${emp.uid}">
-          <td class="py-3 px-4 font-semibold text-slate-900">${emp.empId || "-"}</td>
-          <td class="py-3 px-4 font-medium">${emp.fullName || "-"}</td>
-          <td class="py-3 px-4 text-slate-600 text-xs">${emp.companyEntity || "-"}</td>
-          <td class="py-3 px-4 text-slate-600">${emp.department || "-"} ${(emp.jobTitle || emp.position) ? `&bull; ${emp.jobTitle || emp.position}` : ""}</td>
-          <td class="py-3 px-4 text-slate-600">${emp.phone || "-"}</td>
-          <td class="py-3 px-4 text-slate-600">${formatDisplayDate(emp.joinDate)}</td>
-          <td class="py-3 px-4">
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
-              ${emp.status || "Confirmed / Permanent"}
-            </span>
-          </td>
-          <td class="py-3 px-4 text-right">
-            <button type="button" class="text-blue-600 hover:underline font-medium text-xs">View Details</button>
-          </td>
-        </tr>
-      `).join("");
+      tbody.innerHTML = list.map((emp) => {
+        const dept = toTitleCaseClean(emp.department || "-");
+        const jt = toTitleCaseClean(emp.jobTitle || emp.position || "");
+        return `
+          <tr class="hover:bg-sky-50/70 transition cursor-pointer" data-uid="${emp.uid}">
+            <td class="py-3 px-4 font-bold text-slate-900">${emp.empId || "-"}</td>
+            <td class="py-3 px-4 font-semibold text-slate-900">${emp.fullName || "-"}</td>
+            <td class="py-3 px-4 font-medium text-slate-800 text-xs">${emp.companyEntity || "-"}</td>
+            <td class="py-3 px-4 font-medium text-slate-800">${dept} ${jt ? `&bull; ${jt}` : ""}</td>
+            <td class="py-3 px-4 font-medium text-slate-800">${emp.phone || "-"}</td>
+            <td class="py-3 px-4 font-medium text-slate-800">${formatDisplayDate(emp.joinDate)}</td>
+            <td class="py-3 px-4">
+              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
+                ${emp.status || "Confirmed / Permanent"}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <button type="button" class="text-sky-700 hover:underline font-bold text-xs">View Details</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
 
       tbody.querySelectorAll("tr[data-uid]").forEach((row) => {
         row.addEventListener("click", () => openEmployeeModal(row.dataset.uid));
@@ -1428,7 +1776,7 @@
       const container = document.getElementById("probationList");
 
       if (trackedStaff.length === 0) {
-        container.innerHTML = `<p class="text-sm text-slate-500 col-span-3">No employees are currently under internship or probation.</p>`;
+        container.innerHTML = `<p class="text-sm font-medium text-slate-700 col-span-3">No employees are currently under internship or probation.</p>`;
         return;
       }
 
@@ -1437,34 +1785,34 @@
 
       container.innerHTML = trackedStaff.map((emp) => {
         let daysText = "End date not set";
-        let alertClass = "border-slate-200";
+        let alertClass = "border-slate-300";
         const end = parseAnyDate(emp.probationEndDate);
 
         if (end) {
           const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
           if (diffDays < 0) {
             daysText = `Overdue by ${Math.abs(diffDays)} day(s)`;
-            alertClass = "border-red-300 bg-red-50/40";
+            alertClass = "border-red-400 bg-red-50/50";
           } else if (diffDays <= 14) {
             daysText = `Due in ${diffDays} day(s)`;
-            alertClass = "border-amber-300 bg-amber-50/40";
+            alertClass = "border-amber-400 bg-amber-50/50";
           } else {
             daysText = `${diffDays} days remaining`;
           }
         }
 
         return `
-          <div class="border ${alertClass} rounded-xl p-4 flex flex-col justify-between gap-3">
+          <div class="border-2 ${alertClass} rounded-xl p-4 flex flex-col justify-between gap-3">
             <div>
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-slate-600">${emp.empId} &bull; ${emp.status}</span>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-amber-100 text-amber-800">${daysText}</span>
+                <span class="text-xs font-bold text-slate-800">${emp.empId} &bull; ${emp.status}</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-950 border border-amber-300">${daysText}</span>
               </div>
-              <h3 class="font-bold text-slate-900 mt-1">${emp.fullName}</h3>
-              <p class="text-xs text-slate-500">${emp.companyEntity || "-"} &bull; ${emp.department || "-"}</p>
-              <p class="text-xs text-slate-700 mt-1">Joined: <strong>${formatDisplayDate(emp.joinDate)}</strong> &bull; Ends: <strong>${formatDisplayDate(emp.probationEndDate)}</strong></p>
+              <h3 class="font-extrabold text-slate-900 mt-1">${emp.fullName}</h3>
+              <p class="text-xs font-medium text-slate-700">${emp.companyEntity || "-"} &bull; ${toTitleCaseClean(emp.department || "-")}</p>
+              <p class="text-xs font-medium text-slate-800 mt-1">Joined: <strong>${formatDisplayDate(emp.joinDate)}</strong> &bull; Ends: <strong>${formatDisplayDate(emp.probationEndDate)}</strong></p>
             </div>
-            <button type="button" data-uid="${emp.uid}" class="open-prob-modal self-start text-xs font-semibold text-blue-600 hover:underline">
+            <button type="button" data-uid="${emp.uid}" class="open-prob-modal self-start text-xs font-bold text-blue-700 hover:underline">
               Review / Confirm Status &rarr;
             </button>
           </div>
@@ -1482,7 +1830,7 @@
         .sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""));
 
       const html = `<option value="">-- Reports to Top Management --</option>` +
-        managers.map((m) => `<option value="${m.uid}">${m.fullName} (${m.empId} - ${m.department || "Management"})</option>`).join("");
+        managers.map((m) => `<option value="${m.uid}">${m.fullName} (${m.empId} - ${toTitleCaseClean(m.department || "Management")})</option>`).join("");
 
       document.getElementById("newEmpManager").innerHTML = html;
       document.getElementById("editManagerUid").innerHTML = html;
@@ -1516,6 +1864,15 @@
 
     document.getElementById("addEmployeeForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+
+      const nationality = document.getElementById("newEmpNationality").value;
+      const phone = document.getElementById("newEmpPhone").value.trim();
+      const phoneErr = validateMobileByNationality(phone, nationality);
+      if (phoneErr) {
+        showToast(phoneErr, true);
+        return;
+      }
+
       const btn = document.getElementById("createEmpBtn");
       btn.disabled = true;
       btn.textContent = "Creating account...";
@@ -1525,23 +1882,22 @@
       const fullName = document.getElementById("newEmpName").value.trim().toUpperCase();
       const nric = document.getElementById("newEmpNric").value.trim();
       const passport = document.getElementById("newEmpPassport").value.trim().toUpperCase();
-      const phone = document.getElementById("newEmpPhone").value.trim();
       const email = document.getElementById("newEmpEmail").value.trim();
-      const residentialAddress = document.getElementById("newEmpAddress").value.trim();
+      const residentialAddress = document.getElementById("newEmpAddress").value.trim().toUpperCase();
 
       const ec1Name = document.getElementById("newEc1Name").value.trim().toUpperCase();
-      const ec1Rel = document.getElementById("newEc1Rel").value.trim();
+      const ec1Rel = document.getElementById("newEc1Rel").value;
       const ec1Phone = document.getElementById("newEc1Phone").value.trim();
       const ec2Name = document.getElementById("newEc2Name").value.trim().toUpperCase();
-      const ec2Rel = document.getElementById("newEc2Rel").value.trim();
+      const ec2Rel = document.getElementById("newEc2Rel").value;
       const ec2Phone = document.getElementById("newEc2Phone").value.trim();
       const ec3Name = document.getElementById("newEc3Name").value.trim().toUpperCase();
-      const ec3Rel = document.getElementById("newEc3Rel").value.trim();
+      const ec3Rel = document.getElementById("newEc3Rel").value;
       const ec3Phone = document.getElementById("newEc3Phone").value.trim();
 
       const companyEntity = document.getElementById("newEmpCompany").value;
-      const department = document.getElementById("newEmpDept").value;
-      const jobTitle = document.getElementById("newEmpJobTitle").value;
+      const department = toTitleCaseClean(document.getElementById("newEmpDept").value);
+      const jobTitle = toTitleCaseClean(document.getElementById("newEmpJobTitle").value);
       const role = document.getElementById("newEmpRole").value;
       const managerUid = document.getElementById("newEmpManager").value;
       const joinDate = document.getElementById("newEmpJoinDate").value.trim();
@@ -1549,17 +1905,18 @@
       const durationMonths = (status === "Intern" || status === "Probation") ? document.getElementById("newEmpDurationMonths").value.trim() : "";
       const probationEndDate = (status === "Intern" || status === "Probation") ? document.getElementById("newEmpProbationEnd").value.trim() : "";
 
+      const getCleanLeaveVal = (id) => formatLeaveDaysDisplay(document.getElementById(id).value);
       const leaveFields = {
-        leaveAnnual: document.getElementById("newLeaveAnnual").value.trim(),
-        leaveSick: document.getElementById("newLeaveSick").value.trim(),
-        leaveHospital: document.getElementById("newLeaveHospital").value.trim(),
-        leaveEmergency: document.getElementById("newLeaveEmergency").value.trim(),
-        leaveCompassionate: document.getElementById("newLeaveCompassionate").value.trim(),
-        leaveMarriage: document.getElementById("newLeaveMarriage").value.trim(),
-        leaveMaternity: document.getElementById("newLeaveMaternity").value.trim(),
-        leavePaternity: document.getElementById("newLeavePaternity").value.trim(),
-        leaveReplacement: document.getElementById("newLeaveReplacement").value.trim(),
-        leaveOther: document.getElementById("newLeaveOther").value.trim()
+        leaveAnnual: getCleanLeaveVal("newLeaveAnnual"),
+        leaveSick: getCleanLeaveVal("newLeaveSick"),
+        leaveHospital: getCleanLeaveVal("newLeaveHospital"),
+        leaveEmergency: getCleanLeaveVal("newLeaveEmergency"),
+        leaveCompassionate: getCleanLeaveVal("newLeaveCompassionate"),
+        leaveMarriage: getCleanLeaveVal("newLeaveMarriage"),
+        leaveMaternity: getCleanLeaveVal("newLeaveMaternity"),
+        leavePaternity: getCleanLeaveVal("newLeavePaternity"),
+        leaveReplacement: getCleanLeaveVal("newLeaveReplacement"),
+        leaveOther: getCleanLeaveVal("newLeaveOther")
       };
 
       const authEmail = `${empId.toLowerCase()}@onehax.internal`;
@@ -1573,6 +1930,7 @@
           empId,
           fullName,
           loginEmail: authEmail,
+          nationality,
           nric,
           passport,
           phone,
@@ -1603,10 +1961,13 @@
         });
 
         document.getElementById("addEmployeeForm").reset();
+        document.getElementById("newEmpNationality").value = "Malaysian";
+        populateRelationshipDropdowns();
+        applyNationalityRules("newEmpNationality", "newEmpNricLabel", "newEmpNric", "newEmpPassportLabel", "newEmpPassport", "newEmpPhone", "newEmpPhoneHint");
         updateOnboardingEndDate();
         showToast(`Success! ${fullName} (${empId}) onboarded and ready to sign in.`);
         await loadEmployees();
-        document.querySelector('[data-tab="directoryTab"]').click();
+        switchTab("directoryTab");
       } catch (err) {
         showToast(`Failed to create employee (${err.code}): ${err.message}`, true);
       } finally {
@@ -1617,12 +1978,14 @@
 
     // ==================== EMPLOYEE MODAL, PER-FIELD EDIT AUDIT & HR VAULT ====================
     const empModal = document.getElementById("empModal");
-    document.getElementById("closeModalBtn").addEventListener("click", () => empModal.classList.add("hidden"));
+    document.getElementById("closeModalTopBtn").addEventListener("click", () => empModal.classList.add("hidden"));
+    document.getElementById("closeModalBottomBtn").addEventListener("click", () => empModal.classList.add("hidden"));
 
     const EDITABLE_FIELD_IDS = {
       empId: "editEmpId",
       fullName: "editFullName",
       companyEntity: "editCompanyEntity",
+      nationality: "editNationality",
       nric: "editNric",
       passport: "editPassport",
       phone: "editPhone",
@@ -1663,23 +2026,30 @@
       if (!emp) return;
 
       const isAdmin = currentUserProfile.role === "hr_admin";
-      const jobTitleVal = emp.jobTitle || emp.position || "";
+      const jobTitleVal = toTitleCaseClean(emp.jobTitle || emp.position || "");
+      const deptVal = toTitleCaseClean(emp.department || "");
+      const natVal = emp.nationality || "Malaysian";
 
       document.getElementById("modalEmpName").textContent = emp.fullName || "-";
-      document.getElementById("modalEmpSub").textContent = `${emp.empId} • ${emp.companyEntity || "-"} • ${emp.department || "-"} • ${jobTitleVal || "-"}`;
+      document.getElementById("modalFooterEmpName").textContent = `${emp.fullName || "-"} (${emp.empId || "-"})`;
+      document.getElementById("modalEmpSub").textContent = `${emp.empId} • ${emp.companyEntity || "-"} • ${deptVal || "-"} • ${jobTitleVal || "-"}`;
 
       const badge = document.getElementById("modalEmpStatusBadge");
       badge.textContent = emp.status || "Confirmed / Permanent";
-      badge.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}`;
+      badge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}`;
 
-      // Populate all fields & show per-field audit history
       const history = emp.fieldHistory || {};
       Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
         const el = document.getElementById(elId);
         let val = emp[fieldKey] ?? "";
         if (fieldKey === "jobTitle") val = jobTitleVal;
+        if (fieldKey === "department") val = deptVal;
+        if (fieldKey === "nationality") val = natVal;
         if (fieldKey === "joinDate" || fieldKey === "probationEndDate") {
           val = val ? formatDisplayDate(val) : "";
+        }
+        if (fieldKey.startsWith("leave") && val) {
+          val = formatLeaveDaysDisplay(val);
         }
         el.value = val;
         el.disabled = !isAdmin;
@@ -1696,7 +2066,8 @@
         }
       });
 
-      document.getElementById("saveProfileEditWrapper").classList.toggle("hidden", !isAdmin);
+      applyNationalityRules("editNationality", "editNricLabel", "editNric", "editPassportLabel", "editPassport", "editPhone", null);
+      document.getElementById("saveProfileEditBtn").classList.toggle("hidden", !isAdmin);
 
       const vaultSection = document.getElementById("hrVaultSection");
       if (isAdmin) {
@@ -1707,13 +2078,12 @@
         const incTag = document.getElementById("vaultIncentiveStatusTag");
         if (emp.status === "Confirmed / Permanent" || emp.status === "Active") {
           incTag.textContent = "Eligible (Confirmed)";
-          incTag.className = "ml-1 text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800";
+          incTag.className = "ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900";
         } else {
           incTag.textContent = `Pending (${emp.status || "Probation"})`;
-          incTag.className = "ml-1 text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800";
+          incTag.className = "ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-950";
         }
 
-        // Load Confidential Vault
         const vaultSnap = await getDoc(doc(db, "employees", uid, "vault", "compensation"));
         currentVaultData = vaultSnap.exists() ? vaultSnap.data() : {};
         document.getElementById("vaultBasicSalary").value = currentVaultData.basicSalary || "";
@@ -1730,17 +2100,16 @@
 
         renderVaultLedgers(emp);
 
-        // Load Logs
         const logsSnap = await getDocs(query(collection(db, "employees", uid, "logs"), orderBy("createdAt", "desc")));
         const logsList = document.getElementById("empLogsList");
         if (logsSnap.empty) {
-          logsList.innerHTML = `<li class="text-slate-400">No logs recorded yet.</li>`;
+          logsList.innerHTML = `<li class="font-medium text-slate-700">No logs recorded yet.</li>`;
         } else {
           logsList.innerHTML = logsSnap.docs.map((d) => {
             const l = d.data();
-            return `<li class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+            return `<li class="bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-slate-900">
               <strong>${l.action}</strong> &mdash; ${l.remarks || ""}
-              <span class="block text-[11px] text-slate-400 mt-0.5">By ${l.createdBy || "HR"} ${l.displayTime ? `• ${l.displayTime}` : ""}</span>
+              <span class="block text-[11px] font-semibold text-slate-700 mt-0.5">By ${l.createdBy || "HR"} ${l.displayTime ? `• ${l.displayTime}` : ""}</span>
             </li>`;
           }).join("");
         }
@@ -1757,17 +2126,33 @@
       const emp = allEmployees.find((e) => e.uid === selectedEmpUid);
       if (!emp) return;
 
+      const nationality = document.getElementById("editNationality").value;
+      const phone = document.getElementById("editPhone").value.trim();
+      const phoneErr = validateMobileByNationality(phone, nationality);
+      if (phoneErr) {
+        showToast(phoneErr, true);
+        return;
+      }
+
       const updates = {};
       const updatedHistory = { ...(emp.fieldHistory || {}) };
       const timestamp = formatNowTimestamp();
       let changeCount = 0;
 
       Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
-        const newVal = document.getElementById(elId).value.trim();
+        let newVal = document.getElementById(elId).value.trim();
+        if (fieldKey.startsWith("leave") && newVal) {
+          newVal = formatLeaveDaysDisplay(newVal);
+        }
         let oldVal = String(emp[fieldKey] ?? "").trim();
-        if (fieldKey === "jobTitle") oldVal = String(emp.jobTitle || emp.position || "").trim();
+        if (fieldKey === "jobTitle") oldVal = toTitleCaseClean(emp.jobTitle || emp.position || "");
+        if (fieldKey === "department") oldVal = toTitleCaseClean(emp.department || "");
+        if (fieldKey === "nationality" && !oldVal) oldVal = "Malaysian";
         if (fieldKey === "joinDate" || fieldKey === "probationEndDate") {
           oldVal = oldVal ? formatDisplayDate(oldVal) : "";
+        }
+        if (fieldKey.startsWith("leave") && oldVal) {
+          oldVal = formatLeaveDaysDisplay(oldVal);
         }
 
         if (newVal !== oldVal) {
@@ -1851,19 +2236,18 @@
       document.getElementById("bonusCountLabel").textContent = bonuses.length;
       document.getElementById("angPaoCountLabel").textContent = angPaos.length;
 
-      // 1. Salary Increment Ledger (+ RM xxx, Total RM xxx)
       const incList = document.getElementById("incrementLedgerList");
       if (increments.length === 0) {
-        incList.innerHTML = `<p class="text-slate-400">No salary increments recorded yet.</p>`;
+        incList.innerHTML = `<p class="font-medium text-slate-700">No salary increments recorded yet.</p>`;
       } else {
         incList.innerHTML = increments.map((item, idx) => `
-          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+          <div class="flex items-center justify-between bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
             <div>
               <strong>${formatDisplayDate(item.effectiveDate)}</strong> &bull;
-              <span class="text-emerald-700 font-semibold">+ RM ${Number(item.addAmount).toFixed(2)}</span> &rarr;
-              <span class="font-bold text-slate-900">Total RM ${Number(item.newTotal).toFixed(2)}</span>
+              <span class="text-emerald-800 font-bold">+ RM ${Number(item.addAmount).toFixed(2)}</span> &rarr;
+              <span class="font-extrabold text-slate-950">Total RM ${Number(item.newTotal).toFixed(2)}</span>
             </div>
-            <button type="button" data-idx="${idx}" class="del-inc-btn text-red-500 hover:underline">Remove</button>
+            <button type="button" data-idx="${idx}" class="del-inc-btn text-red-600 font-bold hover:underline">Remove</button>
           </div>
         `).join("");
         incList.querySelectorAll(".del-inc-btn").forEach((b) => {
@@ -1871,20 +2255,19 @@
         });
       }
 
-      // 2. Bonus Ledger
       const bonusList = document.getElementById("bonusLedgerList");
       if (bonuses.length === 0) {
-        bonusList.innerHTML = `<p class="text-slate-400">No bonus records yet.</p>`;
+        bonusList.innerHTML = `<p class="font-medium text-slate-700">No bonus records yet.</p>`;
       } else {
         bonusList.innerHTML = bonuses.map((item, idx) => `
-          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+          <div class="flex items-center justify-between bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
             <div>
               <strong>${formatDisplayDate(item.date)}</strong> &bull;
-              <span class="font-bold text-slate-900">RM ${Number(item.amount).toFixed(2)}</span> &bull;
-              <span>${item.method}</span>
-              ${item.receiptNo ? `&bull; <span class="text-slate-500">Receipt: ${item.receiptNo}</span>` : ""}
+              <span class="font-extrabold text-slate-950">RM ${Number(item.amount).toFixed(2)}</span> &bull;
+              <span class="font-medium">${item.method}</span>
+              ${item.receiptNo ? `&bull; <span class="font-semibold text-slate-700">Receipt: ${item.receiptNo}</span>` : ""}
             </div>
-            <button type="button" data-idx="${idx}" class="del-bonus-btn text-red-500 hover:underline">Remove</button>
+            <button type="button" data-idx="${idx}" class="del-bonus-btn text-red-600 font-bold hover:underline">Remove</button>
           </div>
         `).join("");
         bonusList.querySelectorAll(".del-bonus-btn").forEach((b) => {
@@ -1892,20 +2275,19 @@
         });
       }
 
-      // 3. Ang Pao Ledger
       const angPaoList = document.getElementById("angPaoLedgerList");
       if (angPaos.length === 0) {
-        angPaoList.innerHTML = `<p class="text-slate-400">No Ang Pao records yet.</p>`;
+        angPaoList.innerHTML = `<p class="font-medium text-slate-700">No Ang Pao records yet.</p>`;
       } else {
         angPaoList.innerHTML = angPaos.map((item, idx) => `
-          <div class="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2">
+          <div class="flex items-center justify-between bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900">
             <div>
               <strong>${formatDisplayDate(item.date)}</strong> &bull;
-              <span class="font-bold text-slate-900">RM ${Number(item.amount).toFixed(2)}</span> &bull;
-              <span>${item.method}</span>
-              ${item.receiptNo ? `&bull; <span class="text-slate-500">Receipt: ${item.receiptNo}</span>` : ""}
+              <span class="font-extrabold text-slate-950">RM ${Number(item.amount).toFixed(2)}</span> &bull;
+              <span class="font-medium">${item.method}</span>
+              ${item.receiptNo ? `&bull; <span class="font-semibold text-slate-700">Receipt: ${item.receiptNo}</span>` : ""}
             </div>
-            <button type="button" data-idx="${idx}" class="del-angpao-btn text-red-500 hover:underline">Remove</button>
+            <button type="button" data-idx="${idx}" class="del-angpao-btn text-red-600 font-bold hover:underline">Remove</button>
           </div>
         `).join("");
         angPaoList.querySelectorAll(".del-angpao-btn").forEach((b) => {
@@ -1913,10 +2295,9 @@
         });
       }
 
-      // 4. Device Allowance Tracker (Min 24 Months, forfeited if resigned early)
       const devList = document.getElementById("deviceAllowanceList");
       if (devices.length === 0) {
-        devList.innerHTML = `<p class="text-slate-400">No device allowance records yet.</p>`;
+        devList.innerHTML = `<p class="font-medium text-slate-700">No device allowance records yet.</p>`;
       } else {
         const now = new Date();
         const isResigned = emp.status === "Resigned";
@@ -1935,21 +2316,21 @@
           const paidSoFar = elapsed * monthly;
           const remaining = Math.max(0, totalAmt - paidSoFar);
 
-          let statusHtml = `<span class="text-emerald-700 font-semibold">Active (${elapsed}/${months} mos paid &bull; Remaining: RM ${remaining.toFixed(2)})</span>`;
+          let statusHtml = `<span class="text-emerald-800 font-bold">Active (${elapsed}/${months} mos paid &bull; Remaining: RM ${remaining.toFixed(2)})</span>`;
           if (elapsed >= months) {
-            statusHtml = `<span class="text-slate-600 font-semibold">Completed (100% Paid)</span>`;
+            statusHtml = `<span class="text-slate-800 font-bold">Completed (100% Paid)</span>`;
           } else if (isResigned) {
-            statusHtml = `<span class="text-red-600 font-bold">Forfeited (Resigned early — Remaining RM ${remaining.toFixed(2)} stopped)</span>`;
+            statusHtml = `<span class="text-red-700 font-extrabold">Forfeited (Resigned early &mdash; Remaining RM ${remaining.toFixed(2)} stopped)</span>`;
           }
 
           return `
-            <div class="bg-white border border-slate-200 rounded-lg p-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="bg-white border border-slate-300 rounded-lg p-3 flex flex-wrap items-center justify-between gap-2 text-slate-900">
               <div>
-                <strong class="text-slate-900">${item.title}</strong> &mdash;
-                <span>Total: RM ${totalAmt.toFixed(2)} (${months} mos @ RM ${monthly.toFixed(2)}/mo)</span>
-                <span class="block text-slate-500 mt-0.5">Period: ${formatDateObj(startObj)} to ${formatDateObj(endObj)} &bull; ${statusHtml}</span>
+                <strong>${item.title}</strong> &mdash;
+                <span class="font-medium">Total: RM ${totalAmt.toFixed(2)} (${months} mos @ RM ${monthly.toFixed(2)}/mo)</span>
+                <span class="block font-medium text-slate-700 mt-0.5">Period: ${formatDateObj(startObj)} to ${formatDateObj(endObj)} &bull; ${statusHtml}</span>
               </div>
-              <button type="button" data-idx="${idx}" class="del-dev-btn text-red-500 hover:underline">Remove</button>
+              <button type="button" data-idx="${idx}" class="del-dev-btn text-red-600 font-bold hover:underline">Remove</button>
             </div>
           `;
         }).join("");
@@ -2090,7 +2471,7 @@
       showToast("Device allowance added.");
     });
 
-    // ==================== PHASE 3: MONTHLY KPI MODULE (MUIZ RUBRIC + YEAR DUPLICATION) ====================
+    // ==================== PHASE 3: MONTHLY KPI MODULE (UNIVERSAL STICKY BAR + STACKED 8-LINE FIELDS) ====================
     const kpiEmployeeSelect = document.getElementById("kpiEmployeeSelect");
     const kpiYearSelect = document.getElementById("kpiYearSelect");
     const kpiMonthSelect = document.getElementById("kpiMonthSelect");
@@ -2108,8 +2489,19 @@
     kpiYearSelect.addEventListener("change", loadKpiWorkspace);
     kpiMonthSelect.addEventListener("change", loadKpiWorkspace);
 
+    function syncFrozenTemplateButtons() {
+      const cardOpen = !document.getElementById("kpiTemplateCard").classList.contains("hidden");
+      const emp = allEmployees.find((e) => e.uid === kpiEmployeeSelect.value);
+      const isManagerOrAdmin = canManageKpiFor(emp);
+      document.getElementById("templateWeightBadge").classList.toggle("hidden", !cardOpen);
+      document.getElementById("frozenAddGoalRowBtn").classList.toggle("hidden", !(cardOpen && isManagerOrAdmin));
+      document.getElementById("frozenSaveTemplateBtn").classList.toggle("hidden", !(cardOpen && isManagerOrAdmin));
+      if (cardOpen) resizeAllKpiTextareas();
+    }
+
     document.getElementById("toggleKpiTemplateBtn").addEventListener("click", () => {
       document.getElementById("kpiTemplateCard").classList.toggle("hidden");
+      syncFrozenTemplateButtons();
     });
 
     document.getElementById("openDuplicateYearBtn").addEventListener("click", () => {
@@ -2134,11 +2526,17 @@
       if (!emp) return;
 
       const isManagerOrAdmin = canManageKpiFor(emp);
-      document.getElementById("kpiSelectedEmpInfo").textContent = `${emp.fullName} (${emp.empId}) • ${emp.companyEntity || "-"} • ${emp.department || "-"}`;
+      const jt = toTitleCaseClean(emp.jobTitle || emp.position || "-");
+      const dept = toTitleCaseClean(emp.department || "-");
+
+      // Universal Frozen Top Bar info (for everybody, even when viewing themselves)
+      document.getElementById("kpiFrozenEmpName").textContent = `${emp.fullName} (${emp.empId})`;
+      document.getElementById("kpiFrozenEmpMeta").textContent =
+        `Company Entity: ${emp.companyEntity || "-"} • Department: ${dept} • Job Title: ${jt} • Period: ${monthName}-${year}`;
+
       document.getElementById("templateYearLabel").textContent = year;
       document.getElementById("kpiActivePeriodLabel").textContent = `${monthName}-${year}`;
 
-      // Show template editing & duplication buttons to Manager/Admin
       document.getElementById("openDuplicateYearBtn").classList.toggle("hidden", !isManagerOrAdmin);
       document.getElementById("loadSampleGoalsBtn").classList.toggle("hidden", !isManagerOrAdmin);
       document.getElementById("addGoalRowBtn").classList.toggle("hidden", !isManagerOrAdmin);
@@ -2159,21 +2557,21 @@
         incBox.classList.add("hidden");
       }
 
-      // 1. Load Annual Template (`kpis/{empUid}_template_{year}`)
-      const templateDocId = `${empUid}_template_${year}`;
-      const tSnap = await getDoc(doc(db, "kpis", templateDocId));
+      // 1. Load Annual Template
+      const tSnap = await getDoc(doc(db, "kpis", `${empUid}_template_${year}`));
       activeKpiTemplate = tSnap.exists()
         ? tSnap.data()
         : { employeeUid: empUid, managerUid: emp.managerUid || "", year, individualFocus: "", goals: [] };
 
       renderKpiTemplateEditor(isManagerOrAdmin);
+      syncFrozenTemplateButtons();
 
-      // 2. Load Monthly Record (`kpis/{empUid}_{year}_{month}`)
-      const monthlyDocId = `${empUid}_${year}_${month}`;
-      const mSnap = await getDoc(doc(db, "kpis", monthlyDocId));
+      // 2. Load Monthly Record
+      const mSnap = await getDoc(doc(db, "kpis", `${empUid}_${year}_${month}`));
       activeMonthlyKpi = mSnap.exists() ? mSnap.data() : null;
 
       renderMonthlyScorecard(emp, isManagerOrAdmin);
+      resizeAllKpiTextareas();
     }
 
     function renderKpiTemplateEditor(canEdit) {
@@ -2185,51 +2583,53 @@
       const goals = activeKpiTemplate.goals || [];
 
       if (goals.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500">No goals defined for ${kpiYearSelect.value} yet. Click "+ Add Goal Row" or "Load Atlas Sample Goals".</p>`;
+        container.innerHTML = `<p class="text-sm font-medium text-slate-800">No goals defined for ${kpiYearSelect.value} yet. Click "+ Add Goal Row" or "Load Atlas Sample Goals".</p>`;
         updateTemplateWeightBadge();
         return;
       }
 
+      // Stacked full-width multi-line boxes (except Weightage %) so full text is clearly visible
       container.innerHTML = goals.map((g, idx) => `
-        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60 space-y-3" data-goal-idx="${idx}">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs font-bold text-blue-700">Goal #${idx + 1}</span>
-            ${canEdit ? `<button type="button" data-idx="${idx}" class="remove-goal-row text-xs text-red-600 hover:underline font-semibold">Remove Goal</button>` : ""}
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
-            <div>
-              <label class="block font-semibold text-slate-700 mb-1">Goal Title *</label>
-              <input type="text" value="${(g.title || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="e.g. Production Efficiency" class="tpl-title force-sentence w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
-            </div>
-            <div class="md:col-span-2">
-              <label class="block font-semibold text-slate-700 mb-1">Objectives / Deliverables *</label>
-              <input type="text" value="${(g.objectives || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="e.g. Maintain rejection rate <2% and complete daily schedules" class="tpl-obj force-sentence w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
-            </div>
-            <div>
-              <label class="block font-semibold text-slate-700 mb-1">Weightage (%) *</label>
-              <input type="number" min="1" max="100" value="${g.weight || ""}" ${canEdit ? "" : "disabled"} placeholder="25" class="tpl-weight w-full px-3 py-1.5 border border-slate-300 rounded-lg bg-white" />
+        <div class="border-2 border-slate-300 rounded-xl p-5 bg-slate-50/80 space-y-3" data-goal-idx="${idx}">
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200">
+            <span class="text-sm font-extrabold text-blue-800">Goal #${idx + 1}</span>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label class="text-xs font-bold text-slate-800">Weightage (%) <span class="text-red-600 font-bold">*</span>:</label>
+                <input type="number" min="1" max="100" value="${g.weight || ""}" ${canEdit ? "" : "disabled"} placeholder="25" class="tpl-weight w-24 px-3 py-1.5 border border-slate-300 rounded-lg text-sm font-bold text-slate-900 bg-white" />
+              </div>
+              ${canEdit ? `<button type="button" data-idx="${idx}" class="remove-goal-row text-xs text-red-700 hover:underline font-bold">Remove Goal</button>` : ""}
             </div>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-[11px]">
+
+          <div class="space-y-3 text-xs">
             <div>
-              <label class="block font-semibold text-emerald-700 mb-0.5">Score 5 (Exceeds)</label>
-              <input type="text" value="${(g.t5 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="0% defect, ahead of schedule" class="tpl-t5 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <label class="block font-bold text-slate-800 mb-1">Goal Title <span class="text-red-600 font-bold">*</span></label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder="e.g. Production Efficiency" class="tpl-title auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.title || ""}</textarea>
             </div>
             <div>
-              <label class="block font-semibold text-blue-700 mb-0.5">Score 4 (Above Target)</label>
-              <input type="text" value="${(g.t4 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="<1% defect, on time" class="tpl-t4 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <label class="block font-bold text-slate-800 mb-1">Objectives / Deliverables <span class="text-red-600 font-bold">*</span></label>
+              <textarea rows="3" ${canEdit ? "" : "disabled"} placeholder="e.g. Maintain rejection rate <2% and complete daily schedules..." class="tpl-obj auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.objectives || ""}</textarea>
             </div>
             <div>
-              <label class="block font-semibold text-slate-700 mb-0.5">Score 3 (Meets Target)</label>
-              <input type="text" value="${(g.t3 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="2% defect, standard SLA" class="tpl-t3 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <label class="block font-bold text-emerald-800 mb-1">Score 5 (Exceeds Target)</label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder="0% defect, ahead of schedule..." class="tpl-t5 auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.t5 || ""}</textarea>
             </div>
             <div>
-              <label class="block font-semibold text-amber-700 mb-0.5">Score 2 (Below Target)</label>
-              <input type="text" value="${(g.t2 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder="3-4% defect, minor delay" class="tpl-t2 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <label class="block font-bold text-blue-800 mb-1">Score 4 (Above Target)</label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder="<1% defect, on time..." class="tpl-t4 auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.t4 || ""}</textarea>
             </div>
             <div>
-              <label class="block font-semibold text-red-700 mb-0.5">Score 1 (Unsatisfactory)</label>
-              <input type="text" value="${(g.t1 || "").replace(/"/g, "&quot;")}" ${canEdit ? "" : "disabled"} placeholder=">5% defect, major delay" class="tpl-t1 force-sentence w-full px-2.5 py-1.5 border border-slate-300 rounded bg-white" />
+              <label class="block font-bold text-slate-800 mb-1">Score 3 (Meets Target)</label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder="2% defect, standard SLA..." class="tpl-t3 auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.t3 || ""}</textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-amber-800 mb-1">Score 2 (Below Target)</label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder="3-4% defect, minor delay..." class="tpl-t2 auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.t2 || ""}</textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-red-800 mb-1">Score 1 (Unsatisfactory)</label>
+              <textarea rows="2" ${canEdit ? "" : "disabled"} placeholder=">5% defect, major delay..." class="tpl-t1 auto-expand-textarea force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${g.t1 || ""}</textarea>
             </div>
           </div>
         </div>
@@ -2240,6 +2640,7 @@
           collectTemplateFromDom();
           activeKpiTemplate.goals.splice(parseInt(btn.dataset.idx, 10), 1);
           renderKpiTemplateEditor(canEdit);
+          resizeAllKpiTextareas();
         });
       });
 
@@ -2248,6 +2649,7 @@
       });
 
       updateTemplateWeightBadge();
+      resizeAllKpiTextareas();
     }
 
     function collectTemplateFromDom() {
@@ -2270,19 +2672,21 @@
         .map((i) => parseFloat(i.value) || 0);
       const sum = weights.reduce((a, b) => a + b, 0);
       const badge = document.getElementById("templateWeightBadge");
-      badge.textContent = `Total Weightage: ${sum}%`;
+      badge.textContent = `Template Weightage: ${sum}%`;
       badge.className = sum === 100
-        ? "text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800"
-        : "text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800";
+        ? "text-xs font-extrabold px-3 py-1.5 rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300"
+        : "text-xs font-extrabold px-3 py-1.5 rounded-lg bg-amber-100 text-amber-950 border border-amber-300";
     }
 
-    document.getElementById("addGoalRowBtn").addEventListener("click", () => {
+    function addNewGoalRowHandler() {
       collectTemplateFromDom();
       activeKpiTemplate.goals.push({ title: "", objectives: "", weight: 0, t5: "", t4: "", t3: "", t2: "", t1: "" });
       renderKpiTemplateEditor(true);
-    });
+    }
 
-    // Muiz-style Atlas Marking Production Sample (100% Weightage, Zero TICA)
+    document.getElementById("addGoalRowBtn").addEventListener("click", addNewGoalRowHandler);
+    document.getElementById("frozenAddGoalRowBtn").addEventListener("click", addNewGoalRowHandler);
+
     document.getElementById("loadSampleGoalsBtn").addEventListener("click", () => {
       document.getElementById("kpiIndividualFocus").value = "Quality Control, Scheduling, Operations ISO, and Customer Satisfaction.";
       activeKpiTemplate.individualFocus = document.getElementById("kpiIndividualFocus").value;
@@ -2339,10 +2743,10 @@
         }
       ];
       renderKpiTemplateEditor(true);
-      showToast("Loaded Atlas sample goals (100% weightage, zero TICA). Click Save Annual Goal Template to apply.");
+      showToast("Loaded Atlas sample goals (100% weightage, zero TICA). Click Save Template to apply.");
     });
 
-    document.getElementById("saveKpiTemplateBtn").addEventListener("click", async () => {
+    async function saveKpiTemplateHandler() {
       collectTemplateFromDom();
       const totalWt = activeKpiTemplate.goals.reduce((s, g) => s + (Number(g.weight) || 0), 0);
       if (totalWt !== 100) {
@@ -2371,9 +2775,11 @@
       } catch (err) {
         showToast(`Error saving KPI template: ${err.message}`, true);
       }
-    });
+    }
 
-    // Duplicate Annual Goals to Another Year
+    document.getElementById("saveKpiTemplateBtn").addEventListener("click", saveKpiTemplateHandler);
+    document.getElementById("frozenSaveTemplateBtn").addEventListener("click", saveKpiTemplateHandler);
+
     document.getElementById("confirmDuplicateBtn").addEventListener("click", async () => {
       collectTemplateFromDom();
       if (!activeKpiTemplate.goals || activeKpiTemplate.goals.length === 0) {
@@ -2398,15 +2804,16 @@
         });
         document.getElementById("duplicateYearModal").classList.add("hidden");
         kpiYearSelect.value = targetYear;
-        showToast(`Duplicated goals to ${targetYear}! You can now edit, remove, or add items.`);
+        showToast(`Duplicated goals to ${targetYear}! You can now keep, remove, or add items.`);
         await loadKpiWorkspace();
         document.getElementById("kpiTemplateCard").classList.remove("hidden");
+        syncFrozenTemplateButtons();
       } catch (err) {
         showToast(`Error duplicating goals: ${err.message}`, true);
       }
     });
 
-    // Render Monthly Scorecard & Grading
+    // Render Monthly Scorecard & Grading (Stacked Full-Width Multi-Line Fields)
     function renderMonthlyScorecard(emp, isManagerOrAdmin) {
       const body = document.getElementById("kpiEvaluationBody");
       const footer = document.getElementById("kpiFooterControls");
@@ -2414,7 +2821,7 @@
 
       const goals = activeKpiTemplate.goals || [];
       if (goals.length === 0) {
-        body.innerHTML = `<p class="text-sm text-slate-500">No annual KPI goals configured for ${kpiYearSelect.value}. Click <strong>"Manage Annual Goal Template"</strong> above to set up goals first.</p>`;
+        body.innerHTML = `<p class="text-sm font-medium text-slate-800">No annual KPI goals configured for ${kpiYearSelect.value}. Click <strong>"Manage Annual Goal Template"</strong> above to set up goals first.</p>`;
         footer.classList.add("hidden");
         document.getElementById("kpiTotalScoreDisplay").textContent = "0.00 / 5.00 (0%)";
         return;
@@ -2422,10 +2829,10 @@
 
       const status = activeMonthlyKpi?.status || "Draft";
       statusBadge.textContent = status;
-      statusBadge.className = `text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-        status === "Approved" ? "bg-emerald-100 text-emerald-800" :
-        status === "Submitted" ? "bg-blue-100 text-blue-800" :
-        status === "Returned" ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700"
+      statusBadge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full ${
+        status === "Approved" ? "bg-emerald-100 text-emerald-900 border border-emerald-300" :
+        status === "Submitted" ? "bg-blue-100 text-blue-900 border border-blue-300" :
+        status === "Returned" ? "bg-amber-100 text-amber-950 border border-amber-300" : "bg-slate-200 text-slate-800"
       }`;
 
       const isSelf = emp.uid === currentUserUid;
@@ -2440,53 +2847,54 @@
         const mgrScore = saved.mgrScore ?? "";
 
         return `
-          <div class="border border-slate-200 rounded-xl p-4 space-y-3" data-eval-idx="${idx}" data-weight="${g.weight}">
-            <div class="flex flex-wrap items-start justify-between gap-2">
+          <div class="border-2 border-slate-300 rounded-xl p-5 space-y-4 bg-white" data-eval-idx="${idx}" data-weight="${g.weight}">
+            <div class="flex flex-wrap items-start justify-between gap-2 pb-2 border-b border-slate-200">
               <div>
-                <span class="text-xs font-bold uppercase text-blue-700">${g.title} (Weight: ${g.weight}%)</span>
-                <p class="text-xs text-slate-600 mt-0.5">${g.objectives}</p>
+                <span class="text-sm font-extrabold uppercase text-blue-800">${g.title} (Weightage: ${g.weight}%)</span>
+                <p class="text-sm font-medium text-slate-800 mt-1 whitespace-pre-line">${g.objectives}</p>
               </div>
-              <div class="text-right text-xs">
-                <span class="text-slate-500">Weighted Points:</span>
-                <strong class="eval-row-points text-slate-900">0.00</strong>
+              <div class="text-right text-xs bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-300">
+                <span class="text-slate-700 font-semibold">Weighted Points:</span>
+                <strong class="eval-row-points text-slate-950 text-sm">0.00</strong>
               </div>
             </div>
 
             <!-- 1-5 Target Rubric Guide -->
-            <div class="grid grid-cols-1 sm:grid-cols-5 gap-1.5 text-[11px] bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-              <div><strong class="text-emerald-700">5:</strong> ${g.t5 || "-"}</div>
-              <div><strong class="text-blue-700">4:</strong> ${g.t4 || "-"}</div>
-              <div><strong class="text-slate-700">3:</strong> ${g.t3 || "-"}</div>
-              <div><strong class="text-amber-700">2:</strong> ${g.t2 || "-"}</div>
-              <div><strong class="text-red-700">1:</strong> ${g.t1 || "-"}</div>
+            <div class="space-y-1 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200 text-slate-800">
+              <div><strong class="text-emerald-800">Score 5:</strong> ${g.t5 || "-"}</div>
+              <div><strong class="text-blue-800">Score 4:</strong> ${g.t4 || "-"}</div>
+              <div><strong class="text-slate-900">Score 3:</strong> ${g.t3 || "-"}</div>
+              <div><strong class="text-amber-800">Score 2:</strong> ${g.t2 || "-"}</div>
+              <div><strong class="text-red-800">Score 1:</strong> ${g.t1 || "-"}</div>
             </div>
 
-            <!-- Monthly Inputs -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-xs pt-1">
-              <div class="md:col-span-2">
-                <label class="block font-semibold text-slate-700 mb-1">Self Rating (1–5)</label>
-                <select ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} class="eval-self-score w-full px-2.5 py-2 border border-slate-300 rounded-lg bg-white">
-                  <option value="">--</option>
+            <!-- Ratings Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Self Evaluation Rating (1–5) <span class="text-red-600 font-bold">*</span></label>
+                <select ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} class="eval-self-score w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 bg-white">
+                  <option value="">-- Select Self Rating --</option>
                   ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1].map((n) => `<option value="${n}" ${Number(selfScore) === n ? "selected" : ""}>${n.toFixed(1)}</option>`).join("")}
                 </select>
               </div>
-
-              <div class="md:col-span-4">
-                <label class="block font-semibold text-slate-700 mb-1">Where We Are (Actual Progress)</label>
-                <input type="text" value="${(saved.whereWeAre || "").replace(/"/g, "&quot;")}" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Actual output / achievement this month..." class="eval-where force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-              </div>
-
-              <div class="md:col-span-4">
-                <label class="block font-semibold text-slate-700 mb-1">Next Steps (How Do We Get There)</label>
-                <input type="text" value="${(saved.nextSteps || "").replace(/"/g, "&quot;")}" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Action plan / Drive link..." class="eval-next force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg bg-white" />
-              </div>
-
-              <div class="md:col-span-2">
-                <label class="block font-semibold text-blue-800 mb-1">Manager Rating (1–5)</label>
-                <select ${canGradeManager ? "" : "disabled"} class="eval-mgr-score w-full px-2.5 py-2 border border-blue-300 rounded-lg bg-blue-50/40 font-semibold">
-                  <option value="">Pending</option>
+              <div>
+                <label class="block font-bold text-blue-900 mb-1">Manager Rating (1–5)</label>
+                <select ${canGradeManager ? "" : "disabled"} class="eval-mgr-score w-full px-3 py-2 border border-blue-300 rounded-lg text-sm font-bold text-slate-900 bg-blue-50/50">
+                  <option value="">Pending Manager Review</option>
                   ${[5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1].map((n) => `<option value="${n}" ${Number(mgrScore) === n ? "selected" : ""}>${n.toFixed(1)}</option>`).join("")}
                 </select>
+              </div>
+            </div>
+
+            <!-- Stacked Full-Width Multi-Line Progress Boxes (Up to 8 lines tall) -->
+            <div class="space-y-3 text-xs">
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Where We Are (Actual Progress &amp; Results)</label>
+                <textarea rows="3" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Describe actual output, numbers, or achievement this month..." class="eval-where auto-expand-textarea force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${saved.whereWeAre || ""}</textarea>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-800 mb-1">Next Steps (How Do We Get There / Evidence Drive Link)</label>
+                <textarea rows="3" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Action plan for next month or Google Drive evidence link..." class="eval-next auto-expand-textarea force-sentence w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 bg-white leading-relaxed">${saved.nextSteps || ""}</textarea>
               </div>
             </div>
           </div>
@@ -2508,6 +2916,7 @@
       document.getElementById("approveKpiBtn").classList.toggle("hidden", !canGradeManager);
 
       recalculateMonthlyKpiScore();
+      resizeAllKpiTextareas();
     }
 
     function recalculateMonthlyKpiScore() {
