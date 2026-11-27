@@ -1,1 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneHax HR Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Strict Rule: Zero up/down scrollbars or number spinners on any field */
+    input, textarea, select {
+      overflow: hidden !important;
+      resize: none !important;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800">
 
+  <!-- LOGIN SCREEN -->
+  <div id="loginView" class="w-full max-w-md bg-white rounded-xl shadow-md p-8 border border-slate-200">
+    <div class="mb-6 text-center">
+      <h1 class="text-2xl font-bold text-slate-900">OneHax HR Portal</h1>
+      <p class="text-sm text-slate-500 mt-1">Sign in with your Login ID and Password</p>
+    </div>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Login ID</label>
+        <input
+          type="text"
+          id="loginIdInput"
+          placeholder="e.g. EMP001"
+          required
+          autocomplete="username"
+          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
+        <input
+          type="password"
+          id="passwordInput"
+          placeholder="Enter password"
+          required
+          autocomplete="current-password"
+          class="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+      </div>
+
+      <p id="loginError" class="text-sm text-red-600 hidden"></p>
+
+      <button
+        type="submit"
+        id="loginBtn"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition"
+      >
+        Sign In
+      </button>
+    </form>
+  </div>
+
+  <!-- AUTHENTICATED DASHBOARD SHELL -->
+  <div id="appView" class="hidden w-full max-w-4xl bg-white rounded-xl shadow-md p-6 border border-slate-200">
+    <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
+      <div>
+        <h2 class="text-xl font-bold text-slate-900">Welcome, <span id="userNameDisplay">-</span></h2>
+        <p class="text-sm text-slate-500">
+          ID: <span id="userIdDisplay" class="font-medium">-</span> &bull;
+          Role: <span id="userRoleDisplay" class="uppercase font-semibold text-blue-600">-</span> &bull;
+          Mobile: <span id="userPhoneDisplay">-</span>
+        </p>
+      </div>
+      <button
+        id="logoutBtn"
+        class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg"
+      >
+        Logout
+      </button>
+    </div>
+
+    <div class="mt-6 bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-emerald-900">
+      <strong>Connection Verified!</strong> Your GitHub Pages frontend and Firebase Firestore database are connected and secured.
+    </div>
+
+    <!-- Preview of Strict Formatting Rules -->
+    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Employee Name (Auto ALL CAPS)</label>
+        <input
+          type="text"
+          class="force-caps w-full px-3 py-2 border border-slate-300 rounded-lg"
+          placeholder="Type any name..."
+        />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 mb-1">Remarks / Notes (Auto First Word Capital)</label>
+        <input
+          type="text"
+          class="force-sentence w-full px-3 py-2 border border-slate-300 rounded-lg"
+          placeholder="we should do in this way"
+        />
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFtUhpv9nfkeE0s7jLIDuCBNXFrFDmtO0",
+      authDomain: "onehax-hr.firebaseapp.com",
+      projectId: "onehax-hr",
+      storageBucket: "onehax-hr.firebasestorage.app",
+      messagingSenderId: "1053001775700",
+      appId: "1:1053001775700:web:3e30b4b4543056e0238bc1"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Global Input Guards: No mouse-wheel scroll, ALL CAPS for names, Sentence case for other fields
+    document.addEventListener("wheel", (e) => {
+      if (document.activeElement && ["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) {
+        document.activeElement.blur();
+      }
+    }, { passive: true });
+
+    document.addEventListener("input", (e) => {
+      const el = e.target;
+      if (el.classList.contains("force-caps")) {
+        const pos = el.selectionStart;
+        el.value = el.value.toUpperCase();
+        el.setSelectionRange(pos, pos);
+      } else if (el.classList.contains("force-sentence") && el.value.length > 0) {
+        const pos = el.selectionStart;
+        el.value = el.value.charAt(0).toUpperCase() + el.value.slice(1);
+        el.setSelectionRange(pos, pos);
+      }
+    });
+
+    const loginView = document.getElementById("loginView");
+    const appView = document.getElementById("appView");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+    const loginBtn = document.getElementById("loginBtn");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.classList.add("hidden");
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Signing in...";
+
+      const rawId = document.getElementById("loginIdInput").value.trim().toLowerCase();
+      const password = document.getElementById("passwordInput").value;
+      // Supports full email (e.g. sun@packtica.com) OR staff Login ID (e.g. EMP001 -> emp001@onehax.internal)
+      const authEmail = rawId.includes("@") ? rawId : `${rawId}@onehax.internal`;
+
+      try {
+        await signInWithEmailAndPassword(auth, authEmail, password);
+      } catch (err) {
+        loginError.textContent = "Invalid Login ID or Password. Please try again.";
+        loginError.classList.remove("hidden");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign In";
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        appView.classList.add("hidden");
+        loginView.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const snap = await getDoc(doc(db, "employees", user.uid));
+        if (!snap.exists()) {
+          loginError.textContent = "Account found, but employee profile is missing in Firestore.";
+          loginError.classList.remove("hidden");
+          await signOut(auth);
+          return;
+        }
+
+        const profile = snap.data();
+        document.getElementById("userNameDisplay").textContent = profile.fullName || "-";
+        document.getElementById("userIdDisplay").textContent = profile.empId || "-";
+        document.getElementById("userRoleDisplay").textContent = profile.role || "-";
+        document.getElementById("userPhoneDisplay").textContent = profile.phone || "-";
+
+        loginView.classList.add("hidden");
+        appView.classList.remove("hidden");
+      } catch (err) {
+        loginError.textContent = "Permission error loading profile. Check Firestore Rules.";
+        loginError.classList.remove("hidden");
+        await signOut(auth);
+      }
+    });
+  </script>
+</body>
+</html>
