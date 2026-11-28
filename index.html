@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OneHax HR Portal</title>
+  <title>HR Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Cool Dark Theme Base & Strict Input Guards */
     body {
       background-color: #070d19;
       color: #f1f5f9;
@@ -26,7 +25,6 @@
     input[type="number"] {
       -moz-appearance: textfield;
     }
-    /* Custom sleek dark scrollbar */
     ::-webkit-scrollbar {
       width: 7px;
       height: 7px;
@@ -45,15 +43,49 @@
 </head>
 <body class="min-h-screen font-sans antialiased selection:bg-cyan-500 selection:text-slate-950">
 
+  <!-- ==================== CENTER-SCREEN CONFIRMATION TOAST BANNER ==================== -->
+  <div id="centerToastOverlay" class="hidden fixed inset-0 z-[100] pointer-events-none flex items-center justify-center p-4">
+    <div id="centerToastBox" class="pointer-events-auto max-w-md w-full rounded-2xl border-2 px-6 py-5 shadow-2xl text-center backdrop-blur-md transition-all">
+      <div id="centerToastIcon" class="mx-auto mb-2 w-10 h-10 rounded-full flex items-center justify-center font-black text-lg"></div>
+      <h4 id="centerToastTitle" class="text-base font-extrabold text-white"></h4>
+      <p id="centerToastMsg" class="text-sm font-semibold mt-1"></p>
+    </div>
+  </div>
+
   <!-- ==================== LOGIN SCREEN ==================== -->
   <div id="loginView" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#070d19] to-black">
-    <div class="w-full max-w-md bg-slate-900/90 backdrop-blur rounded-2xl shadow-2xl p-8 border border-slate-700/80">
+    <div class="w-full max-w-md bg-slate-900/95 backdrop-blur rounded-2xl shadow-2xl p-8 border border-slate-700/80">
       <div class="mb-6 text-center">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 font-extrabold text-xl mb-3">
-          1H
+        <!-- Custom OneHax Shield & Wordmark Vector Logo -->
+        <div class="flex justify-center mb-3">
+          <svg viewBox="0 0 360 110" class="h-14 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Brand Logo">
+            <defs>
+              <linearGradient id="ohCyanBlue1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="50%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#1e3a8a" />
+              </linearGradient>
+              <linearGradient id="ohWordGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#0ea5e9" />
+                <stop offset="45%" stop-color="#22d3ee" />
+                <stop offset="75%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#22d3ee" />
+              </linearGradient>
+            </defs>
+            <!-- Shield Frame -->
+            <path d="M55 10 L92 23 L84 29 L55 19 L25 30 L27 63 C29 77 41 88 55 96 C69 88 81 77 83 63 L85 45 L93 41 L91 64 C88 82 74 95 55 105 C36 95 22 82 19 64 L16 24 Z" fill="url(#ohCyanBlue1)" />
+            <!-- 1H Bars inside Shield -->
+            <path d="M35 39 L47 33 L47 82 L39 76 L39 44 L35 46 Z" fill="#0ea5e9" />
+            <rect x="52" y="34" width="8" height="47" rx="1.5" fill="#22d3ee" />
+            <rect x="65" y="31" width="8" height="45" rx="1.5" fill="#0284c7" />
+            <!-- Upward Arrow Swoosh -->
+            <path d="M31 74 Q48 53 84 31 L79 25 L97 23 L93 41 L88 35 Q54 57 36 80 Z" fill="#22d3ee" />
+            <!-- Wordmark -->
+            <text x="112" y="69" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-style="italic" font-size="43" letter-spacing="1" fill="url(#ohWordGrad1)">OneHax</text>
+          </svg>
         </div>
-        <h1 class="text-2xl font-extrabold text-white tracking-tight">OneHax HR Portal</h1>
-        <p class="text-sm font-medium text-slate-300 mt-1">Sign in with your Login ID and Password</p>
+        <h1 class="text-xl font-extrabold text-white tracking-tight">Human Resources Portal</h1>
+        <p class="text-sm font-medium text-slate-300 mt-1">Sign in using your Login ID and Password</p>
       </div>
 
       <form id="loginForm" class="space-y-4">
@@ -65,7 +97,7 @@
             placeholder="e.g. EMP001"
             required
             autocomplete="off"
-            class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
@@ -74,56 +106,138 @@
           <input
             type="password"
             id="passwordInput"
-            placeholder="Enter password"
+            placeholder="Enter your password"
             required
             autocomplete="new-password"
-            class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
           />
         </div>
 
-        <p id="loginError" class="text-sm font-semibold text-rose-300 hidden bg-rose-950/70 border border-rose-500/50 rounded-lg p-3"></p>
+        <p id="loginError" class="text-sm font-semibold text-rose-300 hidden bg-rose-950/70 border border-rose-500/50 rounded-xl p-3"></p>
 
         <button
           type="submit"
           id="loginBtn"
-          class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold py-2.5 rounded-lg shadow-lg shadow-cyan-500/20 transition"
+          class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold py-2.5 rounded-xl shadow-lg shadow-cyan-500/20 transition"
         >
           Sign In
         </button>
+
+        <div class="pt-2 flex items-center justify-between text-xs font-bold">
+          <button type="button" id="openForgotIdBtn" class="text-cyan-300 hover:underline">Forgot Login ID?</button>
+          <button type="button" id="openForgotPwdBtn" class="text-amber-300 hover:underline">Forgot Password?</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== FORGOT LOGIN ID / PASSWORD RECOVERY MODAL ==================== -->
+  <div id="recoveryModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-700 w-full max-w-md p-6 shadow-2xl">
+      <h3 id="recoveryModalTitle" class="text-lg font-extrabold text-white">Account Recovery Request</h3>
+      <p id="recoveryModalDesc" class="text-xs font-medium text-slate-300 mt-1">Submit your details below to notify HR Administration for immediate assistance.</p>
+      <form id="recoveryForm" class="mt-4 space-y-3">
+        <input type="hidden" id="recoveryTypeInput" value="Forgot Password" />
+        <div id="recoveryEmpIdWrapper">
+          <label class="block text-xs font-bold text-slate-200 mb-1">Login ID <span class="text-rose-400">*</span></label>
+          <input type="text" id="recoveryEmpId" placeholder="e.g. EMP001" class="force-caps w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1">Full Legal Name (As per NRIC / Passport) <span class="text-rose-400">*</span></label>
+          <input type="text" id="recoveryFullName" required placeholder="e.g. TAN WEI MING" class="force-caps w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1">Registered Mobile Number <span class="text-rose-400">*</span></label>
+          <input type="text" id="recoveryPhone" required placeholder="e.g. +60 12-345 6789" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <p id="recoveryFeedback" class="hidden text-xs font-bold p-2.5 rounded-xl"></p>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="closeRecoveryBtn" class="px-4 py-2 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl">Close</button>
+          <button type="submit" class="px-4 py-2 text-xs font-extrabold text-slate-950 bg-cyan-500 hover:bg-cyan-400 rounded-xl">Submit Request to HR</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== SELF-SERVICE CHANGE PASSWORD MODAL ==================== -->
+  <div id="changePasswordModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 rounded-2xl border border-slate-700 w-full max-w-md p-6 shadow-2xl">
+      <h3 class="text-lg font-extrabold text-white">Change Account Password</h3>
+      <p class="text-xs font-medium text-slate-300 mt-1">Verify your current password and set a new password (minimum 6 characters).</p>
+      <form id="changePasswordForm" class="mt-4 space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1">Current Password <span class="text-rose-400">*</span></label>
+          <input type="password" id="cpCurrentPwd" required class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1">New Password <span class="text-rose-400">*</span></label>
+          <input type="password" id="cpNewPwd" required minlength="6" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1">Confirm New Password <span class="text-rose-400">*</span></label>
+          <input type="password" id="cpConfirmPwd" required minlength="6" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+        </div>
+        <p id="cpErrorMsg" class="hidden text-xs font-bold text-rose-300 bg-rose-950/70 border border-rose-500/40 rounded-xl p-2.5"></p>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="cancelCpBtn" class="px-4 py-2 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl">Cancel</button>
+          <button type="submit" id="saveCpBtn" class="px-4 py-2 text-xs font-extrabold text-slate-950 bg-cyan-500 hover:bg-cyan-400 rounded-xl">Update Password</button>
+        </div>
       </form>
     </div>
   </div>
 
   <!-- ==================== MAIN PORTAL ==================== -->
   <div id="appView" class="hidden max-w-7xl mx-auto p-4 md:p-6 space-y-5">
-    <!-- Top Header -->
-    <header class="bg-slate-900/90 backdrop-blur rounded-2xl shadow-lg border border-slate-800 p-5 flex flex-wrap items-center justify-between gap-4">
+    <!-- Top Header (Replaced "1H" with Vector Shield Logo & Removed Duplicate "OneHax" Text) -->
+    <header class="bg-slate-900/90 backdrop-blur rounded-2xl shadow-lg border border-slate-800 p-4 md:p-5 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3.5">
-        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 font-black text-lg shadow-md">
-          1H
+        <div class="shrink-0 bg-slate-950/90 border border-slate-800 rounded-xl px-2.5 py-1.5 shadow-inner">
+          <svg viewBox="0 0 110 110" class="h-10 w-10" xmlns="http://www.w3.org/2000/svg" aria-label="Portal Emblem">
+            <defs>
+              <linearGradient id="ohShieldHdr" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="55%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#1e3a8a" />
+              </linearGradient>
+            </defs>
+            <path d="M55 8 L94 22 L86 28 L55 17 L24 29 L26 63 C28 78 40 89 55 98 C70 89 82 78 84 63 L86 44 L95 40 L93 64 C90 83 75 97 55 107 C35 97 20 83 17 64 L14 23 Z" fill="url(#ohShieldHdr)" />
+            <path d="M34 38 L47 32 L47 83 L38 77 L38 43 L34 45 Z" fill="#0ea5e9" />
+            <rect x="52" y="33" width="8.5" height="48" rx="1.5" fill="#22d3ee" />
+            <rect x="66" y="30" width="8.5" height="46" rx="1.5" fill="#0284c7" />
+            <path d="M30 75 Q48 53 86 30 L81 24 L99 22 L95 40 L90 34 Q54 57 35 81 Z" fill="#22d3ee" />
+          </svg>
         </div>
         <div>
           <div class="flex flex-wrap items-center gap-2.5">
-            <h1 class="text-xl font-extrabold text-white tracking-tight">OneHax HR Portal</h1>
+            <h1 class="text-xl font-extrabold text-white tracking-tight">HR Portal</h1>
             <span id="userRoleBadge" class="text-xs font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">-</span>
           </div>
           <p class="text-xs md:text-sm font-medium text-slate-300 mt-0.5">
-            Logged in as <strong id="userNameDisplay" class="text-white">-</strong>
+            Welcome, <strong id="userNameDisplay" class="text-white">-</strong>
             (<span id="userIdDisplay" class="text-cyan-300 font-semibold">-</span>) &bull;
-            <span id="userCompanyDisplay" class="text-slate-200">-</span> &bull;
-            Mobile: <span id="userPhoneDisplay" class="text-slate-200">-</span>
+            <span id="userCompanyDisplay" class="text-slate-200">-</span>
           </p>
         </div>
       </div>
-      <button
-        id="logoutBtn"
-        class="px-4 py-2 text-sm font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl transition"
-      >
-        Logout
-      </button>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          id="openChangePwdBtn"
+          type="button"
+          class="px-3.5 py-2 text-xs md:text-sm font-bold text-cyan-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl transition"
+        >
+          Change Password
+        </button>
+        <button
+          id="logoutBtn"
+          type="button"
+          class="px-4 py-2 text-xs md:text-sm font-bold text-slate-200 bg-slate-800 hover:bg-rose-950 hover:text-rose-200 border border-slate-700 rounded-xl transition"
+        >
+          Sign Out
+        </button>
+      </div>
     </header>
 
-    <!-- Personal Employee EL Compliance Alert Banner (Visible to Employee if they have 2+ EL in current month) -->
+    <!-- Personal Employee EL Compliance Alert Banner -->
     <div id="personalElAlertBanner" class="hidden bg-rose-950/90 border-2 border-rose-500 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg shadow-rose-950/50">
       <div class="flex items-center gap-3">
         <span class="px-2.5 py-1 rounded-lg bg-rose-500 text-white text-xs font-black uppercase tracking-wider">EL Alert</span>
@@ -132,50 +246,74 @@
         </p>
       </div>
       <button type="button" onclick="document.querySelector('[data-tab=leaveTab]').click()" class="px-3.5 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-400 text-white text-xs font-extrabold">
-        View My Leaves &rarr;
+        View My Leave &rarr;
       </button>
     </div>
 
-    <!-- Cool Neon-Accent Navigation Tabs (Zero Hover Invisibility) -->
+    <!-- Employee Notice Board Banner (Shown to Regular Employees since Dashboard is hidden for them) -->
+    <div id="employeeNoticeBar" class="hidden bg-slate-900/90 border border-cyan-500/30 rounded-2xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-300">Company Notice Board</span>
+        <span class="text-[11px] font-semibold text-slate-400">Latest Updates</span>
+      </div>
+      <div id="employeeNoticeList" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs"></div>
+    </div>
+
+    <!-- Role-Based Happy Neon-Accent Navigation Tabs -->
     <nav class="flex flex-wrap gap-2.5">
       <button
         type="button"
+        id="navDashboardBtn"
         data-tab="dashboardTab"
         data-active-cls="bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20 hover:bg-cyan-400"
         data-inactive-cls="bg-slate-900 text-cyan-300 border-cyan-500/40 hover:bg-cyan-950/70 hover:text-cyan-200"
-        class="tab-btn border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-cyan-500 text-slate-950 border-cyan-400 shadow-md shadow-cyan-500/20 hover:bg-cyan-400"
+        class="tab-btn hidden border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-cyan-300 border-cyan-500/40 hover:bg-cyan-950/70 hover:text-cyan-200"
       >
-        Dashboard
+        HR Dashboard
       </button>
       <button
         type="button"
+        id="navDirectoryBtn"
         data-tab="directoryTab"
         data-active-cls="bg-sky-500 text-slate-950 border-sky-400 shadow-md shadow-sky-500/20 hover:bg-sky-400"
         data-inactive-cls="bg-slate-900 text-sky-300 border-sky-500/40 hover:bg-sky-950/70 hover:text-sky-200"
         class="tab-btn border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-sky-300 border-sky-500/40 hover:bg-sky-950/70 hover:text-sky-200"
       >
-        Employee Directory
+        Staff Directory
       </button>
       <button
         type="button"
+        id="navProbationBtn"
         data-tab="probationTab"
         data-active-cls="bg-amber-400 text-slate-950 border-amber-300 shadow-md shadow-amber-400/20 hover:bg-amber-300"
         data-inactive-cls="bg-slate-900 text-amber-300 border-amber-500/40 hover:bg-amber-950/70 hover:text-amber-200"
-        class="tab-btn border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-amber-300 border-amber-500/40 hover:bg-amber-950/70 hover:text-amber-200"
+        class="tab-btn hidden border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-amber-300 border-amber-500/40 hover:bg-amber-950/70 hover:text-amber-200"
       >
-        Intern / Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs font-black rounded-full bg-slate-950 text-amber-300 border border-amber-400/50">0</span>
+        Intern &amp; Probation Tracker <span id="probationCountBadge" class="ml-1.5 px-2 py-0.5 text-xs font-black rounded-full bg-slate-950 text-amber-300 border border-amber-400/50">0</span>
       </button>
       <button
         type="button"
+        id="navLeaveBtn"
         data-tab="leaveTab"
         data-active-cls="bg-teal-400 text-slate-950 border-teal-300 shadow-md shadow-teal-400/20 hover:bg-teal-300"
         data-inactive-cls="bg-slate-900 text-teal-300 border-teal-500/40 hover:bg-teal-950/70 hover:text-teal-200"
         class="tab-btn border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-teal-300 border-teal-500/40 hover:bg-teal-950/70 hover:text-teal-200"
       >
-        Leave &amp; Planner <span id="pendingLeaveCountBadge" class="hidden ml-1.5 px-2 py-0.5 text-xs font-black rounded-full bg-rose-500 text-white">0</span>
+        Leave Application <span id="pendingLeaveCountBadge" class="hidden ml-1.5 px-2 py-0.5 text-xs font-black rounded-full bg-rose-500 text-white">0</span>
       </button>
       <button
         type="button"
+        id="navPlannerBtn"
+        data-tab="plannerTab"
+        data-active-cls="bg-indigo-400 text-slate-950 border-indigo-300 shadow-md shadow-indigo-400/20 hover:bg-indigo-300"
+        data-inactive-cls="bg-slate-900 text-indigo-300 border-indigo-500/40 hover:bg-indigo-950/70 hover:text-indigo-200"
+        class="tab-btn border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-indigo-300 border-indigo-500/40 hover:bg-indigo-950/70 hover:text-indigo-200"
+      >
+        Company Live Leave Planner
+      </button>
+      <button
+        type="button"
+        id="navKpiBtn"
         data-tab="kpiTab"
         data-active-cls="bg-emerald-400 text-slate-950 border-emerald-300 shadow-md shadow-emerald-400/20 hover:bg-emerald-300"
         data-inactive-cls="bg-slate-900 text-emerald-300 border-emerald-500/40 hover:bg-emerald-950/70 hover:text-emerald-200"
@@ -191,16 +329,12 @@
         data-inactive-cls="bg-slate-900 text-violet-300 border-violet-500/40 hover:bg-violet-950/70 hover:text-violet-200"
         class="tab-btn hidden border px-4 py-2.5 rounded-xl text-sm font-extrabold transition bg-slate-900 text-violet-300 border-violet-500/40 hover:bg-violet-950/70 hover:text-violet-200"
       >
-        + Add New Employee
+        + Onboard New Employee
       </button>
     </nav>
 
-    <!-- Global Toast Banner -->
-    <div id="toastBanner" class="hidden p-4 rounded-xl border text-sm font-bold"></div>
-
-    <!-- ==================== TAB 0: EXECUTIVE HR DASHBOARD (DARK GXON + 5 METRICS) ==================== -->
-    <section id="dashboardTab" class="tab-panel space-y-6">
-      <!-- Dashboard Filter & Announcement Bar -->
+    <!-- ==================== TAB 0: EXECUTIVE HR DASHBOARD (MANAGERS, MD & HR ADMIN ONLY) ==================== -->
+    <section id="dashboardTab" class="tab-panel hidden space-y-6">
       <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 class="text-lg font-extrabold text-white">HR Command Dashboard</h2>
@@ -225,13 +359,21 @@
         </div>
       </div>
 
-      <!-- Top 5 Metric Cards (AIHR 5 Core Metrics + GXON Dark Card Style) -->
+      <!-- HR Admin Account Recovery Requests Queue -->
+      <div id="dashRecoveryQueueCard" class="hidden bg-amber-950/40 border border-amber-500/50 rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider text-amber-300">Account Recovery Requests (Forgot ID / Password)</h3>
+          <span id="dashRecoveryCount" class="text-xs font-black px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950">0</span>
+        </div>
+        <div id="dashRecoveryList" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- Top 5 Metric Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <!-- 01. Active Headcount (FTE) -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300 font-black text-sm">01</span>
-            <span id="dashFteTag" class="text-[11px] font-bold px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300">Active FTE</span>
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300">Active FTE</span>
           </div>
           <div class="mt-4">
             <div id="dashMetricHeadcount" class="text-3xl font-black text-white">0</div>
@@ -240,7 +382,6 @@
           </div>
         </div>
 
-        <!-- 02. Employee Demographics -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="w-10 h-10 rounded-xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-300 font-black text-sm">02</span>
@@ -253,7 +394,6 @@
           </div>
         </div>
 
-        <!-- 03. Employee Movement -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-amber-300 font-black text-sm">03</span>
@@ -266,7 +406,6 @@
           </div>
         </div>
 
-        <!-- 04. Financial & KPI Pulse (Admin sees RM, Staff/Managers see KPI avg) -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300 font-black text-sm">04</span>
@@ -279,7 +418,6 @@
           </div>
         </div>
 
-        <!-- 05. Absence & Today Away -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex items-center justify-between">
             <span class="w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-400/30 flex items-center justify-center text-rose-300 font-black text-sm">05</span>
@@ -293,9 +431,8 @@
         </div>
       </div>
 
-      <!-- Middle Charts Row (GXON Bar Chart + Ring Structure Chart) -->
+      <!-- Middle Charts Row -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <!-- Monthly Absence & Movement Chart (Jan - Dec) -->
         <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
             <div>
@@ -315,11 +452,10 @@
           </div>
         </div>
 
-        <!-- Company & Demographics Ring Breakdown -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
           <div>
             <h3 class="text-base font-extrabold text-white">Workforce Structure</h3>
-            <p class="text-xs font-medium text-slate-300">Headcount split by Company Entity &amp; Nationality</p>
+            <p class="text-xs font-medium text-slate-300">Active headcount split by Company Entity</p>
           </div>
 
           <div class="my-4 flex items-center justify-center">
@@ -335,9 +471,8 @@
         </div>
       </div>
 
-      <!-- Bottom Action Row: Announcements + Live Away Today & Pending Approvals -->
+      <!-- Bottom Action Row: Announcements + Live Leave Approvals -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <!-- Announcements Board -->
         <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5">
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-base font-extrabold text-white">Company Announcements</h3>
@@ -348,15 +483,14 @@
           </div>
         </div>
 
-        <!-- Employee Leave Feed & Quick Approval Queue -->
         <div class="lg:col-span-2 bg-slate-900 rounded-2xl border border-slate-800 p-5">
           <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
             <div>
               <h3 class="text-base font-extrabold text-white">Recent Leave Activity &amp; Pending Approvals</h3>
               <p class="text-xs font-medium text-slate-300">2nd+ Emergency Leave (EL) in the same month is flagged in crimson</p>
             </div>
-            <button type="button" onclick="document.querySelector('[data-tab=leaveTab]').click()" class="text-xs font-bold text-cyan-300 hover:underline">
-              Open Full Leave Planner &rarr;
+            <button type="button" onclick="document.querySelector('[data-tab=plannerTab]').click()" class="text-xs font-bold text-cyan-300 hover:underline">
+              Open Leave Planner &rarr;
             </button>
           </div>
           <div class="overflow-x-auto">
@@ -381,33 +515,33 @@
     </section>
 
     <!-- Announcement Modal -->
-    <div id="announcementModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+    <div id="announcementModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
       <div class="bg-slate-900 rounded-2xl border border-slate-700 w-full max-w-md p-6 shadow-2xl">
         <h3 class="text-lg font-extrabold text-white">Post Company Announcement</h3>
-        <p class="text-xs font-medium text-slate-300 mt-1">Visible to all employees on the Dashboard notice board.</p>
+        <p class="text-xs font-medium text-slate-300 mt-1">Visible to all employees across the portal.</p>
         <div class="mt-4 space-y-3">
           <div>
             <label class="block text-xs font-bold text-slate-200 mb-1">Title <span class="text-rose-400">*</span></label>
-            <input type="text" id="annTitleInput" placeholder="e.g. Public Holiday Notice / Monthly KPI Deadline" class="force-sentence w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white" />
+            <input type="text" id="annTitleInput" placeholder="e.g. Public Holiday Notice / Monthly KPI Deadline" class="force-sentence w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-200 mb-1">Message <span class="text-rose-400">*</span></label>
-            <textarea id="annBodyInput" rows="3" placeholder="Enter announcement details..." class="force-sentence w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-lg text-sm text-white"></textarea>
+            <textarea id="annBodyInput" rows="3" placeholder="Enter announcement details..." class="force-sentence w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white"></textarea>
           </div>
         </div>
         <div class="mt-5 flex justify-end gap-2">
-          <button type="button" id="cancelAnnBtn" class="px-4 py-2 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg">Cancel</button>
-          <button type="button" id="saveAnnBtn" class="px-4 py-2 text-xs font-extrabold text-slate-950 bg-cyan-500 hover:bg-cyan-400 rounded-lg">Publish</button>
+          <button type="button" id="cancelAnnBtn" class="px-4 py-2 text-xs font-bold text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl">Cancel</button>
+          <button type="button" id="saveAnnBtn" class="px-4 py-2 text-xs font-extrabold text-slate-950 bg-cyan-500 hover:bg-cyan-400 rounded-xl">Publish</button>
         </div>
       </div>
     </div>
 
-    <!-- ==================== TAB 1: EMPLOYEE DIRECTORY ==================== -->
+    <!-- ==================== TAB 1: STAFF DIRECTORY (MALAYSIAN PDPA PROTECTED) ==================== -->
     <section id="directoryTab" class="tab-panel hidden bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
       <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
         <div>
-          <h2 class="text-lg font-extrabold text-white">Employee Directory</h2>
-          <p class="text-sm font-medium text-slate-300">Click any employee row to view details, edit records, or access the HR Confidential Vault.</p>
+          <h2 class="text-lg font-extrabold text-white">Staff Directory</h2>
+          <p id="directorySubtitle" class="text-sm font-medium text-slate-300">Work directory across entities and offices (personal identifiers &amp; contact details protected under Malaysian PDPA).</p>
         </div>
         <div class="flex flex-wrap gap-2">
           <select id="directoryCompanyFilter" class="px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs md:text-sm font-semibold text-white">
@@ -425,7 +559,7 @@
           <input
             type="text"
             id="directorySearch"
-            placeholder="Search name, ID, or department..."
+            placeholder="Search name or department..."
             class="w-full sm:w-64 px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400"
           />
         </div>
@@ -433,30 +567,19 @@
 
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b border-slate-800 text-xs uppercase text-slate-400 bg-slate-950/70">
-              <th class="py-3 px-4 font-bold">Login ID</th>
-              <th class="py-3 px-4 font-bold">Full Name</th>
-              <th class="py-3 px-4 font-bold">Company &amp; Office</th>
-              <th class="py-3 px-4 font-bold">Department / Job Title</th>
-              <th class="py-3 px-4 font-bold">Mobile Number</th>
-              <th class="py-3 px-4 font-bold">Join Date &amp; Tenure</th>
-              <th class="py-3 px-4 font-bold">Status</th>
-              <th class="py-3 px-4 font-bold text-right">Action</th>
-            </tr>
-          </thead>
+          <thead id="directoryTableHead"></thead>
           <tbody id="directoryTableBody" class="divide-y divide-slate-800 text-sm text-slate-200">
-            <tr><td colspan="8" class="py-6 text-center font-medium text-slate-400">Loading employees...</td></tr>
+            <tr><td colspan="8" class="py-6 text-center font-medium text-slate-400">Loading staff directory...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ==================== TAB 2: INTERN / PROBATION TRACKER ==================== -->
+    <!-- ==================== TAB 2: INTERN & PROBATION TRACKER (MANAGERS / HOD / MD / HR ADMIN) ==================== -->
     <section id="probationTab" class="tab-panel hidden bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
       <div class="mb-5">
-        <h2 class="text-lg font-extrabold text-white">Intern / Probation Tracker</h2>
-        <p class="text-sm font-medium text-slate-300">Monitor staff currently under internship or probation, confirm permanent employment, or log extensions.</p>
+        <h2 class="text-lg font-extrabold text-white">Intern &amp; Probation Tracker</h2>
+        <p class="text-sm font-medium text-slate-300">Monitor staff currently under internship or probation, confirm permanent employment, or record extensions.</p>
       </div>
 
       <div id="probationList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -464,15 +587,14 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 3: LEAVE APPLICATION & LIVE COMPANY LEAVE PLANNER ==================== -->
+    <!-- ==================== TAB 3: LEAVE APPLICATION & APPROVAL QUEUE ==================== -->
     <section id="leaveTab" class="tab-panel hidden space-y-6">
-      <!-- Leave Application Card -->
       <div class="bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
         <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <h2 class="text-lg font-extrabold text-white">Leave Application &amp; Balance</h2>
             <p class="text-xs md:text-sm font-medium text-slate-300 mt-0.5">
-              Apply for Annual, Medical, Emergency, or Special Leave. Approved entries auto-update the Company Leave Planner below.
+              Submit Annual, Medical, Emergency, or Special Leave requests. Approved leave automatically updates the Company Live Leave Planner.
             </p>
           </div>
           <div id="myLeaveBalanceSummary" class="flex flex-wrap gap-2 text-xs font-bold"></div>
@@ -530,15 +652,20 @@
 
           <div class="flex items-end">
             <button type="submit" id="submitLeaveBtn" class="w-full bg-teal-400 hover:bg-teal-300 text-slate-950 font-extrabold py-2 px-4 rounded-xl shadow-md shadow-teal-500/20 transition">
-              Submit Leave
+              Submit Leave Request
             </button>
           </div>
         </form>
       </div>
 
-      <!-- Pending / Recent Leave Requests Table (With EL 2nd+ Crimson Alert & Approve/Reject) -->
+      <!-- Leave Requests & Approval Queue -->
       <div class="bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
-        <h3 class="text-base font-extrabold text-white mb-3">Leave Requests &amp; Approval Queue</h3>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h3 class="text-base font-extrabold text-white">Leave Requests &amp; Approval Queue</h3>
+          <button type="button" onclick="document.querySelector('[data-tab=plannerTab]').click()" class="text-xs font-bold text-indigo-300 hover:underline">
+            View Company Live Leave Planner Grid &rarr;
+          </button>
+        </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse text-xs">
             <thead>
@@ -558,61 +685,62 @@
           </table>
         </div>
       </div>
+    </section>
 
-      <!-- Live Company-Wide Monthly Leave Planner Grid (Matches 2026 Leave Planner.xlsx) -->
-      <div class="bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
-        <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <div>
-            <h3 class="text-base font-extrabold text-white">Company Live Leave Planner Grid</h3>
-            <p class="text-xs font-medium text-slate-300">Visible to all staff &bull; 2nd+ Emergency Leave (EL) in the same month is highlighted in crimson</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <select id="plannerCompanyFilter" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
-              <option value="">All Companies</option>
-              <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
-              <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
-              <option value="Hax Holdings Sdn Bhd">Hax Holdings Sdn Bhd</option>
-              <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
-            </select>
-            <select id="plannerOfficeFilter" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
-              <option value="">All Offices</option>
-              <option value="Cheras">Cheras</option>
-              <option value="Serdang">Serdang</option>
-            </select>
-            <select id="plannerYearSelect" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
-              <option value="2026" selected>2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-            </select>
-            <select id="plannerMonthSelect" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
-              <option value="01">Jan</option>
-              <option value="02">Feb</option>
-              <option value="03">Mar</option>
-              <option value="04">Apr</option>
-              <option value="05">May</option>
-              <option value="06">Jun</option>
-              <option value="07">Jul</option>
-              <option value="08">Aug</option>
-              <option value="09">Sep</option>
-              <option value="10">Oct</option>
-              <option value="11" selected>Nov</option>
-              <option value="12">Dec</option>
-            </select>
-          </div>
+    <!-- ==================== TAB 4: COMPANY LIVE LEAVE PLANNER GRID (SEPARATE TAB) ==================== -->
+    <section id="plannerTab" class="tab-panel hidden bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-white">Company Live Leave Planner Grid</h2>
+          <p class="text-xs md:text-sm font-medium text-slate-300">
+            Company-wide attendance &amp; leave schedule across Cheras &amp; Serdang (private leave reasons hidden under Malaysian PDPA).
+          </p>
         </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="plannerCompanyFilter" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
+            <option value="">All Companies</option>
+            <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
+            <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
+            <option value="Hax Holdings Sdn Bhd">Hax Holdings Sdn Bhd</option>
+            <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
+          </select>
+          <select id="plannerOfficeFilter" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
+            <option value="">All Offices</option>
+            <option value="Cheras">Cheras</option>
+            <option value="Serdang">Serdang</option>
+          </select>
+          <select id="plannerYearSelect" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+          </select>
+          <select id="plannerMonthSelect" class="px-3 py-1.5 bg-slate-950 border border-slate-700 rounded-xl text-xs font-bold text-white">
+            <option value="01">Jan</option>
+            <option value="02">Feb</option>
+            <option value="03">Mar</option>
+            <option value="04">Apr</option>
+            <option value="05">May</option>
+            <option value="06">Jun</option>
+            <option value="07">Jul</option>
+            <option value="08">Aug</option>
+            <option value="09">Sep</option>
+            <option value="10">Oct</option>
+            <option value="11" selected>Nov</option>
+            <option value="12">Dec</option>
+          </select>
+        </div>
+      </div>
 
-        <div class="overflow-x-auto border border-slate-800 rounded-xl">
-          <table id="leavePlannerGridTable" class="w-full text-left border-collapse text-[11px] whitespace-nowrap">
-            <thead id="leavePlannerGridHead" class="bg-slate-950 text-slate-300 border-b border-slate-800"></thead>
-            <tbody id="leavePlannerGridBody" class="divide-y divide-slate-800/80 text-slate-200"></tbody>
-          </table>
-        </div>
+      <div class="overflow-x-auto border border-slate-800 rounded-xl">
+        <table id="leavePlannerGridTable" class="w-full text-left border-collapse text-[11px] whitespace-nowrap">
+          <thead id="leavePlannerGridHead" class="bg-slate-950 text-slate-300 border-b border-slate-800"></thead>
+          <tbody id="leavePlannerGridBody" class="divide-y divide-slate-800/80 text-slate-200"></tbody>
+        </table>
       </div>
     </section>
 
-    <!-- ==================== TAB 4: MONTHLY KPI (UNIVERSAL FROZEN TOP BAR) ==================== -->
+    <!-- ==================== TAB 5: MONTHLY KPI (UNIVERSAL FROZEN TOP BAR) ==================== -->
     <section id="kpiTab" class="tab-panel hidden space-y-6">
-      <!-- UNIVERSAL STICKY TOP BAR FOR ALL ROLES -->
       <div class="sticky top-2 z-30 bg-slate-900/95 backdrop-blur rounded-2xl shadow-xl border-2 border-emerald-400/50 p-4 space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -724,7 +852,7 @@
       </div>
 
       <!-- Duplicate Goals Modal -->
-      <div id="duplicateYearModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+      <div id="duplicateYearModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
         <div class="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md p-6">
           <h3 class="text-lg font-extrabold text-white">Duplicate KPI Goals to Another Year</h3>
           <p class="text-sm font-medium text-slate-300 mt-1">Copies all goals, objectives, weightages, and 1–5 targets so you can keep what remains, remove old items, or add new ones.</p>
@@ -787,7 +915,7 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 5: ADD NEW EMPLOYEE (HR ADMIN) ==================== -->
+    <!-- ==================== TAB 6: ONBOARD NEW EMPLOYEE (HR ADMIN ONLY) ==================== -->
     <section id="addEmployeeTab" class="tab-panel hidden bg-slate-900 rounded-2xl shadow-lg border border-slate-800 p-6">
       <div class="mb-6">
         <h2 class="text-lg font-extrabold text-white">Onboard New Employee</h2>
@@ -808,8 +936,16 @@
               <input type="text" id="newEmpPassword" required minlength="6" placeholder="e.g. 123456" class="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-200 mb-1">Full Name <span class="text-rose-400 font-bold">*</span></label>
+              <label class="block text-xs font-bold text-slate-200 mb-1">Full Name (As per NRIC / Passport) <span class="text-rose-400 font-bold">*</span></label>
               <input type="text" id="newEmpName" required placeholder="TAN WEI MING" class="force-caps w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1">
+                Display / Preferred Name <span class="text-rose-400 font-bold">*</span>
+                <span class="text-cyan-300 font-semibold">(Shown to colleagues; surname hidden)</span>
+              </label>
+              <input type="text" id="newEmpDisplayName" required placeholder="WEI MING" class="force-caps w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
             </div>
 
             <div>
@@ -864,12 +1000,12 @@
               <span id="newEmpPhoneHint" class="block text-[11px] font-semibold text-cyan-300 mt-1">Malaysia: 011 (8 digits), 012/013 (7–8 digits), other 01x (7 digits)</span>
             </div>
 
-            <div class="md:col-span-2">
+            <div>
               <label class="block text-xs font-bold text-slate-200 mb-1">Email Address (Optional)</label>
               <input type="email" id="newEmpEmail" placeholder="staff@company.com" class="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white" />
             </div>
 
-            <!-- 3-Line Full-Width Residential Address with Country Postcode Validation -->
+            <!-- 3-Line Full-Width Residential Address -->
             <div class="md:col-span-3">
               <label class="block text-xs font-bold text-slate-200 mb-1">
                 Residential Address <span class="text-rose-400 font-bold">*</span>
@@ -1082,10 +1218,10 @@
     </section>
   </div>
 
-  <!-- ==================== VIEW DETAILS MODAL (UNIVERSAL FROZEN TOP HEADER + BOTTOM SAVE/CLOSE BAR) ==================== -->
+  <!-- ==================== VIEW DETAILS MODAL (UNIVERSAL FROZEN HEADER/FOOTER + IN-MODAL VALIDATION + PROMOTION TRACKER) ==================== -->
   <div id="empModal" class="hidden fixed inset-0 bg-black/75 z-40 flex items-center justify-center p-2 md:p-5">
     <div class="bg-slate-900 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-5xl max-h-[94vh] flex flex-col overflow-hidden">
-      <!-- FROZEN TOP HEADER (Visible for Everybody while scrolling) -->
+      <!-- FROZEN TOP HEADER -->
       <div class="shrink-0 bg-slate-950 text-white px-6 py-4 flex items-center justify-between gap-4 border-b border-slate-800">
         <div>
           <div class="flex flex-wrap items-center gap-2.5">
@@ -1100,6 +1236,11 @@
 
       <!-- SCROLLABLE BODY -->
       <div class="flex-1 overflow-y-auto p-6 space-y-6">
+        <!-- Read-Only Notice for Regular Staff Viewing Self -->
+        <div id="modalReadOnlyBanner" class="hidden bg-cyan-950/60 border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs font-bold text-cyan-200">
+          Personal Profile View (Read-Only): Contact HR Administration if any personal or emergency record requires updating.
+        </div>
+
         <div>
           <h4 class="text-xs font-extrabold uppercase tracking-wider text-cyan-300 mb-3">Employee Profile &amp; Contact Information</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
@@ -1109,10 +1250,16 @@
               <div id="hist-empId" class="hidden mt-1 text-[11px] font-medium bg-amber-950/70 border border-amber-500/40 text-amber-200 rounded px-2 py-1"></div>
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-200 mb-1">Full Name <span class="text-rose-400 font-bold">*</span></label>
+              <label class="block text-xs font-bold text-slate-200 mb-1">Full Name (As per NRIC / Passport) <span class="text-rose-400 font-bold">*</span></label>
               <input type="text" data-edit-field="fullName" id="editFullName" class="emp-edit-input force-caps w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white" />
               <div id="hist-fullName" class="hidden mt-1 text-[11px] font-medium bg-amber-950/70 border border-amber-500/40 text-amber-200 rounded px-2 py-1"></div>
             </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-200 mb-1">Display / Preferred Name <span class="text-rose-400 font-bold">*</span></label>
+              <input type="text" data-edit-field="displayName" id="editDisplayName" class="emp-edit-input force-caps w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white" />
+              <div id="hist-displayName" class="hidden mt-1 text-[11px] font-medium bg-amber-950/70 border border-amber-500/40 text-amber-200 rounded px-2 py-1"></div>
+            </div>
+
             <div>
               <label class="block text-xs font-bold text-slate-200 mb-1">Company Entity <span class="text-rose-400 font-bold">*</span></label>
               <select data-edit-field="companyEntity" id="editCompanyEntity" class="emp-edit-input alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white">
@@ -1188,7 +1335,7 @@
               <div id="hist-phone" class="hidden mt-1 text-[11px] font-medium bg-amber-950/70 border border-amber-500/40 text-amber-200 rounded px-2 py-1"></div>
             </div>
 
-            <div>
+            <div class="sm:col-span-2 md:col-span-3">
               <label class="block text-xs font-bold text-slate-200 mb-1">Email Address (Optional)</label>
               <input type="email" data-edit-field="email" id="editEmail" class="emp-edit-input w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white" />
               <div id="hist-email" class="hidden mt-1 text-[11px] font-medium bg-amber-950/70 border border-amber-500/40 text-amber-200 rounded px-2 py-1"></div>
@@ -1356,8 +1503,76 @@
           </div>
         </div>
 
-        <!-- ==================== HR ADMIN ONLY: CONFIDENTIAL VAULT ==================== -->
+        <!-- ==================== HR ADMIN ONLY: CAREER PROGRESSION & PROMOTION HISTORY + CONFIDENTIAL VAULT ==================== -->
         <div id="hrVaultSection" class="hidden space-y-6 pt-4 border-t border-slate-800">
+          <!-- Career Progression & Promotion Tracker -->
+          <div class="bg-indigo-950/40 border border-indigo-500/40 rounded-2xl p-5 space-y-4">
+            <div>
+              <h4 class="text-sm font-extrabold uppercase tracking-wider text-indigo-300">Career Progression &amp; Promotion History</h4>
+              <p class="text-xs font-medium text-slate-300 mt-0.5">Record promotions, role upgrades (e.g. Executive &rarr; Manager), or entity/department transfers with effective dates.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div>
+                <label class="block font-bold text-slate-200 mb-1">Effective Date <span class="text-rose-400">*</span></label>
+                <input type="text" readonly id="promoEffectiveDate" placeholder="dd-mmm-yyyy" class="date-picker-input cursor-pointer w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-200 mb-1">Movement Type <span class="text-rose-400">*</span></label>
+                <select id="promoMovementType" class="alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold">
+                  <option value="Company Entity Transfer">Company Entity Transfer</option>
+                  <option value="Department / Office Transfer">Department / Office Transfer</option>
+                  <option value="Job Title Revision">Job Title Revision</option>
+                  <option value="Promotion" selected>Promotion</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-200 mb-1">New Job Title <span class="text-rose-400">*</span></label>
+                <select id="promoNewJobTitle" class="job-select alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold"></select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-200 mb-1">New System Role <span class="text-rose-400">*</span></label>
+                <select id="promoNewRole" class="alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold">
+                  <option value="employee">Employee</option>
+                  <option value="hr_admin">HR Admin</option>
+                  <option value="manager">Manager / HOD</option>
+                  <option value="managing_director">Managing Director</option>
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-200 mb-1">Company Entity</label>
+                <select id="promoNewCompany" class="alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold">
+                  <option value="Atlas Marking Sdn Bhd">Atlas Marking Sdn Bhd</option>
+                  <option value="Foqcus Sdn Bhd">Foqcus Sdn Bhd</option>
+                  <option value="Hax Holdings Sdn Bhd">Hax Holdings Sdn Bhd</option>
+                  <option value="Packtica Sdn Bhd">Packtica Sdn Bhd</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-200 mb-1">Office / Branch</label>
+                <select id="promoNewOffice" class="office-select alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-200 mb-1">Department</label>
+                <select id="promoNewDept" class="dept-select alpha-select w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white font-semibold"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-200 mb-1">Salary Increment (+ RM, Opt)</label>
+                <input type="number" step="0.01" id="promoSalaryAdd" placeholder="e.g. 500" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white" />
+              </div>
+              <div class="sm:col-span-2 md:col-span-3">
+                <input type="text" id="promoRemarks" placeholder="Promotion / transfer notes..." class="force-sentence w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white" />
+              </div>
+              <div>
+                <button type="button" id="recordPromotionBtn" class="w-full bg-indigo-500 hover:bg-indigo-400 text-white font-extrabold py-2 px-3 rounded-xl transition">
+                  + Record Promotion
+                </button>
+              </div>
+            </div>
+
+            <div id="promotionHistoryList" class="space-y-2 text-xs"></div>
+          </div>
+
           <!-- Quick Intern / Probation Action Box -->
           <div class="bg-amber-950/40 border border-amber-500/40 rounded-xl p-4">
             <h4 class="text-sm font-extrabold text-amber-300 mb-3">Intern / Probation Quick Action</h4>
@@ -1375,7 +1590,7 @@
             </button>
           </div>
 
-          <!-- Core Compensation, Confirmed Incentive & Drive Link -->
+          <!-- Core Compensation, Confirmed Incentive & Drive Link (Aligned Single-Line Labels) -->
           <div class="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 space-y-5">
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
               <div>
@@ -1387,20 +1602,20 @@
               </a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm items-end">
               <div>
-                <label class="block text-xs font-bold text-slate-200 mb-1">Current Basic Salary (RM)</label>
+                <label class="block text-xs font-bold text-slate-200 mb-1.5 whitespace-nowrap">Current Basic Salary (RM)</label>
                 <input type="number" step="0.01" id="vaultBasicSalary" placeholder="e.g. 3200" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-200 mb-1">
-                  Confirmed Monthly Incentive (RM)
-                  <span id="vaultIncentiveStatusTag" class="ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-200">-</span>
+                <label class="flex items-center gap-1.5 text-xs font-bold text-slate-200 mb-1.5 whitespace-nowrap">
+                  <span>Confirmed Monthly Incentive (RM)</span>
+                  <span id="vaultIncentiveStatusTag" class="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-slate-800 text-slate-200">-</span>
                 </label>
                 <input type="number" step="0.01" id="vaultMonthlyIncentive" placeholder="e.g. 500" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-slate-200 mb-1">Google Drive Folder Link (IC / Offer Letter)</label>
+                <label class="block text-xs font-bold text-slate-200 mb-1.5 whitespace-nowrap">Google Drive Folder Link (IC / Offer Letter)</label>
                 <input type="url" id="vaultDriveLink" placeholder="https://drive.google.com/..." class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-white" />
               </div>
             </div>
@@ -1408,10 +1623,13 @@
               Save Basic Salary, Incentive &amp; Drive Link
             </button>
 
-            <!-- 1. Salary Increment Ledger (Up to 50 times) -->
+            <!-- 1. Salary Increment Ledger (With Cumulative Total Increment Sum) -->
             <div class="pt-4 border-t border-slate-800">
-              <div class="flex items-center justify-between mb-2">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                 <h5 class="text-xs font-extrabold uppercase text-cyan-300">Salary Increment Ledger (<span id="incCountLabel">0</span> / 50)</h5>
+                <span id="incCumulativeTotalBadge" class="text-xs font-extrabold px-2.5 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">
+                  Total Increments: + RM 0.00
+                </span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
                 <input type="text" readonly id="incEffectiveDate" placeholder="Effective Date (dd-mmm-yyyy)" class="date-picker-input cursor-pointer px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs font-semibold text-white" />
@@ -1423,7 +1641,7 @@
               <div id="incrementLedgerList" class="space-y-1.5 text-xs"></div>
             </div>
 
-            <!-- 2. Bonus Ledger (Up to 50 times) -->
+            <!-- 2. Bonus Ledger -->
             <div class="pt-4 border-t border-slate-800">
               <div class="flex items-center justify-between mb-2">
                 <h5 class="text-xs font-extrabold uppercase text-cyan-300">Bonus Ledger (<span id="bonusCountLabel">0</span> / 50)</h5>
@@ -1444,7 +1662,7 @@
               <div id="bonusLedgerList" class="space-y-1.5 text-xs"></div>
             </div>
 
-            <!-- 3. Ang Pao Ledger (Up to 50 times) -->
+            <!-- 3. Ang Pao Ledger -->
             <div class="pt-4 border-t border-slate-800">
               <div class="flex items-center justify-between mb-2">
                 <h5 class="text-xs font-extrabold uppercase text-cyan-300">Ang Pao Ledger (<span id="angPaoCountLabel">0</span> / 50)</h5>
@@ -1465,7 +1683,7 @@
               <div id="angPaoLedgerList" class="space-y-1.5 text-xs"></div>
             </div>
 
-            <!-- 4. Device Allowance Tracker (Minimum 24 Months) -->
+            <!-- 4. Device Allowance Tracker -->
             <div class="pt-4 border-t border-slate-800">
               <div class="mb-2">
                 <h5 class="text-xs font-extrabold uppercase text-cyan-300">Device Allowance Reimbursement (Min 24 Months &mdash; Remaining Forfeited if Resigned Early)</h5>
@@ -1493,16 +1711,19 @@
         </div>
       </div>
 
-      <!-- FROZEN BOTTOM ACTION BAR (Save & Close pinned at the bottom for Everybody) -->
-      <div class="shrink-0 bg-slate-950 border-t border-slate-800 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
-        <span class="text-xs font-semibold text-slate-300">Viewing: <strong id="modalFooterEmpName" class="text-white">-</strong></span>
-        <div class="flex items-center gap-3">
-          <button type="button" id="closeModalBottomBtn" class="px-5 py-2 text-sm font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl transition">
-            Close
-          </button>
-          <button type="button" id="saveProfileEditBtn" class="hidden bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-extrabold px-6 py-2 rounded-xl shadow-md transition">
-            Save Changes
-          </button>
+      <!-- FROZEN BOTTOM ACTION BAR (With In-Modal Validation Alert + Auto-Close Save) -->
+      <div class="shrink-0 bg-slate-950 border-t border-slate-800 px-6 py-3.5 space-y-2">
+        <div id="modalInlineError" class="hidden bg-rose-950 border border-rose-500 text-rose-200 text-xs font-bold px-3.5 py-2 rounded-xl"></div>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <span class="text-xs font-semibold text-slate-300">Viewing: <strong id="modalFooterEmpName" class="text-white">-</strong></span>
+          <div class="flex items-center gap-3">
+            <button type="button" id="closeModalBottomBtn" class="px-5 py-2 text-sm font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl transition">
+              Close
+            </button>
+            <button type="button" id="saveProfileEditBtn" class="hidden bg-emerald-400 hover:bg-emerald-300 text-slate-950 text-sm font-extrabold px-6 py-2 rounded-xl shadow-md transition">
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1530,7 +1751,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, EmailAuthProvider, reauthenticateWithCredential, updatePassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1552,6 +1773,7 @@
     let currentUserProfile = null;
     let currentUserUid = null;
     let allEmployees = [];
+    let visibleDirectoryEmployees = [];
     let allLeaveRequests = [];
     let selectedEmpUid = null;
     let currentVaultData = {};
@@ -1571,7 +1793,36 @@
     const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const DAYS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-    // ==================== TITLE CASE NORMALIZER ====================
+    // ==================== CENTER-SCREEN CONFIRMATION TOAST ====================
+    let toastTimer = null;
+    function showToast(msg, isError = false) {
+      const overlay = document.getElementById("centerToastOverlay");
+      const box = document.getElementById("centerToastBox");
+      const icon = document.getElementById("centerToastIcon");
+      const title = document.getElementById("centerToastTitle");
+      const body = document.getElementById("centerToastMsg");
+
+      if (isError) {
+        box.className = "pointer-events-auto max-w-md w-full rounded-2xl border-2 border-rose-500 bg-rose-950/95 px-6 py-5 shadow-2xl text-center backdrop-blur-md";
+        icon.className = "mx-auto mb-2 w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center font-black text-lg";
+        icon.textContent = "!";
+        title.textContent = "Please Check Details";
+        body.className = "text-sm font-semibold text-rose-100 mt-1";
+      } else {
+        box.className = "pointer-events-auto max-w-md w-full rounded-2xl border-2 border-emerald-400 bg-emerald-950/95 px-6 py-5 shadow-2xl text-center backdrop-blur-md";
+        icon.className = "mx-auto mb-2 w-10 h-10 rounded-full bg-emerald-400 text-slate-950 flex items-center justify-center font-black text-lg";
+        icon.textContent = "✓";
+        title.textContent = "Saved Successfully";
+        body.className = "text-sm font-semibold text-emerald-100 mt-1";
+      }
+
+      body.textContent = msg;
+      overlay.classList.remove("hidden");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => overlay.classList.add("hidden"), 3200);
+    }
+
+    // ==================== TITLE CASE & DISPLAY NAME HELPERS ====================
     function toTitleCaseClean(str) {
       if (!str) return "";
       const keepUpper = ["HR", "QA", "QC", "HOD", "IT", "CEO", "MD", "ISO", "PA"];
@@ -1583,7 +1834,17 @@
       }).join(" ");
     }
 
-    // ==================== NRIC AUTO-DASH (990808-14-3321) & AUTO-AGE ====================
+    function getColleagueSafeName(emp) {
+      if (emp.displayName && emp.displayName.trim()) return emp.displayName.trim().toUpperCase();
+      const parts = String(emp.fullName || "-").trim().split(/\s+/);
+      if (parts.length <= 1) return parts[0] || "-";
+      // For Malaysian names: if "BIN"/"BINTI" is present, show given name before Bin/Binti; otherwise drop leading surname
+      const binIdx = parts.findIndex((p) => p.toUpperCase() === "BIN" || p.toUpperCase() === "BINTI");
+      if (binIdx > 0) return parts.slice(0, binIdx).join(" ").toUpperCase();
+      return parts.slice(1).join(" ").toUpperCase();
+    }
+
+    // ==================== NRIC AUTO-DASH (990808-14-3321), AUTO-DOB, AGE & GENDER ====================
     function formatMalaysianNric(raw) {
       const digits = String(raw || "").replace(/\D/g, "").slice(0, 12);
       if (digits.length <= 6) return digits;
@@ -1591,18 +1852,29 @@
       return `${digits.slice(0, 6)}-${digits.slice(6, 8)}-${digits.slice(8)}`;
     }
 
-    function extractDobFromMalaysianNric(nricStr) {
+    function extractInfoFromMalaysianNric(nricStr) {
       const digits = String(nricStr || "").replace(/\D/g, "");
-      if (digits.length < 6) return null;
-      const yy = parseInt(digits.slice(0, 2), 10);
-      const mm = parseInt(digits.slice(2, 4), 10);
-      const dd = parseInt(digits.slice(4, 6), 10);
-      if (mm < 1 || mm > 12 || dd < 1 || dd > 31) return null;
-      const currentTwoDigitYear = new Date().getFullYear() % 100;
-      const fullYear = yy <= currentTwoDigitYear ? 2000 + yy : 1900 + yy;
-      const d = new Date(fullYear, mm - 1, dd);
-      if (d.getMonth() !== mm - 1 || d.getDate() !== dd) return null;
-      return d;
+      let dob = null;
+      let gender = null;
+
+      if (digits.length >= 6) {
+        const yy = parseInt(digits.slice(0, 2), 10);
+        const mm = parseInt(digits.slice(2, 4), 10);
+        const dd = parseInt(digits.slice(4, 6), 10);
+        if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) {
+          const currentTwoDigitYear = new Date().getFullYear() % 100;
+          const fullYear = yy <= currentTwoDigitYear ? 2000 + yy : 1900 + yy;
+          const d = new Date(fullYear, mm - 1, dd);
+          if (d.getMonth() === mm - 1 && d.getDate() === dd) dob = d;
+        }
+      }
+
+      if (digits.length === 12) {
+        const lastDigit = parseInt(digits[11], 10);
+        gender = lastDigit % 2 === 1 ? "Male" : "Female";
+      }
+
+      return { dob, gender };
     }
 
     function calculateAgeFromDob(dobStr) {
@@ -1632,42 +1904,30 @@
       return `${years} ${yLabel} ${months} ${mLabel}`;
     }
 
-    // ==================== COUNTRY POSTCODE VALIDATION (MY / ID / PH / TH) ====================
+    // ==================== COUNTRY POSTCODE VALIDATION ====================
     function validateAddressPostcode(address, nationality) {
       const text = String(address || "").trim();
       if (nationality === "Malaysian") {
         const matches = text.match(/\b\d{5}\b/g) || [];
-        const valid = matches.some((p) => {
-          const n = parseInt(p, 10);
-          return n >= 1000 && n <= 98859;
-        });
+        const valid = matches.some((p) => { const n = parseInt(p, 10); return n >= 1000 && n <= 98859; });
         if (!valid) return "Malaysian address must contain a valid 5-digit Malaysian postcode (e.g. 43300).";
       } else if (nationality === "Philippine / Filipino") {
         const matches = text.match(/\b\d{4}\b/g) || [];
-        const valid = matches.some((p) => {
-          const n = parseInt(p, 10);
-          return n >= 400 && n <= 9811;
-        });
+        const valid = matches.some((p) => { const n = parseInt(p, 10); return n >= 400 && n <= 9811; });
         if (!valid) return "Philippine address must contain a valid 4-digit Philippine postcode (0400–9811).";
       } else if (nationality === "Indonesian") {
         const matches = text.match(/\b\d{5}\b/g) || [];
-        const valid = matches.some((p) => {
-          const n = parseInt(p, 10);
-          return n >= 10110 && n <= 99974;
-        });
+        const valid = matches.some((p) => { const n = parseInt(p, 10); return n >= 10110 && n <= 99974; });
         if (!valid) return "Indonesian address must contain a valid 5-digit Indonesian postcode (10110–99974).";
       } else if (nationality === "Thai") {
         const matches = text.match(/\b\d{5}\b/g) || [];
-        const valid = matches.some((p) => {
-          const n = parseInt(p, 10);
-          return n >= 10100 && n <= 96220;
-        });
+        const valid = matches.some((p) => { const n = parseInt(p, 10); return n >= 10100 && n <= 96220; });
         if (!valid) return "Thai address must contain a valid 5-digit Thai postcode (10100–96220).";
       }
       return "";
     }
 
-    // ==================== COUNTRY-SPECIFIC MOBILE NUMBER FORMATTER & VALIDATOR ====================
+    // ==================== COUNTRY-SPECIFIC MOBILE FORMATTER & VALIDATOR ====================
     function formatMobileByNationality(raw, nationality) {
       if (!raw) return "";
       let digits = String(raw).replace(/\D/g, "");
@@ -1677,18 +1937,15 @@
         if (digits.startsWith("60")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
         if (!digits) return "+60 ";
-
         const p2 = digits.slice(0, 2);
         const maxSub = (p2 === "11" || p2 === "12" || p2 === "13") ? 8 : 7;
         digits = digits.slice(0, 2 + maxSub);
-
         if (digits.length <= 2) return `+60 ${digits}`;
         const sub = digits.slice(2);
         if (sub.length <= 3) return `+60 ${p2}-${sub}`;
         if (sub.length <= 7) return `+60 ${p2}-${sub.slice(0, 3)} ${sub.slice(3)}`;
         return `+60 ${p2}-${sub.slice(0, 4)} ${sub.slice(4)}`;
       }
-
       if (nationality === "Indonesian") {
         if (digits.startsWith("62")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
@@ -1697,7 +1954,6 @@
         if (digits.length <= 7) return `+62 ${digits.slice(0, 3)}-${digits.slice(3)}`;
         return `+62 ${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
       }
-
       if (nationality === "Philippine / Filipino") {
         if (digits.startsWith("63")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
@@ -1706,7 +1962,6 @@
         if (digits.length <= 6) return `+63 ${digits.slice(0, 3)} ${digits.slice(3)}`;
         return `+63 ${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
       }
-
       if (nationality === "Thai") {
         if (digits.startsWith("66")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
@@ -1715,7 +1970,6 @@
         if (digits.length <= 5) return `+66 ${digits.slice(0, 2)} ${digits.slice(2)}`;
         return `+66 ${digits.slice(0, 2)} ${digits.slice(2, 5)} ${digits.slice(5)}`;
       }
-
       return raw;
     }
 
@@ -1735,25 +1989,19 @@
       if (nationality === "Indonesian") {
         if (digits.startsWith("62")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
-        if (!digits.startsWith("8") || digits.length < 9 || digits.length > 12) {
-          return "Indonesian mobile numbers must start with 08/8 and have 9–12 digits after +62.";
-        }
+        if (!digits.startsWith("8") || digits.length < 9 || digits.length > 12) return "Indonesian mobile numbers must start with 08/8 and have 9–12 digits after +62.";
         return "";
       }
       if (nationality === "Philippine / Filipino") {
         if (digits.startsWith("63")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
-        if (!digits.startsWith("9") || digits.length !== 10) {
-          return "Philippine mobile numbers must start with 09/9 and have 10 digits after +63.";
-        }
+        if (!digits.startsWith("9") || digits.length !== 10) return "Philippine mobile numbers must start with 09/9 and have 10 digits after +63.";
         return "";
       }
       if (nationality === "Thai") {
         if (digits.startsWith("66")) digits = digits.slice(2);
         else if (digits.startsWith("0")) digits = digits.slice(1);
-        if (!["6", "8", "9"].includes(digits[0]) || digits.length !== 9) {
-          return "Thai mobile numbers must start with 06/08/09 and have 9 digits after +66.";
-        }
+        if (!["6", "8", "9"].includes(digits[0]) || digits.length !== 9) return "Thai mobile numbers must start with 06/08/09 and have 9 digits after +66.";
         return "";
       }
       return "";
@@ -1770,7 +2018,6 @@
       return digits.replace(/(\d{3,4})(?=\d)/g, "$1 ").trim();
     }
 
-    // ==================== CONDITIONAL NATIONALITY (NRIC vs PASSPORT + POSTCODE HINT) ====================
     function applyNationalityRules(natSelectId, nricLabelId, nricInputId, passportLabelId, passportInputId, phoneInputId, phoneHintId, addrHintId) {
       const nat = document.getElementById(natSelectId).value;
       const nricLabel = document.getElementById(nricLabelId);
@@ -1808,7 +2055,6 @@
           if (addrHint) addrHint.textContent = "(Must include valid Thai 5-digit postcode, e.g. 10110)";
         }
       }
-
       if (phoneInput.value.trim()) {
         phoneInput.value = formatMobileByNationality(phoneInput.value, nat);
       }
@@ -1821,7 +2067,6 @@
       applyNationalityRules("editNationality", "editNricLabel", "editNric", "editPassportLabel", "editPassport", "editPhone", null, null);
     });
 
-    // DOB & Age live updates
     document.getElementById("newEmpDob").addEventListener("change", () => {
       const age = calculateAgeFromDob(document.getElementById("newEmpDob").value);
       document.getElementById("newEmpAgeBadge").textContent = age !== null ? `Age: ${age} Yrs` : "Age: -";
@@ -1843,20 +2088,17 @@
         e.target.value = String(e.target.value || "").replace(/[^0-9.]/g, "");
       }
     });
-
     document.addEventListener("focusout", (e) => {
       if (e.target.classList.contains("leave-days-input") && !e.target.disabled) {
         e.target.value = formatLeaveDaysDisplay(e.target.value);
       }
     });
 
-    // ==================== AUTO-EXPANDING MULTI-LINE KPI TEXTAREAS ====================
     function autoResizeTextarea(ta) {
       if (!ta) return;
       ta.style.height = "auto";
       ta.style.height = Math.min(ta.scrollHeight, 210) + "px";
     }
-
     function resizeAllKpiTextareas() {
       document.querySelectorAll(".auto-expand-textarea").forEach(autoResizeTextarea);
     }
@@ -1894,10 +2136,7 @@
 
     function formatNowTimestamp() {
       const now = new Date();
-      const datePart = formatDateObj(now);
-      const hh = String(now.getHours()).padStart(2, "0");
-      const mm = String(now.getMinutes()).padStart(2, "0");
-      return `${datePart}, ${hh}:${mm}`;
+      return `${formatDateObj(now)}, ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
     }
 
     // ==================== INTERACTIVE CALENDAR POPUP ====================
@@ -1931,27 +2170,17 @@
       const daysInMonth = new Date(calViewYear, calViewMonth + 1, 0).getDate();
       const selectedDate = activeDateInput ? parseAnyDate(activeDateInput.value) : null;
 
-      for (let i = 0; i < firstDay; i++) {
-        calDaysGrid.appendChild(document.createElement("span"));
-      }
+      for (let i = 0; i < firstDay; i++) calDaysGrid.appendChild(document.createElement("span"));
 
       for (let d = 1; d <= daysInMonth; d++) {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.textContent = d;
-        const isSelected = selectedDate &&
-          selectedDate.getDate() === d &&
-          selectedDate.getMonth() === calViewMonth &&
-          selectedDate.getFullYear() === calViewYear;
-
-        btn.className = `py-1 rounded font-semibold ${
-          isSelected ? "bg-cyan-500 text-slate-950 font-black" : "hover:bg-slate-800 text-slate-200"
-        }`;
-
+        const isSelected = selectedDate && selectedDate.getDate() === d && selectedDate.getMonth() === calViewMonth && selectedDate.getFullYear() === calViewYear;
+        btn.className = `py-1 rounded font-semibold ${isSelected ? "bg-cyan-500 text-slate-950 font-black" : "hover:bg-slate-800 text-slate-200"}`;
         btn.addEventListener("click", () => {
           if (activeDateInput) {
-            const chosen = new Date(calViewYear, calViewMonth, d);
-            activeDateInput.value = formatDateObj(chosen);
+            activeDateInput.value = formatDateObj(new Date(calViewYear, calViewMonth, d));
             activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
           }
           calPopup.classList.add("hidden");
@@ -1981,91 +2210,65 @@
 
     calMonthSelect.addEventListener("change", () => { calViewMonth = parseInt(calMonthSelect.value, 10); renderCalendar(); });
     calYearSelect.addEventListener("change", () => { calViewYear = parseInt(calYearSelect.value, 10); renderCalendar(); });
-    document.getElementById("calPrevMonth").addEventListener("click", () => {
-      calViewMonth--;
-      if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
-      renderCalendar();
-    });
-    document.getElementById("calNextMonth").addEventListener("click", () => {
-      calViewMonth++;
-      if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
-      renderCalendar();
-    });
+    document.getElementById("calPrevMonth").addEventListener("click", () => { calViewMonth--; if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; } renderCalendar(); });
+    document.getElementById("calNextMonth").addEventListener("click", () => { calViewMonth++; if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; } renderCalendar(); });
     document.getElementById("calClearBtn").addEventListener("click", () => {
-      if (activeDateInput) {
-        activeDateInput.value = "";
-        activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
-      }
+      if (activeDateInput) { activeDateInput.value = ""; activeDateInput.dispatchEvent(new Event("change", { bubbles: true })); }
       calPopup.classList.add("hidden");
     });
     document.getElementById("calTodayBtn").addEventListener("click", () => {
-      if (activeDateInput) {
-        activeDateInput.value = formatDateObj(new Date());
-        activeDateInput.dispatchEvent(new Event("change", { bubbles: true }));
-      }
+      if (activeDateInput) { activeDateInput.value = formatDateObj(new Date()); activeDateInput.dispatchEvent(new Event("change", { bubbles: true })); }
       calPopup.classList.add("hidden");
     });
 
-    // ==================== GLOBAL INPUT, NRIC AUTO-DASH & CURSOR LOCK ====================
+    // ==================== GLOBAL INPUT, NRIC AUTO-GENDER/DOB/AGE & CURSOR LOCK ====================
     document.addEventListener("wheel", () => {
-      if (document.activeElement && ["INPUT", "SELECT"].includes(document.activeElement.tagName)) {
-        document.activeElement.blur();
-      }
+      if (document.activeElement && ["INPUT", "SELECT"].includes(document.activeElement.tagName)) document.activeElement.blur();
     }, { passive: true });
 
     document.addEventListener("input", (e) => {
       const el = e.target;
-
-      if (el.classList.contains("auto-expand-textarea")) {
-        autoResizeTextarea(el);
-      }
-
-      // Never rewrite value when user is deleting text so cursor stays put
+      if (el.classList.contains("auto-expand-textarea")) autoResizeTextarea(el);
       if (e.inputType && e.inputType.startsWith("delete")) return;
 
-      // NRIC Auto-Dash + Auto-DOB & Age for Malaysian NRIC
       if (el.classList.contains("nric-auto-dash")) {
-        const nat = document.getElementById("newEmpNationality").value;
-        if (nat === "Malaysian") {
+        if (document.getElementById("newEmpNationality").value === "Malaysian") {
           el.value = formatMalaysianNric(el.value);
-          const dobObj = extractDobFromMalaysianNric(el.value);
-          if (dobObj) {
-            const dobStr = formatDateObj(dobObj);
+          const { dob, gender } = extractInfoFromMalaysianNric(el.value);
+          if (dob) {
+            const dobStr = formatDateObj(dob);
             document.getElementById("newEmpDob").value = dobStr;
             const age = calculateAgeFromDob(dobStr);
             document.getElementById("newEmpAgeBadge").textContent = age !== null ? `Age: ${age} Yrs` : "Age: -";
           }
+          if (gender) document.getElementById("newEmpGender").value = gender;
         }
         return;
       }
 
       if (el.classList.contains("nric-auto-dash-edit")) {
-        const nat = document.getElementById("editNationality").value;
-        if (nat === "Malaysian") {
+        if (document.getElementById("editNationality").value === "Malaysian") {
           el.value = formatMalaysianNric(el.value);
-          const dobObj = extractDobFromMalaysianNric(el.value);
-          if (dobObj) {
-            const dobStr = formatDateObj(dobObj);
+          const { dob, gender } = extractInfoFromMalaysianNric(el.value);
+          if (dob) {
+            const dobStr = formatDateObj(dob);
             document.getElementById("editDob").value = dobStr;
             const age = calculateAgeFromDob(dobStr);
             document.getElementById("editAgeBadge").textContent = age !== null ? `Age: ${age} Yrs` : "Age: -";
           }
+          if (gender) document.getElementById("editGender").value = gender;
         }
         return;
       }
 
       if (el.classList.contains("mobile-format-input")) {
-        const nat = document.getElementById("newEmpNationality").value;
-        el.value = formatMobileByNationality(el.value, nat);
+        el.value = formatMobileByNationality(el.value, document.getElementById("newEmpNationality").value);
         return;
       }
-
       if (el.classList.contains("mobile-format-edit-input")) {
-        const nat = document.getElementById("editNationality").value;
-        el.value = formatMobileByNationality(el.value, nat);
+        el.value = formatMobileByNationality(el.value, document.getElementById("editNationality").value);
         return;
       }
-
       if (el.classList.contains("ec-phone-input")) {
         el.value = formatGenericPhoneSpacing(el.value);
         return;
@@ -2074,18 +2277,16 @@
       if (el.classList.contains("force-caps")) {
         const upper = el.value.toUpperCase();
         if (el.value !== upper) {
-          const start = el.selectionStart;
-          const end = el.selectionEnd;
+          const s = el.selectionStart, end = el.selectionEnd;
           el.value = upper;
-          if (start !== null) el.setSelectionRange(start, end);
+          if (s !== null) el.setSelectionRange(s, end);
         }
       } else if (el.classList.contains("force-sentence") && el.value.length > 0) {
         const converted = el.value.charAt(0).toUpperCase() + el.value.slice(1);
         if (el.value !== converted) {
-          const start = el.selectionStart;
-          const end = el.selectionEnd;
+          const s = el.selectionStart, end = el.selectionEnd;
           el.value = converted;
-          if (start !== null) el.setSelectionRange(start, end);
+          if (s !== null) el.setSelectionRange(s, end);
         }
       }
     });
@@ -2115,20 +2316,9 @@
       });
       document.querySelectorAll(".rel-select-opt").forEach((sel) => {
         const prev = sel.value;
-        sel.innerHTML = `<option value="">-- Select Relationship --</option>` +
-          sortedRels.map((r) => `<option value="${r}">${r}</option>`).join("");
+        sel.innerHTML = `<option value="">-- Select Relationship --</option>` + sortedRels.map((r) => `<option value="${r}">${r}</option>`).join("");
         if (prev && sortedRels.includes(prev)) sel.value = prev;
       });
-    }
-
-    function showToast(msg, isError = false) {
-      const banner = document.getElementById("toastBanner");
-      banner.textContent = msg;
-      banner.className = `p-4 rounded-xl border text-sm font-bold ${
-        isError ? "bg-rose-950/90 border-rose-500 text-rose-200" : "bg-emerald-950/90 border-emerald-500 text-emerald-200"
-      }`;
-      banner.classList.remove("hidden");
-      setTimeout(() => banner.classList.add("hidden"), 5500);
     }
 
     // ==================== NAVIGATION TABS ====================
@@ -2140,7 +2330,6 @@
         b.classList.remove(...activeClasses, ...inactiveClasses);
         b.classList.add(...(isTarget ? activeClasses : inactiveClasses));
       });
-
       document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
       document.getElementById(targetTabId).classList.remove("hidden");
       if (targetTabId === "kpiTab") resizeAllKpiTextareas();
@@ -2150,7 +2339,7 @@
       btn.addEventListener("click", () => switchTab(btn.dataset.tab));
     });
 
-    // ==================== AUTHENTICATION ====================
+    // ==================== AUTHENTICATION, CHANGE PASSWORD & ACCOUNT RECOVERY ====================
     const loginView = document.getElementById("loginView");
     const appView = document.getElementById("appView");
     const loginError = document.getElementById("loginError");
@@ -2169,7 +2358,7 @@
       try {
         await signInWithEmailAndPassword(auth, authEmail, password);
       } catch (err) {
-        loginError.textContent = `Login failed (${err.code}). Please check your Login ID and Password.`;
+        loginError.textContent = `Sign in failed (${err.code}). Please verify your Login ID and Password.`;
         loginError.classList.remove("hidden");
       } finally {
         loginBtn.disabled = false;
@@ -2178,6 +2367,104 @@
     });
 
     document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+
+    // Forgot ID / Forgot Password Modal
+    document.getElementById("openForgotIdBtn").addEventListener("click", () => {
+      document.getElementById("recoveryTypeInput").value = "Forgot Login ID";
+      document.getElementById("recoveryModalTitle").textContent = "Forgot Login ID";
+      document.getElementById("recoveryModalDesc").textContent = "Enter your full name and mobile number to send a Login ID reminder request to HR Administration.";
+      document.getElementById("recoveryEmpIdWrapper").classList.add("hidden");
+      document.getElementById("recoveryFeedback").classList.add("hidden");
+      document.getElementById("recoveryModal").classList.remove("hidden");
+    });
+
+    document.getElementById("openForgotPwdBtn").addEventListener("click", () => {
+      document.getElementById("recoveryTypeInput").value = "Forgot Password";
+      document.getElementById("recoveryModalTitle").textContent = "Forgot Password";
+      document.getElementById("recoveryModalDesc").textContent = "Enter your Login ID and mobile number to request a password reset from HR Administration.";
+      document.getElementById("recoveryEmpIdWrapper").classList.remove("hidden");
+      document.getElementById("recoveryFeedback").classList.add("hidden");
+      document.getElementById("recoveryModal").classList.remove("hidden");
+    });
+
+    document.getElementById("closeRecoveryBtn").addEventListener("click", () => {
+      document.getElementById("recoveryModal").classList.add("hidden");
+    });
+
+    document.getElementById("recoveryForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const type = document.getElementById("recoveryTypeInput").value;
+      const empId = document.getElementById("recoveryEmpId").value.trim().toUpperCase();
+      const fullName = document.getElementById("recoveryFullName").value.trim().toUpperCase();
+      const phone = document.getElementById("recoveryPhone").value.trim();
+      const fb = document.getElementById("recoveryFeedback");
+
+      try {
+        await addDoc(collection(db, "announcements"), {
+          kind: "recovery_request",
+          recoveryType: type,
+          empId: empId || "(Unknown ID)",
+          fullName,
+          phone,
+          status: "Open",
+          postedAt: formatNowTimestamp(),
+          createdAt: serverTimestamp()
+        });
+        fb.textContent = "Request sent to HR Administration! HR will contact you shortly with your credentials.";
+        fb.className = "text-xs font-bold p-2.5 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200";
+        fb.classList.remove("hidden");
+        document.getElementById("recoveryForm").reset();
+      } catch (err) {
+        fb.textContent = "Unable to submit online request right now. Please contact HR Administration directly via WhatsApp or office extension.";
+        fb.className = "text-xs font-bold p-2.5 rounded-xl bg-amber-950 border border-amber-500 text-amber-200";
+        fb.classList.remove("hidden");
+      }
+    });
+
+    // Self-Service Change Password Modal
+    document.getElementById("openChangePwdBtn").addEventListener("click", () => {
+      document.getElementById("changePasswordForm").reset();
+      document.getElementById("cpErrorMsg").classList.add("hidden");
+      document.getElementById("changePasswordModal").classList.remove("hidden");
+    });
+    document.getElementById("cancelCpBtn").addEventListener("click", () => {
+      document.getElementById("changePasswordModal").classList.add("hidden");
+    });
+
+    document.getElementById("changePasswordForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const curPwd = document.getElementById("cpCurrentPwd").value;
+      const newPwd = document.getElementById("cpNewPwd").value;
+      const confPwd = document.getElementById("cpConfirmPwd").value;
+      const errEl = document.getElementById("cpErrorMsg");
+
+      if (newPwd !== confPwd) {
+        errEl.textContent = "New password and confirmation do not match.";
+        errEl.classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const user = auth.currentUser;
+        const cred = EmailAuthProvider.credential(user.email, curPwd);
+        await reauthenticateWithCredential(user, cred);
+        await updatePassword(user, newPwd);
+        document.getElementById("changePasswordModal").classList.add("hidden");
+        showToast("Your password has been updated successfully.");
+      } catch (err) {
+        errEl.textContent = `Password update failed (${err.code}). Please check your current password.`;
+        errEl.classList.remove("hidden");
+      }
+    });
+
+    // ==================== ROLE-BASED ACCESS & INITIAL LOAD ====================
+    function isSupervisorOrAbove() {
+      if (!currentUserProfile) return false;
+      const role = currentUserProfile.role;
+      if (["hr_admin", "managing_director", "manager"].includes(role)) return true;
+      // Also check if a confirmed employee was promoted / assigned subordinates
+      return allEmployees.some((e) => e.managerUid === currentUserUid && e.uid !== currentUserUid);
+    }
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -2198,16 +2485,10 @@
         currentUserUid = user.uid;
         currentUserProfile = snap.data();
 
-        document.getElementById("userNameDisplay").textContent = currentUserProfile.fullName || "-";
+        document.getElementById("userNameDisplay").textContent = currentUserProfile.displayName || currentUserProfile.fullName || "-";
         document.getElementById("userIdDisplay").textContent = currentUserProfile.empId || "-";
         document.getElementById("userRoleBadge").textContent = currentUserProfile.role || "-";
-        document.getElementById("userCompanyDisplay").textContent = currentUserProfile.companyEntity || "OneHax Group";
-        document.getElementById("userPhoneDisplay").textContent = currentUserProfile.phone || "-";
-
-        const isAdmin = currentUserProfile.role === "hr_admin";
-        const isExec = isAdmin || currentUserProfile.role === "managing_director";
-        document.getElementById("navAddEmployeeBtn").classList.toggle("hidden", !isAdmin);
-        document.getElementById("openAnnouncementModalBtn").classList.toggle("hidden", !isExec);
+        document.getElementById("userCompanyDisplay").textContent = currentUserProfile.companyEntity || "HR Group";
 
         populateRelationshipDropdowns();
         sortAllAlphabeticalDropdowns();
@@ -2217,7 +2498,23 @@
         await loadEmployees();
         await loadLeaveRequests();
         await loadAnnouncements();
-        renderDashboard();
+
+        const isAdmin = currentUserProfile.role === "hr_admin";
+        const isExec = isAdmin || currentUserProfile.role === "managing_director";
+        const canSupervise = isSupervisorOrAbove();
+
+        document.getElementById("navDashboardBtn").classList.toggle("hidden", !canSupervise);
+        document.getElementById("navProbationBtn").classList.toggle("hidden", !canSupervise);
+        document.getElementById("navAddEmployeeBtn").classList.toggle("hidden", !isAdmin);
+        document.getElementById("openAnnouncementModalBtn").classList.toggle("hidden", !isExec);
+        document.getElementById("employeeNoticeBar").classList.toggle("hidden", canSupervise);
+
+        if (canSupervise) {
+          renderDashboard();
+          switchTab("dashboardTab");
+        } else {
+          switchTab("leaveTab");
+        }
 
         loginView.classList.add("hidden");
         appView.classList.remove("hidden");
@@ -2228,24 +2525,18 @@
       }
     });
 
-    // ==================== DYNAMIC LOOKUPS (OFFICES, DEPARTMENTS & JOB TITLES) ====================
+    // ==================== DYNAMIC LOOKUPS ====================
     async function loadLookups() {
       if (currentUserProfile.role === "hr_admin") {
         try {
           const snap = await getDoc(doc(db, "employees", currentUserUid, "vault", "lookups"));
           if (snap.exists()) {
             const data = snap.data();
-            if (Array.isArray(data.offices) && data.offices.length) {
-              lookupData.offices = [...new Set(data.offices.map(toTitleCaseClean))];
-            }
-            if (Array.isArray(data.departments) && data.departments.length) {
-              lookupData.departments = [...new Set(data.departments.map(toTitleCaseClean))];
-            }
-            if (Array.isArray(data.jobTitles) && data.jobTitles.length) {
-              lookupData.jobTitles = [...new Set(data.jobTitles.map(toTitleCaseClean))];
-            }
+            if (Array.isArray(data.offices) && data.offices.length) lookupData.offices = [...new Set(data.offices.map(toTitleCaseClean))];
+            if (Array.isArray(data.departments) && data.departments.length) lookupData.departments = [...new Set(data.departments.map(toTitleCaseClean))];
+            if (Array.isArray(data.jobTitles) && data.jobTitles.length) lookupData.jobTitles = [...new Set(data.jobTitles.map(toTitleCaseClean))];
           }
-        } catch (err) { /* fallback to defaults */ }
+        } catch (err) { /* fallback */ }
       }
       renderLookupSelects();
     }
@@ -2260,13 +2551,11 @@
         sel.innerHTML = sortedOffices.map((o) => `<option value="${o}">${o}</option>`).join("");
         if (prev && sortedOffices.includes(prev)) sel.value = prev;
       });
-
       document.querySelectorAll(".dept-select").forEach((sel) => {
         const prev = toTitleCaseClean(sel.value);
         sel.innerHTML = sortedDepts.map((d) => `<option value="${d}">${d}</option>`).join("");
         if (prev && sortedDepts.includes(prev)) sel.value = prev;
       });
-
       document.querySelectorAll(".job-select").forEach((sel) => {
         const prev = toTitleCaseClean(sel.value);
         sel.innerHTML = sortedJobs.map((j) => `<option value="${j}">${j}</option>`).join("");
@@ -2298,10 +2587,8 @@
     document.querySelectorAll(".remove-lookup-btn").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const key = btn.dataset.lookup;
-        const selectEl = document.getElementById(btn.dataset.target);
-        const val = selectEl.value;
-        if (!val) return;
-        if (!confirm(`Remove "${val}" from the dropdown list?`)) return;
+        const val = document.getElementById(btn.dataset.target).value;
+        if (!val || !confirm(`Remove "${val}" from the dropdown list?`)) return;
         lookupData[key] = lookupData[key].filter((item) => item !== val);
         renderLookupSelects();
         await saveLookups();
@@ -2309,48 +2596,49 @@
       });
     });
 
-    // ==================== LOAD & RENDER EMPLOYEES ====================
+    // ==================== LOAD & RENDER EMPLOYEES (WITH MALAYSIAN PDPA PROTECTION) ====================
     async function loadEmployees() {
       allEmployees = [];
       const role = currentUserProfile.role;
 
-      if (role === "hr_admin" || role === "managing_director") {
+      // Load directory roster (all employees can see work directory; personal fields masked in UI for non-supervisors)
+      try {
         const snap = await getDocs(collection(db, "employees"));
         snap.forEach((d) => allEmployees.push({ uid: d.id, ...d.data() }));
-      } else if (role === "manager") {
+      } catch (err) {
+        // Fallback if Firestore rules restrict collection scan for regular employees
         const selfSnap = await getDoc(doc(db, "employees", currentUserUid));
         if (selfSnap.exists()) allEmployees.push({ uid: selfSnap.id, ...selfSnap.data() });
-        const teamSnap = await getDocs(query(collection(db, "employees"), where("managerUid", "==", currentUserUid)));
-        teamSnap.forEach((d) => {
-          if (d.id !== currentUserUid) allEmployees.push({ uid: d.id, ...d.data() });
-        });
-      } else {
-        allEmployees.push({ uid: currentUserUid, ...currentUserProfile });
+        if (role === "manager") {
+          const teamSnap = await getDocs(query(collection(db, "employees"), where("managerUid", "==", currentUserUid)));
+          teamSnap.forEach((d) => { if (d.id !== currentUserUid) allEmployees.push({ uid: d.id, ...d.data() }); });
+        }
       }
 
       allEmployees.forEach((e) => {
-        if (e.office) {
-          const cleanO = toTitleCaseClean(e.office);
-          if (!lookupData.offices.includes(cleanO)) lookupData.offices.push(cleanO);
-        }
-        if (e.department) {
-          const cleanD = toTitleCaseClean(e.department);
-          if (!lookupData.departments.includes(cleanD)) lookupData.departments.push(cleanD);
-        }
+        if (e.office) { const cleanO = toTitleCaseClean(e.office); if (!lookupData.offices.includes(cleanO)) lookupData.offices.push(cleanO); }
+        if (e.department) { const cleanD = toTitleCaseClean(e.department); if (!lookupData.departments.includes(cleanD)) lookupData.departments.push(cleanD); }
         const jt = e.jobTitle || e.position;
-        if (jt) {
-          const cleanJ = toTitleCaseClean(jt);
-          if (!lookupData.jobTitles.includes(cleanJ)) lookupData.jobTitles.push(cleanJ);
-        }
+        if (jt) { const cleanJ = toTitleCaseClean(jt); if (!lookupData.jobTitles.includes(cleanJ)) lookupData.jobTitles.push(cleanJ); }
       });
       renderLookupSelects();
 
       allEmployees.sort((a, b) => (a.empId || "").localeCompare(b.empId || ""));
+
+      // Scope managed staff list
+      if (role === "hr_admin" || role === "managing_director") {
+        visibleDirectoryEmployees = [...allEmployees];
+      } else if (isSupervisorOrAbove()) {
+        visibleDirectoryEmployees = allEmployees.filter((e) => e.uid === currentUserUid || e.managerUid === currentUserUid);
+      } else {
+        visibleDirectoryEmployees = allEmployees.filter((e) => e.status !== "Resigned");
+      }
+
       filterAndRenderDirectory();
-      renderProbationTracker(allEmployees);
+      renderProbationTracker(visibleDirectoryEmployees);
       populateManagerDropdowns(allEmployees);
-      populateKpiEmployeeSelector(allEmployees);
-      populateLeaveApplicantSelector(allEmployees);
+      populateKpiEmployeeSelector(isSupervisorOrAbove() ? visibleDirectoryEmployees : allEmployees.filter((e) => e.uid === currentUserUid));
+      populateLeaveApplicantSelector(isSupervisorOrAbove() ? visibleDirectoryEmployees : allEmployees.filter((e) => e.uid === currentUserUid));
     }
 
     function getStatusBadgeClass(status) {
@@ -2363,12 +2651,15 @@
       const term = document.getElementById("directorySearch").value.toLowerCase();
       const companyFilter = document.getElementById("directoryCompanyFilter").value;
       const officeFilter = document.getElementById("directoryOfficeFilter").value;
-      const filtered = allEmployees.filter((emp) => {
+      const canSeePrivate = isSupervisorOrAbove();
+
+      const filtered = visibleDirectoryEmployees.filter((emp) => {
         const matchesCompany = !companyFilter || emp.companyEntity === companyFilter;
         const matchesOffice = !officeFilter || toTitleCaseClean(emp.office) === officeFilter;
+        const searchableName = canSeePrivate ? `${emp.fullName || ""} ${emp.displayName || ""}` : getColleagueSafeName(emp);
         const matchesTerm =
-          (emp.fullName || "").toLowerCase().includes(term) ||
-          (emp.empId || "").toLowerCase().includes(term) ||
+          searchableName.toLowerCase().includes(term) ||
+          (canSeePrivate && (emp.empId || "").toLowerCase().includes(term)) ||
           (emp.department || "").toLowerCase().includes(term) ||
           (emp.jobTitle || emp.position || "").toLowerCase().includes(term);
         return matchesCompany && matchesOffice && matchesTerm;
@@ -2381,43 +2672,106 @@
     document.getElementById("directoryOfficeFilter").addEventListener("change", filterAndRenderDirectory);
 
     function renderDirectory(list) {
+      const thead = document.getElementById("directoryTableHead");
       const tbody = document.getElementById("directoryTableBody");
+      const canSeePrivate = isSupervisorOrAbove();
+
+      if (canSeePrivate) {
+        thead.innerHTML = `
+          <tr class="border-b border-slate-800 text-xs uppercase text-slate-400 bg-slate-950/70">
+            <th class="py-3 px-4 font-bold">Login ID</th>
+            <th class="py-3 px-4 font-bold">Full Name &amp; Preferred</th>
+            <th class="py-3 px-4 font-bold">Company &amp; Office</th>
+            <th class="py-3 px-4 font-bold">Department / Job Title</th>
+            <th class="py-3 px-4 font-bold">Mobile Number</th>
+            <th class="py-3 px-4 font-bold">Join Date &amp; Tenure</th>
+            <th class="py-3 px-4 font-bold">Status</th>
+            <th class="py-3 px-4 font-bold text-right">Action</th>
+          </tr>`;
+      } else {
+        // PDPA Masked Columns for Regular Peers (No surname, no mobile, no email, no request button)
+        thead.innerHTML = `
+          <tr class="border-b border-slate-800 text-xs uppercase text-slate-400 bg-slate-950/70">
+            <th class="py-3 px-4 font-bold">Display Name</th>
+            <th class="py-3 px-4 font-bold">Company Entity</th>
+            <th class="py-3 px-4 font-bold">Office</th>
+            <th class="py-3 px-4 font-bold">Department</th>
+            <th class="py-3 px-4 font-bold">Job Title</th>
+            <th class="py-3 px-4 font-bold">Status</th>
+            <th class="py-3 px-4 font-bold text-right">Record</th>
+          </tr>`;
+      }
+
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-medium text-slate-400">No employees found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" class="py-6 text-center font-medium text-slate-400">No staff records found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = list.map((emp) => {
-        const dept = toTitleCaseClean(emp.department || "-");
-        const jt = toTitleCaseClean(emp.jobTitle || emp.position || "");
-        const off = toTitleCaseClean(emp.office || "");
-        const tenure = calculateTenureString(emp.joinDate);
-        return `
-          <tr class="hover:bg-slate-800/70 transition cursor-pointer" data-uid="${emp.uid}">
-            <td class="py-3 px-4 font-extrabold text-cyan-300">${emp.empId || "-"}</td>
-            <td class="py-3 px-4 font-bold text-white">${emp.fullName || "-"}</td>
-            <td class="py-3 px-4 font-medium text-slate-200 text-xs">${emp.companyEntity || "-"} ${off ? `<span class="block text-slate-400">${off} Office</span>` : ""}</td>
-            <td class="py-3 px-4 font-medium text-slate-200">${dept} ${jt ? `&bull; ${jt}` : ""}</td>
-            <td class="py-3 px-4 font-medium text-slate-200">${emp.phone || "-"}</td>
-            <td class="py-3 px-4 font-medium text-slate-200 text-xs">
-              ${formatDisplayDate(emp.joinDate)}
-              <span class="block text-emerald-300 font-semibold">${tenure}</span>
-            </td>
-            <td class="py-3 px-4">
-              <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
-                ${emp.status || "Confirmed / Permanent"}
-              </span>
-            </td>
-            <td class="py-3 px-4 text-right">
-              <button type="button" class="text-sky-300 hover:underline font-extrabold text-xs">View Details</button>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      if (canSeePrivate) {
+        tbody.innerHTML = list.map((emp) => {
+          const dept = toTitleCaseClean(emp.department || "-");
+          const jt = toTitleCaseClean(emp.jobTitle || emp.position || "");
+          const off = toTitleCaseClean(emp.office || "");
+          const tenure = calculateTenureString(emp.joinDate);
+          const disp = emp.displayName ? `<span class="block text-[11px] text-cyan-300">Preferred: ${emp.displayName}</span>` : "";
+          return `
+            <tr class="hover:bg-slate-800/70 transition cursor-pointer" data-uid="${emp.uid}">
+              <td class="py-3 px-4 font-extrabold text-cyan-300">${emp.empId || "-"}</td>
+              <td class="py-3 px-4 font-bold text-white">${emp.fullName || "-"}${disp}</td>
+              <td class="py-3 px-4 font-medium text-slate-200 text-xs">${emp.companyEntity || "-"} ${off ? `<span class="block text-slate-400">${off} Office</span>` : ""}</td>
+              <td class="py-3 px-4 font-medium text-slate-200">${dept} ${jt ? `&bull; ${jt}` : ""}</td>
+              <td class="py-3 px-4 font-medium text-slate-200">${emp.phone || "-"}</td>
+              <td class="py-3 px-4 font-medium text-slate-200 text-xs">
+                ${formatDisplayDate(emp.joinDate)}
+                <span class="block text-emerald-300 font-semibold">${tenure}</span>
+              </td>
+              <td class="py-3 px-4">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
+                  ${emp.status || "Confirmed / Permanent"}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-right">
+                <button type="button" class="text-sky-300 hover:underline font-extrabold text-xs">View Details</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
 
-      tbody.querySelectorAll("tr[data-uid]").forEach((row) => {
-        row.addEventListener("click", () => openEmployeeModal(row.dataset.uid));
-      });
+        tbody.querySelectorAll("tr[data-uid]").forEach((row) => {
+          row.addEventListener("click", () => openEmployeeModal(row.dataset.uid));
+        });
+      } else {
+        tbody.innerHTML = list.map((emp) => {
+          const isSelf = emp.uid === currentUserUid;
+          const safeName = getColleagueSafeName(emp);
+          const dept = toTitleCaseClean(emp.department || "-");
+          const jt = toTitleCaseClean(emp.jobTitle || emp.position || "-");
+          const off = toTitleCaseClean(emp.office || "-");
+          return `
+            <tr class="${isSelf ? "bg-sky-950/30 hover:bg-sky-900/40 cursor-pointer" : "hover:bg-slate-800/40"}" ${isSelf ? `data-uid="${emp.uid}"` : ""}>
+              <td class="py-3 px-4 font-extrabold text-white">${safeName} ${isSelf ? `<span class="ml-1.5 text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">You</span>` : ""}</td>
+              <td class="py-3 px-4 font-medium text-slate-200 text-xs">${emp.companyEntity || "-"}</td>
+              <td class="py-3 px-4 font-medium text-slate-200">${off}</td>
+              <td class="py-3 px-4 font-medium text-slate-200">${dept}</td>
+              <td class="py-3 px-4 font-medium text-slate-200">${jt}</td>
+              <td class="py-3 px-4">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}">
+                  ${emp.status || "Confirmed / Permanent"}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-right">
+                ${isSelf
+                  ? `<button type="button" class="text-cyan-300 hover:underline font-extrabold text-xs">View My Profile</button>`
+                  : `<span class="text-[11px] font-semibold text-slate-500">PDPA Protected</span>`}
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+        tbody.querySelectorAll("tr[data-uid]").forEach((row) => {
+          row.addEventListener("click", () => openEmployeeModal(row.dataset.uid));
+        });
+      }
     }
 
     function renderProbationTracker(list) {
@@ -2486,7 +2840,7 @@
       document.getElementById("editManagerUid").innerHTML = html;
     }
 
-    // ==================== ONBOARDING FORM: DYNAMIC DURATION, TENURE & SUBMIT ====================
+    // ==================== ONBOARDING FORM ====================
     const newEmpStatus = document.getElementById("newEmpStatus");
     const newEmpDurationMonths = document.getElementById("newEmpDurationMonths");
     const newEmpJoinDate = document.getElementById("newEmpJoinDate");
@@ -2502,8 +2856,7 @@
       const joinObj = parseAnyDate(newEmpJoinDate.value);
       const months = parseInt(newEmpDurationMonths.value, 10);
       if (show && joinObj && months > 0) {
-        const endObj = new Date(joinObj.getFullYear(), joinObj.getMonth() + months, joinObj.getDate());
-        newEmpProbationEnd.value = formatDateObj(endObj);
+        newEmpProbationEnd.value = formatDateObj(new Date(joinObj.getFullYear(), joinObj.getMonth() + months, joinObj.getDate()));
       } else {
         newEmpProbationEnd.value = "";
       }
@@ -2533,6 +2886,7 @@
       const empId = document.getElementById("newEmpId").value.trim().toUpperCase();
       const password = document.getElementById("newEmpPassword").value.trim();
       const fullName = document.getElementById("newEmpName").value.trim().toUpperCase();
+      const displayName = document.getElementById("newEmpDisplayName").value.trim().toUpperCase();
       const nric = document.getElementById("newEmpNric").value.trim();
       const passport = document.getElementById("newEmpPassport").value.trim().toUpperCase();
       const dob = document.getElementById("newEmpDob").value.trim();
@@ -2583,13 +2937,14 @@
         await signOut(secondaryAuth);
 
         await setDoc(doc(db, "employees", newUid), {
-          empId, fullName, loginEmail: authEmail, nationality, nric, passport,
+          empId, fullName, displayName, loginEmail: authEmail, nationality, nric, passport,
           dob, gender, maritalStatus, phone, email, residentialAddress,
           ec1Name, ec1Rel, ec1Phone, ec2Name, ec2Rel, ec2Phone, ec3Name, ec3Rel, ec3Phone,
           companyEntity, office, department, jobTitle, role, managerUid,
           joinDate, status, durationMonths, probationEndDate,
           ...leaveFields,
-          fieldHistory: {}
+          fieldHistory: {},
+          promotions: []
         });
 
         await addDoc(collection(db, "employees", newUid, "logs"), {
@@ -2606,7 +2961,7 @@
         populateRelationshipDropdowns();
         applyNationalityRules("newEmpNationality", "newEmpNricLabel", "newEmpNric", "newEmpPassportLabel", "newEmpPassport", "newEmpPhone", "newEmpPhoneHint", "newEmpAddressHint");
         updateOnboardingDates();
-        showToast(`Success! ${fullName} (${empId}) onboarded and ready to sign in.`);
+        showToast(`${fullName} (${empId}) has been onboarded and is ready to sign in.`);
         await loadEmployees();
         renderDashboard();
         switchTab("directoryTab");
@@ -2618,15 +2973,15 @@
       }
     });
 
-    // ==================== EMPLOYEE MODAL, PER-FIELD EDIT AUDIT & HR VAULT ====================
+    // ==================== EMPLOYEE MODAL, AUTO-CLOSE SAVE, PROMOTION TRACKER & HR VAULT ====================
     const empModal = document.getElementById("empModal");
     document.getElementById("closeModalTopBtn").addEventListener("click", () => empModal.classList.add("hidden"));
     document.getElementById("closeModalBottomBtn").addEventListener("click", () => empModal.classList.add("hidden"));
 
     const EDITABLE_FIELD_IDS = {
-      empId: "editEmpId", fullName: "editFullName", companyEntity: "editCompanyEntity",
-      office: "editOffice", nationality: "editNationality", nric: "editNric",
-      passport: "editPassport", dob: "editDob", gender: "editGender",
+      empId: "editEmpId", fullName: "editFullName", displayName: "editDisplayName",
+      companyEntity: "editCompanyEntity", office: "editOffice", nationality: "editNationality",
+      nric: "editNric", passport: "editPassport", dob: "editDob", gender: "editGender",
       maritalStatus: "editMaritalStatus", phone: "editPhone", email: "editEmail",
       residentialAddress: "editAddress", department: "editDepartment", jobTitle: "editJobTitle",
       role: "editRole", managerUid: "editManagerUid", joinDate: "editJoinDate",
@@ -2640,16 +2995,29 @@
       leavePaternity: "editLeavePaternity", leaveReplacement: "editLeaveReplacement", leaveOther: "editLeaveOther"
     };
 
+    function showModalInlineError(msg) {
+      const box = document.getElementById("modalInlineError");
+      if (!msg) {
+        box.classList.add("hidden");
+        box.textContent = "";
+      } else {
+        box.textContent = msg;
+        box.classList.remove("hidden");
+      }
+    }
+
     async function openEmployeeModal(uid) {
       selectedEmpUid = uid;
       const emp = allEmployees.find((e) => e.uid === uid);
       if (!emp) return;
 
+      showModalInlineError("");
       const isAdmin = currentUserProfile.role === "hr_admin";
       const jobTitleVal = toTitleCaseClean(emp.jobTitle || emp.position || "");
       const deptVal = toTitleCaseClean(emp.department || "");
       const officeVal = toTitleCaseClean(emp.office || "Serdang");
       const natVal = emp.nationality || "Malaysian";
+      const dispVal = emp.displayName || getColleagueSafeName(emp);
 
       document.getElementById("modalEmpName").textContent = emp.fullName || "-";
       document.getElementById("modalFooterEmpName").textContent = `${emp.fullName || "-"} (${emp.empId || "-"})`;
@@ -2660,10 +3028,14 @@
       badge.textContent = emp.status || "Confirmed / Permanent";
       badge.className = `text-xs font-bold px-2.5 py-0.5 rounded-full ${getStatusBadgeClass(emp.status)}`;
 
+      // Strict Read-Only for non-HR Admin (including employees viewing their own profile)
+      document.getElementById("modalReadOnlyBanner").classList.toggle("hidden", isAdmin);
+
       const history = emp.fieldHistory || {};
       Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
         const el = document.getElementById(elId);
         let val = emp[fieldKey] ?? "";
+        if (fieldKey === "displayName") val = dispVal;
         if (fieldKey === "jobTitle") val = jobTitleVal;
         if (fieldKey === "department") val = deptVal;
         if (fieldKey === "office") val = officeVal;
@@ -2681,7 +3053,7 @@
 
         const histBox = document.getElementById(`hist-${fieldKey}`);
         if (histBox) {
-          if (history[fieldKey]) {
+          if (isAdmin && history[fieldKey]) {
             const h = history[fieldKey];
             histBox.textContent = `Previous: "${h.prevValue || "(Empty)"}" • Edited: ${h.editedAt}`;
             histBox.classList.remove("hidden");
@@ -2694,7 +3066,6 @@
       const age = calculateAgeFromDob(emp.dob);
       document.getElementById("editAgeBadge").textContent = age !== null ? `Age: ${age} Yrs` : "Age: -";
 
-      // Live Leave Balance readout in Modal
       const bal = computeEmployeeLeaveBalances(emp);
       document.getElementById("modalLiveLeaveStats").textContent =
         `Remaining: AL ${bal.remAL}d • MC ${bal.remMC}d • HL ${bal.remHL}d (Taken this year: AL ${bal.takenAL}d, MC ${bal.takenMC}d, EL ${bal.takenEL}d)`;
@@ -2708,13 +3079,21 @@
         document.getElementById("probNewEndDate").value = emp.probationEndDate ? formatDisplayDate(emp.probationEndDate) : "";
         document.getElementById("probActionRemarks").value = "";
 
+        // Pre-fill Promotion section with current entity/office/dept/role
+        document.getElementById("promoNewCompany").value = emp.companyEntity || "Atlas Marking Sdn Bhd";
+        document.getElementById("promoNewOffice").value = officeVal;
+        document.getElementById("promoNewDept").value = deptVal;
+        document.getElementById("promoNewJobTitle").value = jobTitleVal;
+        document.getElementById("promoNewRole").value = emp.role || "employee";
+        renderPromotionHistory(emp);
+
         const incTag = document.getElementById("vaultIncentiveStatusTag");
         if (emp.status === "Confirmed / Permanent" || emp.status === "Active") {
-          incTag.textContent = "Eligible (Confirmed)";
-          incTag.className = "ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300";
+          incTag.textContent = "Eligible";
+          incTag.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30";
         } else {
-          incTag.textContent = `Pending (${emp.status || "Probation"})`;
-          incTag.className = "ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300";
+          incTag.textContent = "Pending";
+          incTag.className = "text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-400/30";
         }
 
         const vaultSnap = await getDoc(doc(db, "employees", uid, "vault", "compensation"));
@@ -2753,20 +3132,51 @@
       empModal.classList.remove("hidden");
     }
 
+    // ==================== SAVE PROFILE CHANGES (VALIDATE ALL MANDATORY + AUTO-CLOSE + CENTER GREEN BANNER) ====================
     document.getElementById("saveProfileEditBtn").addEventListener("click", async () => {
       if (!selectedEmpUid) return;
       const emp = allEmployees.find((e) => e.uid === selectedEmpUid);
       if (!emp) return;
 
+      showModalInlineError("");
+
+      const empIdVal = document.getElementById("editEmpId").value.trim().toUpperCase();
+      const fullNameVal = document.getElementById("editFullName").value.trim().toUpperCase();
+      const displayNameVal = document.getElementById("editDisplayName").value.trim().toUpperCase();
       const nationality = document.getElementById("editNationality").value;
+      const nricVal = document.getElementById("editNric").value.trim();
+      const passportVal = document.getElementById("editPassport").value.trim().toUpperCase();
       const phone = document.getElementById("editPhone").value.trim();
       const residentialAddress = document.getElementById("editAddress").value.trim().toUpperCase();
+      const joinDateVal = document.getElementById("editJoinDate").value.trim();
+      const ec1NameVal = document.getElementById("editEc1Name").value.trim().toUpperCase();
+      const ec1PhoneVal = document.getElementById("editEc1Phone").value.trim();
 
+      if (!empIdVal || !fullNameVal || !displayNameVal) {
+        showModalInlineError("Login ID, Full Legal Name, and Display / Preferred Name are mandatory.");
+        return;
+      }
+      if (nationality === "Malaysian" && !nricVal) {
+        showModalInlineError("NRIC Number is mandatory for Malaysian employees.");
+        return;
+      }
+      if (nationality !== "Malaysian" && !passportVal) {
+        showModalInlineError("Passport Number is mandatory for non-Malaysian employees.");
+        return;
+      }
       const phoneErr = validateMobileByNationality(phone, nationality);
-      if (phoneErr) { showToast(phoneErr, true); return; }
+      if (phoneErr) { showModalInlineError(phoneErr); return; }
 
+      if (!residentialAddress) { showModalInlineError("Residential Address is mandatory."); return; }
       const addrErr = validateAddressPostcode(residentialAddress, nationality);
-      if (addrErr) { showToast(addrErr, true); return; }
+      if (addrErr) { showModalInlineError(addrErr); return; }
+
+      if (!joinDateVal) { showModalInlineError("Join Date is mandatory."); return; }
+      if (!ec1NameVal || !ec1PhoneVal) { showModalInlineError("Emergency Contact 1 Name and Phone Number are mandatory."); return; }
+
+      const saveBtn = document.getElementById("saveProfileEditBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
 
       const updates = {};
       const updatedHistory = { ...(emp.fieldHistory || {}) };
@@ -2775,10 +3185,10 @@
 
       Object.entries(EDITABLE_FIELD_IDS).forEach(([fieldKey, elId]) => {
         let newVal = document.getElementById(elId).value.trim();
-        if (fieldKey.startsWith("leave") && newVal) {
-          newVal = formatLeaveDaysDisplay(newVal);
-        }
+        if (fieldKey.startsWith("leave") && newVal) newVal = formatLeaveDaysDisplay(newVal);
+
         let oldVal = String(emp[fieldKey] ?? "").trim();
+        if (fieldKey === "displayName" && !oldVal) oldVal = getColleagueSafeName(emp);
         if (fieldKey === "jobTitle") oldVal = toTitleCaseClean(emp.jobTitle || emp.position || "");
         if (fieldKey === "department") oldVal = toTitleCaseClean(emp.department || "");
         if (fieldKey === "office") oldVal = toTitleCaseClean(emp.office || "Serdang");
@@ -2786,9 +3196,7 @@
         if (fieldKey === "joinDate" || fieldKey === "probationEndDate" || fieldKey === "dob") {
           oldVal = oldVal ? formatDisplayDate(oldVal) : "";
         }
-        if (fieldKey.startsWith("leave") && oldVal) {
-          oldVal = formatLeaveDaysDisplay(oldVal);
-        }
+        if (fieldKey.startsWith("leave") && oldVal) oldVal = formatLeaveDaysDisplay(oldVal);
 
         if (newVal !== oldVal) {
           updates[fieldKey] = newVal;
@@ -2801,26 +3209,121 @@
         }
       });
 
-      if (changeCount === 0) { showToast("No changes detected."); return; }
+      if (changeCount === 0) {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Changes";
+        empModal.classList.add("hidden");
+        showToast("Profile verified (no field changes were made).");
+        return;
+      }
 
       updates.fieldHistory = updatedHistory;
 
       try {
         await updateDoc(doc(db, "employees", selectedEmpUid), updates);
         await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
-          action: "Employee Profile Edited",
+          action: "Employee Profile Updated",
           remarks: `Updated ${changeCount} field(s)`,
           createdBy: currentUserProfile.fullName,
           createdAt: serverTimestamp(),
           displayTime: timestamp
         });
 
-        showToast(`Saved ${changeCount} field update(s) with audit history.`);
+        await loadEmployees();
+        renderDashboard();
+        empModal.classList.add("hidden");
+        showToast(`Saved ${changeCount} change(s) for ${fullNameVal}.`);
+      } catch (err) {
+        showModalInlineError(`Database save error: ${err.message}`);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Changes";
+      }
+    });
+
+    // ==================== CAREER PROGRESSION & PROMOTION HISTORY ====================
+    function renderPromotionHistory(emp) {
+      const listEl = document.getElementById("promotionHistoryList");
+      const promos = emp.promotions || [];
+      if (promos.length === 0) {
+        listEl.innerHTML = `<p class="text-slate-400 font-medium">No promotions or transfers recorded yet.</p>`;
+        return;
+      }
+      listEl.innerHTML = promos.map((p) => `
+        <div class="bg-slate-950 border border-indigo-500/30 rounded-xl p-3 text-slate-200">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <strong class="text-indigo-300">${p.effectiveDate} &bull; ${p.movementType}</strong>
+            <span class="text-[11px] font-bold text-cyan-300">${p.companyEntity} (${p.office})</span>
+          </div>
+          <p class="mt-1">
+            Role: <strong class="text-white">${p.jobTitle}</strong> (${p.department}) &bull; System Access: <strong>${p.role}</strong>
+            ${p.salaryAdd > 0 ? `&bull; <span class="text-emerald-300 font-bold">Increment: + RM ${Number(p.salaryAdd).toFixed(2)}</span>` : ""}
+          </p>
+          ${p.remarks ? `<p class="text-slate-400 mt-0.5">${p.remarks}</p>` : ""}
+        </div>
+      `).join("");
+    }
+
+    document.getElementById("recordPromotionBtn").addEventListener("click", async () => {
+      if (!selectedEmpUid) return;
+      const emp = allEmployees.find((e) => e.uid === selectedEmpUid);
+      if (!emp) return;
+
+      const effectiveDate = document.getElementById("promoEffectiveDate").value.trim();
+      const movementType = document.getElementById("promoMovementType").value;
+      const jobTitle = toTitleCaseClean(document.getElementById("promoNewJobTitle").value);
+      const role = document.getElementById("promoNewRole").value;
+      const companyEntity = document.getElementById("promoNewCompany").value;
+      const office = toTitleCaseClean(document.getElementById("promoNewOffice").value);
+      const department = toTitleCaseClean(document.getElementById("promoNewDept").value);
+      const salaryAdd = parseFloat(document.getElementById("promoSalaryAdd").value) || 0;
+      const remarks = document.getElementById("promoRemarks").value.trim();
+
+      if (!effectiveDate) {
+        showModalInlineError("Please select an Effective Date for the promotion or transfer.");
+        return;
+      }
+
+      const promos = [...(emp.promotions || [])];
+      promos.push({ effectiveDate, movementType, jobTitle, role, companyEntity, office, department, salaryAdd, remarks });
+
+      try {
+        await updateDoc(doc(db, "employees", selectedEmpUid), {
+          jobTitle, role, companyEntity, office, department, promotions: promos
+        });
+
+        // If salary increment included, sync to HR Vault Increment Ledger
+        if (salaryAdd > 0) {
+          const increments = [...(currentVaultData.increments || [])];
+          const prevBase = increments.length > 0
+            ? Number(increments[increments.length - 1].newTotal)
+            : (parseFloat(document.getElementById("vaultBasicSalary").value) || 0);
+          const newTotal = prevBase + salaryAdd;
+          increments.push({ effectiveDate, addAmount: salaryAdd, newTotal });
+          await setDoc(doc(db, "employees", selectedEmpUid, "vault", "compensation"), {
+            increments,
+            basicSalary: String(newTotal)
+          }, { merge: true });
+        }
+
+        await addDoc(collection(db, "employees", selectedEmpUid, "logs"), {
+          action: `${movementType} (${effectiveDate})`,
+          remarks: `${companyEntity} (${office}) • ${department} • ${jobTitle}${salaryAdd > 0 ? ` (+RM ${salaryAdd.toFixed(2)})` : ""}`,
+          createdBy: currentUserProfile.fullName,
+          createdAt: serverTimestamp(),
+          displayTime: formatNowTimestamp()
+        });
+
+        document.getElementById("promoEffectiveDate").value = "";
+        document.getElementById("promoSalaryAdd").value = "";
+        document.getElementById("promoRemarks").value = "";
+
         await loadEmployees();
         renderDashboard();
         await openEmployeeModal(selectedEmpUid);
+        showToast(`${movementType} recorded and profile updated!`);
       } catch (err) {
-        showToast(`Error saving edits: ${err.message}`, true);
+        showModalInlineError(`Error recording promotion: ${err.message}`);
       }
     });
 
@@ -2845,16 +3348,16 @@
           displayTime: formatNowTimestamp()
         });
 
-        showToast("Employment status updated.");
         await loadEmployees();
         renderDashboard();
         await openEmployeeModal(selectedEmpUid);
+        showToast("Employment status updated.");
       } catch (err) {
-        showToast(`Error updating status: ${err.message}`, true);
+        showModalInlineError(`Error updating status: ${err.message}`);
       }
     });
 
-    // ==================== VAULT LEDGERS RENDERING & ACTIONS ====================
+    // ==================== VAULT LEDGERS RENDERING & CUMULATIVE INCREMENT SUM ====================
     function renderVaultLedgers(emp) {
       const increments = currentVaultData.increments || [];
       const bonuses = currentVaultData.bonuses || [];
@@ -2864,6 +3367,10 @@
       document.getElementById("incCountLabel").textContent = increments.length;
       document.getElementById("bonusCountLabel").textContent = bonuses.length;
       document.getElementById("angPaoCountLabel").textContent = angPaos.length;
+
+      // Cumulative Total of all increments keyed in
+      const cumulativeIncrementSum = increments.reduce((sum, item) => sum + (Number(item.addAmount) || 0), 0);
+      document.getElementById("incCumulativeTotalBadge").textContent = `Total Increments: + RM ${cumulativeIncrementSum.toFixed(2)}`;
 
       const incList = document.getElementById("incrementLedgerList");
       incList.innerHTML = increments.length === 0
@@ -2989,9 +3496,9 @@
     document.getElementById("addIncrementBtn").addEventListener("click", async () => {
       const effectiveDate = document.getElementById("incEffectiveDate").value.trim();
       const addAmount = parseFloat(document.getElementById("incAddAmount").value);
-      if (!effectiveDate || isNaN(addAmount) || addAmount <= 0) { showToast("Please select an Effective Date and valid Increment Amount.", true); return; }
+      if (!effectiveDate || isNaN(addAmount) || addAmount <= 0) { showModalInlineError("Please select an Effective Date and valid Increment Amount."); return; }
       const increments = [...(currentVaultData.increments || [])];
-      if (increments.length >= 50) { showToast("Maximum 50 salary increment records reached.", true); return; }
+      if (increments.length >= 50) { showModalInlineError("Maximum 50 salary increment records reached."); return; }
       const prevBase = increments.length > 0 ? Number(increments[increments.length - 1].newTotal) : (parseFloat(document.getElementById("vaultBasicSalary").value) || 0);
       const newTotal = prevBase + addAmount;
       increments.push({ effectiveDate, addAmount, newTotal });
@@ -3006,9 +3513,9 @@
       const amount = parseFloat(document.getElementById("bonusAmount").value);
       const method = document.getElementById("bonusMethod").value;
       const receiptNo = document.getElementById("bonusReceipt").value.trim().toUpperCase();
-      if (!date || isNaN(amount) || amount <= 0) { showToast("Please select a Date and valid Bonus Amount.", true); return; }
+      if (!date || isNaN(amount) || amount <= 0) { showModalInlineError("Please select a Date and valid Bonus Amount."); return; }
       const bonuses = [...(currentVaultData.bonuses || [])];
-      if (bonuses.length >= 50) { showToast("Maximum 50 bonus records reached.", true); return; }
+      if (bonuses.length >= 50) { showModalInlineError("Maximum 50 bonus records reached."); return; }
       bonuses.push({ date, amount, method, receiptNo });
       document.getElementById("bonusDate").value = "";
       document.getElementById("bonusAmount").value = "";
@@ -3022,9 +3529,9 @@
       const amount = parseFloat(document.getElementById("angPaoAmount").value);
       const method = document.getElementById("angPaoMethod").value;
       const receiptNo = document.getElementById("angPaoReceipt").value.trim().toUpperCase();
-      if (!date || isNaN(amount) || amount <= 0) { showToast("Please select a Date and valid Ang Pao Amount.", true); return; }
+      if (!date || isNaN(amount) || amount <= 0) { showModalInlineError("Please select a Date and valid Ang Pao Amount."); return; }
       const angPaos = [...(currentVaultData.angPaos || [])];
-      if (angPaos.length >= 50) { showToast("Maximum 50 Ang Pao records reached.", true); return; }
+      if (angPaos.length >= 50) { showModalInlineError("Maximum 50 Ang Pao records reached."); return; }
       angPaos.push({ date, amount, method, receiptNo });
       document.getElementById("angPaoDate").value = "";
       document.getElementById("angPaoAmount").value = "";
@@ -3038,7 +3545,7 @@
       const amount = parseFloat(document.getElementById("devAmount").value);
       const months = parseInt(document.getElementById("devMonths").value, 10) || 24;
       const startDate = document.getElementById("devStartDate").value.trim();
-      if (!title || isNaN(amount) || amount <= 0 || !startDate) { showToast("Please fill in Device Title, Total Amount, and Start Date.", true); return; }
+      if (!title || isNaN(amount) || amount <= 0 || !startDate) { showModalInlineError("Please fill in Device Title, Total Amount, and Start Date."); return; }
       const devices = [...(currentVaultData.devices || [])];
       devices.push({ title, amount, months, startDate });
       document.getElementById("devTitle").value = "";
@@ -3049,11 +3556,11 @@
       showToast("Device allowance added.");
     });
 
-    // ==================== PHASE 4A: LEAVE APPLICATION, EL 2nd+ CRIMSON ALERT & PLANNER GRID ====================
+    // ==================== LEAVE APPLICATION, EL 2nd+ CRIMSON ALERT & PLANNER GRID ====================
     function populateLeaveApplicantSelector(list) {
       const sel = document.getElementById("leaveApplicantSelect");
       const wrapper = document.getElementById("leaveApplicantWrapper");
-      const canApplyForOthers = ["hr_admin", "manager", "managing_director"].includes(currentUserProfile.role);
+      const canApplyForOthers = isSupervisorOrAbove();
       wrapper.classList.toggle("hidden", !canApplyForOthers);
 
       sel.innerHTML = list.map((e) =>
@@ -3077,7 +3584,7 @@
       empLeaves.forEach((l) => {
         const d = Number(l.daysCount) || 0;
         if (l.leaveType === "AL") takenAL += d;
-        else if (l.leaveType === "EL") { takenEL += d; takenAL += d; } // EL deducts from AL
+        else if (l.leaveType === "EL") { takenEL += d; takenAL += d; }
         else if (l.leaveType === "MC") takenMC += d;
         else if (l.leaveType === "HL") takenHL += d;
       });
@@ -3107,11 +3614,8 @@
       try {
         const snap = await getDocs(collection(db, "leaves"));
         snap.forEach((d) => allLeaveRequests.push({ id: d.id, ...d.data() }));
-      } catch (err) {
-        /* fallback if collection empty */
-      }
+      } catch (err) { /* ignore */ }
 
-      // Flag 2nd+ EL in the same calendar month per employee (Crimson Alert)
       const elTracker = {};
       allLeaveRequests.sort((a, b) => (a.startDateIso || "").localeCompare(b.startDateIso || ""));
       allLeaveRequests.forEach((l) => {
@@ -3124,7 +3628,6 @@
         }
       });
 
-      // Check if logged-in employee has 2+ ELs in the current month -> Show personal EL warning banner
       const nowYm = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
       const mySecondEls = allLeaveRequests.filter((l) => l.employeeUid === currentUserUid && l.isSecondPlusEl && (l.startDateIso || "").startsWith(nowYm));
       const personalBanner = document.getElementById("personalElAlertBanner");
@@ -3136,13 +3639,17 @@
         personalBanner.classList.add("hidden");
       }
 
-      const pendingCount = allLeaveRequests.filter((l) => l.status === "Pending").length;
+      const visibleReqs = isSupervisorOrAbove()
+        ? allLeaveRequests.filter((l) => visibleDirectoryEmployees.some((e) => e.uid === l.employeeUid))
+        : allLeaveRequests.filter((l) => l.employeeUid === currentUserUid);
+
+      const pendingCount = visibleReqs.filter((l) => l.status === "Pending").length;
       const badge = document.getElementById("pendingLeaveCountBadge");
       badge.textContent = pendingCount;
       badge.classList.toggle("hidden", pendingCount === 0);
 
       updateMyLeaveBalanceBanner();
-      renderLeaveRequestsTable();
+      renderLeaveRequestsTable(visibleReqs);
       renderLeavePlannerGrid();
     }
 
@@ -3158,18 +3665,13 @@
 
       const startObj = parseAnyDate(startStr);
       const endObj = parseAnyDate(endStr);
-      if (!startObj || !endObj || endObj < startObj) {
-        showToast("Please select valid Start and End Dates.", true);
-        return;
-      }
+      if (!startObj || !endObj || endObj < startObj) { showToast("Please select valid Start and End Dates.", true); return; }
 
-      // Specific reason check for EL (must not be vague "personal matters")
       if (leaveType === "EL" && (reason.length < 8 || reason.toLowerCase() === "personal matters" || reason.toLowerCase() === "personal")) {
         showToast("For Emergency Leave (EL), please state a specific reason (e.g. Bringing parents to hospital checkup).", true);
         return;
       }
 
-      // Calculate days & date list
       const datesList = [];
       const cur = new Date(startObj.getFullYear(), startObj.getMonth(), startObj.getDate());
       while (cur <= endObj) {
@@ -3178,17 +3680,14 @@
       }
       const daysCount = session === "FULL" ? datesList.length : datesList.length * 0.5;
 
-      // Check 5-day advance notice for AL
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const advanceDays = Math.ceil((startObj - today) / (1000 * 60 * 60 * 24));
       const complianceNotes = [];
-      if (leaveType === "AL" && advanceDays < 5) {
-        complianceNotes.push(`Short Notice AL (${advanceDays}d advance; <5d policy)`);
-      }
+      if (leaveType === "AL" && advanceDays < 5) complianceNotes.push(`Short Notice AL (${advanceDays}d advance; <5d policy)`);
 
-      const isManagerOrAdmin = ["hr_admin", "manager", "managing_director"].includes(currentUserProfile.role);
-      const initialStatus = isManagerOrAdmin ? "Approved" : "Pending";
+      const canAutoApprove = isSupervisorOrAbove();
+      const initialStatus = canAutoApprove ? "Approved" : "Pending";
       const startIso = `${startObj.getFullYear()}-${String(startObj.getMonth() + 1).padStart(2, "0")}-${String(startObj.getDate()).padStart(2, "0")}`;
 
       try {
@@ -3196,6 +3695,7 @@
           employeeUid: emp.uid,
           empId: emp.empId || "-",
           fullName: emp.fullName || "-",
+          displayName: emp.displayName || getColleagueSafeName(emp),
           companyEntity: emp.companyEntity || "-",
           office: toTitleCaseClean(emp.office || "Serdang"),
           department: toTitleCaseClean(emp.department || "-"),
@@ -3211,35 +3711,33 @@
           reason,
           complianceNotes: complianceNotes.join(" • "),
           status: initialStatus,
-          actionBy: isManagerOrAdmin ? currentUserProfile.fullName : "",
+          actionBy: canAutoApprove ? currentUserProfile.fullName : "",
           createdAt: serverTimestamp()
         });
 
         document.getElementById("applyLeaveForm").reset();
         showToast(initialStatus === "Approved"
-          ? `Leave logged & approved for ${emp.fullName} (${daysCount} day(s)).`
+          ? `Leave approved & added to planner (${daysCount} day(s)).`
           : `Leave application submitted (${daysCount} day(s)) for Manager approval.`);
         await loadLeaveRequests();
-        renderDashboard();
+        if (isSupervisorOrAbove()) renderDashboard();
       } catch (err) {
         showToast(`Error submitting leave: ${err.message}`, true);
       }
     });
 
-    function renderLeaveRequestsTable() {
+    function renderLeaveRequestsTable(list) {
       const tbody = document.getElementById("leaveRequestsTableBody");
-      const canApprove = ["hr_admin", "manager", "managing_director"].includes(currentUserProfile.role);
+      const canApprove = isSupervisorOrAbove();
 
-      if (allLeaveRequests.length === 0) {
+      if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="py-5 text-center text-slate-400">No leave requests recorded yet.</td></tr>`;
         return;
       }
 
-      const sorted = [...allLeaveRequests].reverse();
+      const sorted = [...list].reverse();
       tbody.innerHTML = sorted.map((l) => {
-        const elAlertBadge = l.isSecondPlusEl
-          ? `<span class="ml-1.5 px-2 py-0.5 rounded bg-rose-600 text-white text-[10px] font-black uppercase">2nd+ EL Alert</span>`
-          : "";
+        const elAlertBadge = l.isSecondPlusEl ? `<span class="ml-1.5 px-2 py-0.5 rounded bg-rose-600 text-white text-[10px] font-black uppercase">2nd+ EL Alert</span>` : "";
         const statusCls = l.status === "Approved"
           ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40"
           : l.status === "Rejected"
@@ -3276,7 +3774,7 @@
             });
             showToast(`Leave marked as ${btn.dataset.act}.`);
             await loadLeaveRequests();
-            renderDashboard();
+            if (isSupervisorOrAbove()) renderDashboard();
           } catch (err) {
             showToast(`Error updating leave: ${err.message}`, true);
           }
@@ -3284,7 +3782,7 @@
       });
     }
 
-    // Live Company Monthly Leave Planner Grid (01 to 31)
+    // Company Live Leave Planner Grid (PDPA Safe: Uses Display Name & hides private reasons from peers)
     document.getElementById("plannerCompanyFilter").addEventListener("change", renderLeavePlannerGrid);
     document.getElementById("plannerOfficeFilter").addEventListener("change", renderLeavePlannerGrid);
     document.getElementById("plannerYearSelect").addEventListener("change", renderLeavePlannerGrid);
@@ -3295,6 +3793,7 @@
       const monthIdx = parseInt(document.getElementById("plannerMonthSelect").value, 10) - 1;
       const companyFilter = document.getElementById("plannerCompanyFilter").value;
       const officeFilter = document.getElementById("plannerOfficeFilter").value;
+      const canSeePrivate = isSupervisorOrAbove();
 
       const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
       const thead = document.getElementById("leavePlannerGridHead");
@@ -3304,7 +3803,7 @@
         <th class="py-2.5 px-3 font-bold sticky left-0 bg-slate-950 z-10">Office</th>
         <th class="py-2.5 px-3 font-bold">Dept</th>
         <th class="py-2.5 px-3 font-bold">Company</th>
-        <th class="py-2.5 px-3 font-bold sticky left-16 bg-slate-950 z-10">Employee Name</th>`;
+        <th class="py-2.5 px-3 font-bold sticky left-16 bg-slate-950 z-10">${canSeePrivate ? "Employee Name" : "Staff Name"}</th>`;
 
       for (let d = 1; d <= daysInMonth; d++) {
         const dt = new Date(year, monthIdx, d);
@@ -3325,7 +3824,7 @@
       });
 
       if (filteredStaff.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${daysInMonth + 5}" class="py-5 text-center text-slate-400">No employees match selected filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${daysInMonth + 5}" class="py-5 text-center text-slate-400">No staff match selected filter.</td></tr>`;
         return;
       }
 
@@ -3335,6 +3834,7 @@
         const empLeaves = approvedLeaves.filter((l) => l.employeeUid === emp.uid);
         let monthTotal = 0;
         let rowCells = "";
+        const displayLabel = canSeePrivate ? emp.fullName : getColleagueSafeName(emp);
 
         for (let d = 1; d <= daysInMonth; d++) {
           const dt = new Date(year, monthIdx, d);
@@ -3343,18 +3843,16 @@
           const match = empLeaves.find((l) => Array.isArray(l.datesList) && l.datesList.includes(dateStr));
 
           if (match) {
-            const step = match.session === "FULL" ? 1 : 0.5;
-            monthTotal += step;
+            monthTotal += match.session === "FULL" ? 1 : 0.5;
             const code = match.session === "FULL" ? match.leaveType : `${match.leaveType} ${match.session}`;
             let cellStyle = "bg-cyan-500/25 text-cyan-200 border border-cyan-400/40";
             if (match.leaveType === "MC" || match.leaveType === "HL") cellStyle = "bg-amber-500/25 text-amber-200 border border-amber-400/40";
             if (match.leaveType === "EL") {
-              cellStyle = match.isSecondPlusEl
-                ? "bg-rose-600 text-white font-black animate-pulse"
-                : "bg-rose-500/30 text-rose-200 border border-rose-400/50";
+              cellStyle = match.isSecondPlusEl ? "bg-rose-600 text-white font-black animate-pulse" : "bg-rose-500/30 text-rose-200 border border-rose-400/50";
             }
+            const hoverTitle = (canSeePrivate || emp.uid === currentUserUid) ? `title="${match.reason}"` : "";
             rowCells += `<td class="p-1 text-center ${isWeekend ? "bg-slate-950/60" : ""}">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold ${cellStyle}" title="${match.reason}">${code}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold ${cellStyle}" ${hoverTitle}>${code}</span>
             </td>`;
           } else {
             rowCells += `<td class="p-1 text-center ${isWeekend ? "bg-slate-950/60" : ""}"></td>`;
@@ -3366,7 +3864,7 @@
             <td class="py-2 px-3 font-semibold text-slate-300 sticky left-0 bg-slate-900">${toTitleCaseClean(emp.office || "-")}</td>
             <td class="py-2 px-3 text-slate-300">${toTitleCaseClean(emp.department || "-")}</td>
             <td class="py-2 px-3 text-slate-300">${(emp.companyEntity || "-").replace(" Sdn Bhd", "")}</td>
-            <td class="py-2 px-3 font-bold text-white sticky left-16 bg-slate-900">${emp.fullName}</td>
+            <td class="py-2 px-3 font-bold text-white sticky left-16 bg-slate-900">${displayLabel}</td>
             ${rowCells}
             <td class="py-2 px-3 text-center font-black text-cyan-300">${monthTotal > 0 ? monthTotal.toFixed(1) : "-"}</td>
           </tr>
@@ -3374,7 +3872,7 @@
       }).join("");
     }
 
-    // ==================== PHASE 4B: EXECUTIVE HR DASHBOARD & ANNOUNCEMENTS ====================
+    // ==================== EXECUTIVE HR DASHBOARD & ANNOUNCEMENTS ====================
     document.getElementById("dashCompanyFilter").addEventListener("change", renderDashboard);
     document.getElementById("dashOfficeFilter").addEventListener("change", renderDashboard);
 
@@ -3390,6 +3888,7 @@
       if (!title || !body) { showToast("Please enter Announcement Title and Message.", true); return; }
       try {
         await addDoc(collection(db, "announcements"), {
+          kind: "announcement",
           title,
           body,
           postedBy: currentUserProfile.fullName,
@@ -3399,7 +3898,7 @@
         document.getElementById("annTitleInput").value = "";
         document.getElementById("annBodyInput").value = "";
         document.getElementById("announcementModal").classList.add("hidden");
-        showToast("Announcement published!");
+        showToast("Announcement published to all staff!");
         await loadAnnouncements();
       } catch (err) {
         showToast(`Error posting announcement: ${err.message}`, true);
@@ -3408,34 +3907,73 @@
 
     async function loadAnnouncements() {
       const listEl = document.getElementById("dashAnnouncementsList");
+      const empListEl = document.getElementById("employeeNoticeList");
+      const recCard = document.getElementById("dashRecoveryQueueCard");
+      const recList = document.getElementById("dashRecoveryList");
+
       try {
         const snap = await getDocs(query(collection(db, "announcements"), orderBy("createdAt", "desc")));
-        if (snap.empty) {
+        const notices = [];
+        const recoveries = [];
+        snap.forEach((d) => {
+          const item = { id: d.id, ...d.data() };
+          if (item.kind === "recovery_request" && item.status === "Open") recoveries.push(item);
+          else if (!item.kind || item.kind === "announcement") notices.push(item);
+        });
+
+        // Show Account Recovery requests to HR Admin
+        if (currentUserProfile.role === "hr_admin" && recoveries.length > 0) {
+          recCard.classList.remove("hidden");
+          document.getElementById("dashRecoveryCount").textContent = recoveries.length;
+          recList.innerHTML = recoveries.map((r) => `
+            <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-950 border border-amber-500/40 rounded-xl p-3 text-slate-200">
+              <div>
+                <strong class="text-amber-300">${r.recoveryType}</strong> &bull;
+                <strong class="text-white">${r.fullName}</strong> (${r.empId}) &bull; Mobile: <span class="text-cyan-300">${r.phone}</span>
+                <span class="block text-[10px] text-slate-400">Submitted: ${r.postedAt || "-"}</span>
+              </div>
+              <button type="button" data-id="${r.id}" class="resolve-rec-btn px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold">Mark Resolved</button>
+            </div>
+          `).join("");
+          recList.querySelectorAll(".resolve-rec-btn").forEach((b) => {
+            b.addEventListener("click", async () => {
+              await updateDoc(doc(db, "announcements", b.dataset.id), { status: "Resolved" });
+              showToast("Recovery request marked as resolved.");
+              await loadAnnouncements();
+            });
+          });
+        } else {
+          recCard.classList.add("hidden");
+        }
+
+        if (notices.length === 0) {
           listEl.innerHTML = `<p class="text-slate-400 font-medium">No announcements posted yet.</p>`;
+          empListEl.innerHTML = `<p class="text-slate-400 font-medium">No company notices at the moment.</p>`;
           return;
         }
-        listEl.innerHTML = snap.docs.slice(0, 5).map((d) => {
-          const a = d.data();
-          return `
-            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
-              <div class="flex items-center justify-between gap-2">
-                <strong class="text-white text-xs">${a.title}</strong>
-                <span class="text-[10px] text-cyan-300 font-semibold">${a.postedAt || ""}</span>
-              </div>
-              <p class="text-slate-300 mt-1 leading-relaxed">${a.body}</p>
+
+        const html = notices.slice(0, 4).map((a) => `
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3">
+            <div class="flex items-center justify-between gap-2">
+              <strong class="text-white text-xs">${a.title}</strong>
+              <span class="text-[10px] text-cyan-300 font-semibold">${a.postedAt || ""}</span>
             </div>
-          `;
-        }).join("");
+            <p class="text-slate-300 mt-1 leading-relaxed">${a.body}</p>
+          </div>
+        `).join("");
+        listEl.innerHTML = html;
+        empListEl.innerHTML = html;
       } catch (err) {
         listEl.innerHTML = `<p class="text-slate-400 font-medium">No announcements posted yet.</p>`;
       }
     }
 
     async function renderDashboard() {
+      if (!isSupervisorOrAbove()) return;
       const companyFilter = document.getElementById("dashCompanyFilter").value;
       const officeFilter = document.getElementById("dashOfficeFilter").value;
 
-      const filteredStaff = allEmployees.filter((e) => {
+      const filteredStaff = visibleDirectoryEmployees.filter((e) => {
         if (companyFilter && e.companyEntity !== companyFilter) return false;
         if (officeFilter && toTitleCaseClean(e.office) !== officeFilter) return false;
         return true;
@@ -3446,11 +3984,9 @@
       const cherasCount = activeStaff.filter((e) => toTitleCaseClean(e.office) === "Cheras").length;
       const serdangCount = activeStaff.filter((e) => toTitleCaseClean(e.office) === "Serdang").length;
 
-      // 01. Active Headcount
       document.getElementById("dashMetricHeadcount").textContent = activeStaff.length;
       document.getElementById("dashMetricHeadcountSub").textContent = `Cheras: ${cherasCount} • Serdang: ${serdangCount}`;
 
-      // 02. Demographics (Gender, Avg Age, Avg Tenure)
       const males = activeStaff.filter((e) => e.gender === "Male").length;
       const females = activeStaff.filter((e) => e.gender === "Female").length;
       document.getElementById("dashMetricGender").textContent = `${males}M / ${females}F`;
@@ -3463,16 +3999,13 @@
       activeStaff.forEach((e) => {
         const jd = parseAnyDate(e.joinDate);
         if (jd) {
-          const m = Math.max(0, (now.getFullYear() - jd.getFullYear()) * 12 + (now.getMonth() - jd.getMonth()));
-          totalTenureMonths += m;
+          totalTenureMonths += Math.max(0, (now.getFullYear() - jd.getFullYear()) * 12 + (now.getMonth() - jd.getMonth()));
           tenureCount++;
         }
       });
       const avgMonths = tenureCount ? Math.round(totalTenureMonths / tenureCount) : 0;
-      const avgTenureStr = tenureCount ? `${Math.floor(avgMonths / 12)}Y ${avgMonths % 12}M` : "-";
-      document.getElementById("dashMetricDemoSub").textContent = `Avg Age: ${avgAge} • Avg Tenure: ${avgTenureStr}`;
+      document.getElementById("dashMetricDemoSub").textContent = `Avg Age: ${avgAge} • Avg Tenure: ${tenureCount ? `${Math.floor(avgMonths / 12)}Y ${avgMonths % 12}M` : "-"}`;
 
-      // 03. Movement (Intern/Probation Due + Recent Hires + Resigned)
       const probDue = activeStaff.filter((e) => e.status === "Probation" || e.status === "Intern").length;
       const newHires30 = activeStaff.filter((e) => {
         const jd = parseAnyDate(e.joinDate);
@@ -3481,7 +4014,6 @@
       document.getElementById("dashMetricMovement").textContent = probDue;
       document.getElementById("dashMetricMovementSub").textContent = `New Hires (30d): ${newHires30} • Resigned: ${resignedCount}`;
 
-      // 04. Financial / KPI Pulse
       const isAdmin = currentUserProfile.role === "hr_admin";
       if (isAdmin) {
         document.getElementById("dashFinTag").textContent = "Payroll Pool";
@@ -3493,9 +4025,7 @@
             if (vSnap.exists()) {
               const v = vSnap.data();
               totalBasic += Number(v.basicSalary) || 0;
-              if (emp.status === "Confirmed / Permanent" || emp.status === "Active") {
-                totalIncentive += Number(v.monthlyIncentive) || 0;
-              }
+              if (emp.status === "Confirmed / Permanent" || emp.status === "Active") totalIncentive += Number(v.monthlyIncentive) || 0;
             }
           } catch (err) { /* ignore */ }
         }
@@ -3508,7 +4038,6 @@
         document.getElementById("dashMetricFinancialSub").textContent = "Monthly KPI 1–5 Rubric Active";
       }
 
-      // 05. Absence & Today Away
       const todayStr = formatDateObj(now);
       const filteredUids = new Set(filteredStaff.map((e) => e.uid));
       const approvedLeaves = allLeaveRequests.filter((l) => l.status === "Approved" && filteredUids.has(l.employeeUid));
@@ -3520,7 +4049,6 @@
       document.getElementById("dashAbsenceRateBadge").textContent = `${absenceRate}% Today`;
       document.getElementById("dashMetricAbsenceSub").textContent = `2nd+ EL Alerts: ${secondElCount}`;
 
-      // Monthly Bar Chart (Jan-Dec AL / MC / EL)
       const curYear = String(now.getFullYear());
       document.getElementById("dashChartYear").textContent = curYear;
       const monthlyStats = Array.from({ length: 12 }, () => ({ AL: 0, MC: 0, EL: 0 }));
@@ -3544,11 +4072,9 @@
             <div style="height:${Math.max(4, hAL)}%" title="AL: ${m.AL}d" class="w-2 bg-cyan-400 rounded-t"></div>
             <div style="height:${Math.max(4, hMC)}%" title="MC: ${m.MC}d" class="w-2 bg-amber-400 rounded-t"></div>
             <div style="height:${Math.max(4, hEL)}%" title="EL: ${m.EL}d" class="w-2 bg-rose-500 rounded-t"></div>
-          </div>
-        `;
+          </div>`;
       }).join("");
 
-      // Donut Ring Chart (4 Companies)
       const companies = [
         { name: "Atlas Marking Sdn Bhd", short: "Atlas Marking", color: "#22d3ee" },
         { name: "Foqcus Sdn Bhd", short: "Foqcus", color: "#a78bfa" },
@@ -3558,7 +4084,7 @@
       const totalActive = activeStaff.length || 1;
       let accPct = 0;
       const stops = [];
-      const legendHtml = companies.map((c) => {
+      document.getElementById("dashCompanyLegend").innerHTML = companies.map((c) => {
         const cnt = activeStaff.filter((e) => e.companyEntity === c.name).length;
         const pct = Math.round((cnt / totalActive) * 100);
         const start = accPct;
@@ -3566,22 +4092,14 @@
         stops.push(`${c.color} ${start}% ${accPct}%`);
         return `
           <div class="flex items-center justify-between text-slate-200">
-            <span class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full" style="background:${c.color}"></span>
-              ${c.short}
-            </span>
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:${c.color}"></span>${c.short}</span>
             <strong class="text-white">${cnt} (${pct}%)</strong>
-          </div>
-        `;
+          </div>`;
       }).join("");
 
       document.getElementById("dashDonutTotal").textContent = activeStaff.length;
-      document.getElementById("dashDonutRing").style.background = activeStaff.length
-        ? `conic-gradient(${stops.join(", ")})`
-        : "conic-gradient(#334155 0% 100%)";
-      document.getElementById("dashCompanyLegend").innerHTML = legendHtml;
+      document.getElementById("dashDonutRing").style.background = activeStaff.length ? `conic-gradient(${stops.join(", ")})` : "conic-gradient(#334155 0% 100%)";
 
-      // Dashboard Leave Feed
       const feedBody = document.getElementById("dashLeaveFeedBody");
       const recentLeaves = [...allLeaveRequests].filter((l) => filteredUids.has(l.employeeUid)).reverse().slice(0, 6);
       if (recentLeaves.length === 0) {
@@ -3595,12 +4113,11 @@
             <td class="py-2.5 px-3 text-slate-300 truncate max-w-[180px]">${l.reason}</td>
             <td class="py-2.5 px-3 font-bold ${l.status === "Approved" ? "text-emerald-300" : l.status === "Pending" ? "text-amber-300" : "text-rose-300"}">${l.status}</td>
             <td class="py-2.5 px-3 text-right text-slate-400">${l.actionBy || "-"}</td>
-          </tr>
-        `).join("");
+          </tr>`).join("");
       }
     }
 
-    // ==================== PHASE 3: MONTHLY KPI MODULE ====================
+    // ==================== MONTHLY KPI MODULE ====================
     const kpiEmployeeSelect = document.getElementById("kpiEmployeeSelect");
     const kpiYearSelect = document.getElementById("kpiYearSelect");
     const kpiMonthSelect = document.getElementById("kpiMonthSelect");
@@ -3609,7 +4126,7 @@
 
     function populateKpiEmployeeSelector(list) {
       kpiEmployeeSelect.innerHTML = list.map((e) =>
-        `<option value="${e.uid}">${e.empId} - ${e.fullName} (${e.companyEntity || "OneHax"})</option>`
+        `<option value="${e.uid}">${e.empId} - ${e.fullName} (${e.companyEntity || "HR Group"})</option>`
       ).join("");
       if (list.length > 0) loadKpiWorkspace();
     }
@@ -3632,13 +4149,8 @@
       document.getElementById("kpiTemplateCard").classList.toggle("hidden");
       syncFrozenTemplateButtons();
     });
-
-    document.getElementById("openDuplicateYearBtn").addEventListener("click", () => {
-      document.getElementById("duplicateYearModal").classList.remove("hidden");
-    });
-    document.getElementById("cancelDuplicateBtn").addEventListener("click", () => {
-      document.getElementById("duplicateYearModal").classList.add("hidden");
-    });
+    document.getElementById("openDuplicateYearBtn").addEventListener("click", () => document.getElementById("duplicateYearModal").classList.remove("hidden"));
+    document.getElementById("cancelDuplicateBtn").addEventListener("click", () => document.getElementById("duplicateYearModal").classList.add("hidden"));
 
     function canManageKpiFor(emp) {
       if (!emp) return false;
@@ -3677,9 +4189,7 @@
         const vData = vSnap.exists() ? vSnap.data() : {};
         const isConfirmed = emp.status === "Confirmed / Permanent" || emp.status === "Active";
         const amt = Number(vData.monthlyIncentive || 0);
-        document.getElementById("kpiAdminIncentiveValue").textContent = isConfirmed
-          ? `RM ${amt.toFixed(2)} (Confirmed)`
-          : `RM ${amt.toFixed(2)} (Pending Confirmation)`;
+        document.getElementById("kpiAdminIncentiveValue").textContent = isConfirmed ? `RM ${amt.toFixed(2)} (Confirmed)` : `RM ${amt.toFixed(2)} (Pending Confirmation)`;
       } else {
         incBox.classList.add("hidden");
       }
@@ -3767,11 +4277,7 @@
           resizeAllKpiTextareas();
         });
       });
-
-      container.querySelectorAll(".tpl-weight").forEach((inp) => {
-        inp.addEventListener("input", updateTemplateWeightBadge);
-      });
-
+      container.querySelectorAll(".tpl-weight").forEach((inp) => inp.addEventListener("input", updateTemplateWeightBadge));
       updateTemplateWeightBadge();
       resizeAllKpiTextareas();
     }
@@ -3792,9 +4298,7 @@
     }
 
     function updateTemplateWeightBadge() {
-      const weights = Array.from(document.querySelectorAll("#kpiTemplateRows .tpl-weight"))
-        .map((i) => parseFloat(i.value) || 0);
-      const sum = weights.reduce((a, b) => a + b, 0);
+      const sum = Array.from(document.querySelectorAll("#kpiTemplateRows .tpl-weight")).map((i) => parseFloat(i.value) || 0).reduce((a, b) => a + b, 0);
       const badge = document.getElementById("templateWeightBadge");
       badge.textContent = `Template Weightage: ${sum}%`;
       badge.className = sum === 100
@@ -3815,68 +4319,20 @@
       document.getElementById("kpiIndividualFocus").value = "Quality Control, Scheduling, Operations ISO, and Customer Satisfaction.";
       activeKpiTemplate.individualFocus = document.getElementById("kpiIndividualFocus").value;
       activeKpiTemplate.goals = [
-        {
-          title: "Production Efficiency",
-          objectives: "Increase overall production output by 10%, keep reject rate below 2%, and complete scheduled maintenance.",
-          weight: 30,
-          t5: "Output +15%, 0% defect, ahead of schedule, zero downtime",
-          t4: "Output +15%, 1% defect, on-time release, maintenance on time",
-          t3: "Output +10%, 2% defect, 100% scheduled maintenance done",
-          t2: "Output +5%, 3-4% defect, delayed up to 3 days",
-          t1: "Output <5%, >5% defect, delayed 1 week or breakdown"
-        },
-        {
-          title: "Operations ISO & SOP Compliance",
-          objectives: "Maintain accurate documentation, follow SOP procedures with zero major audit NCRs, and implement improvements.",
-          weight: 20,
-          t5: "100% accurate same-day updates, zero NCRs, >=4 improvements",
-          t4: "100% accurate within 2-3 days, compliant, >=3 improvements",
-          t3: "100% accurate within same week, compliant, >=2 improvements",
-          t2: "1-5 minor inaccuracies, delayed 3 days, 1 minor idea",
-          t1: ">5 inaccuracies, delayed >5 days, no initiative"
-        },
-        {
-          title: "Self & Team Performance",
-          objectives: "Ensure operators run machines independently with high quality pass rate and strong team coordination.",
-          weight: 25,
-          t5: "Master level, zero errors, trains staff, 98% pass 1 wk early",
-          t4: "Independent operation, resolves minor errors, >98% pass 3d early",
-          t3: "Operators run independently without mistakes, 98% pass on time",
-          t2: "Needs occasional help, 1-3 mistakes, 95% pass 3d late",
-          t1: "Requires constant supervision, >3 mistakes, delayed 1 wk"
-        },
-        {
-          title: "Customer Satisfaction & Support",
-          objectives: "Ensure on-site & remote customer support meets requirements with zero rejections and timely delivery.",
-          weight: 15,
-          t5: "Zero rejections, Google review 5.0, resolved within 1 hour",
-          t4: "Zero rejections, Google review 4.9, resolved within half day",
-          t3: "Max 1-2 minor issues, Google review 4.8, on-time delivery",
-          t2: "3-4 rejections or 1+ day response delay",
-          t1: ">4 rejections or unaddressed customer requests"
-        },
-        {
-          title: "Attendance & Punctuality",
-          objectives: "Zero unexcused absences, minimal EL/MC, and consistent punctuality.",
-          weight: 10,
-          t5: "Perfect attendance & punctuality; sets strong team discipline",
-          t4: "Perfect attendance; fully punctual",
-          t3: "0 days unexcused absence; minor occasional lateness",
-          t2: "2-3 days unexcused absence",
-          t1: ">3 days unexcused absence"
-        }
+        { title: "Production Efficiency", objectives: "Increase overall production output by 10%, keep reject rate below 2%, and complete scheduled maintenance.", weight: 30, t5: "Output +15%, 0% defect, ahead of schedule, zero downtime", t4: "Output +15%, 1% defect, on-time release, maintenance on time", t3: "Output +10%, 2% defect, 100% scheduled maintenance done", t2: "Output +5%, 3-4% defect, delayed up to 3 days", t1: "Output <5%, >5% defect, delayed 1 week or breakdown" },
+        { title: "Operations ISO & SOP Compliance", objectives: "Maintain accurate documentation, follow SOP procedures with zero major audit NCRs, and implement improvements.", weight: 20, t5: "100% accurate same-day updates, zero NCRs, >=4 improvements", t4: "100% accurate within 2-3 days, compliant, >=3 improvements", t3: "100% accurate within same week, compliant, >=2 improvements", t2: "1-5 minor inaccuracies, delayed 3 days, 1 minor idea", t1: ">5 inaccuracies, delayed >5 days, no initiative" },
+        { title: "Self & Team Performance", objectives: "Ensure operators run machines independently with high quality pass rate and strong team coordination.", weight: 25, t5: "Master level, zero errors, trains staff, 98% pass 1 wk early", t4: "Independent operation, resolves minor errors, >98% pass 3d early", t3: "Operators run independently without mistakes, 98% pass on time", t2: "Needs occasional help, 1-3 mistakes, 95% pass 3d late", t1: "Requires constant supervision, >3 mistakes, delayed 1 wk" },
+        { title: "Customer Satisfaction & Support", objectives: "Ensure on-site & remote customer support meets requirements with zero rejections and timely delivery.", weight: 15, t5: "Zero rejections, Google review 5.0, resolved within 1 hour", t4: "Zero rejections, Google review 4.9, resolved within half day", t3: "Max 1-2 minor issues, Google review 4.8, on-time delivery", t2: "3-4 rejections or 1+ day response delay", t1: ">4 rejections or unaddressed customer requests" },
+        { title: "Attendance & Punctuality", objectives: "Zero unexcused absences, minimal EL/MC, and consistent punctuality.", weight: 10, t5: "Perfect attendance & punctuality; sets strong team discipline", t4: "Perfect attendance; fully punctual", t3: "0 days unexcused absence; minor occasional lateness", t2: "2-3 days unexcused absence", t1: ">3 days unexcused absence" }
       ];
       renderKpiTemplateEditor(true);
-      showToast("Loaded Atlas sample goals (100% weightage, zero TICA). Click Save Template to apply.");
+      showToast("Loaded sample goals (100% weightage, zero TICA). Click Save Template to apply.");
     });
 
     async function saveKpiTemplateHandler() {
       collectTemplateFromDom();
       const totalWt = activeKpiTemplate.goals.reduce((s, g) => s + (Number(g.weight) || 0), 0);
-      if (totalWt !== 100) {
-        showToast(`Total Weightage is currently ${totalWt}%. Please adjust weights to equal 100%.`, true);
-        return;
-      }
+      if (totalWt !== 100) { showToast(`Total Weightage is currently ${totalWt}%. Please adjust weights to equal 100%.`, true); return; }
 
       const empUid = kpiEmployeeSelect.value;
       const year = kpiYearSelect.value;
@@ -3906,10 +4362,7 @@
 
     document.getElementById("confirmDuplicateBtn").addEventListener("click", async () => {
       collectTemplateFromDom();
-      if (!activeKpiTemplate.goals || activeKpiTemplate.goals.length === 0) {
-        showToast("Current year has no goals to duplicate.", true);
-        return;
-      }
+      if (!activeKpiTemplate.goals || activeKpiTemplate.goals.length === 0) { showToast("Current year has no goals to duplicate.", true); return; }
       const empUid = kpiEmployeeSelect.value;
       const targetYear = document.getElementById("duplicateTargetYear").value;
       const emp = allEmployees.find((e) => e.uid === empUid);
@@ -3961,14 +4414,12 @@
       const isSelf = emp.uid === currentUserUid;
       const canEditSelf = isSelf && (status === "Draft" || status === "Returned");
       const canGradeManager = isManagerOrAdmin;
-
       const savedItems = activeMonthlyKpi?.items || [];
 
       body.innerHTML = goals.map((g, idx) => {
         const saved = savedItems[idx] || {};
         const selfScore = saved.selfScore ?? "";
         const mgrScore = saved.mgrScore ?? "";
-
         return `
           <div class="border border-slate-700 rounded-2xl p-5 space-y-4 bg-slate-950/70" data-eval-idx="${idx}" data-weight="${g.weight}">
             <div class="flex flex-wrap items-start justify-between gap-2 pb-2 border-b border-slate-800">
@@ -3981,7 +4432,6 @@
                 <strong class="eval-row-points text-emerald-300 text-sm">0.00</strong>
               </div>
             </div>
-
             <div class="space-y-1 text-xs bg-slate-900 p-3 rounded-xl border border-slate-800 text-slate-200">
               <div><strong class="text-emerald-300">Score 5:</strong> ${g.t5 || "-"}</div>
               <div><strong class="text-cyan-300">Score 4:</strong> ${g.t4 || "-"}</div>
@@ -3989,7 +4439,6 @@
               <div><strong class="text-amber-300">Score 2:</strong> ${g.t2 || "-"}</div>
               <div><strong class="text-rose-300">Score 1:</strong> ${g.t1 || "-"}</div>
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
                 <label class="block font-bold text-slate-200 mb-1">Self Evaluation Rating (1–5) <span class="text-rose-400 font-bold">*</span></label>
@@ -4006,7 +4455,6 @@
                 </select>
               </div>
             </div>
-
             <div class="space-y-3 text-xs">
               <div>
                 <label class="block font-bold text-slate-200 mb-1">Where We Are (Actual Progress &amp; Results)</label>
@@ -4017,13 +4465,10 @@
                 <textarea rows="3" ${canEditSelf || isManagerOrAdmin ? "" : "disabled"} placeholder="Action plan for next month or Google Drive evidence link..." class="eval-next auto-expand-textarea force-sentence w-full px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white leading-relaxed">${saved.nextSteps || ""}</textarea>
               </div>
             </div>
-          </div>
-        `;
+          </div>`;
       }).join("");
 
-      body.querySelectorAll(".eval-self-score, .eval-mgr-score").forEach((sel) => {
-        sel.addEventListener("change", recalculateMonthlyKpiScore);
-      });
+      body.querySelectorAll(".eval-self-score, .eval-mgr-score").forEach((sel) => sel.addEventListener("change", recalculateMonthlyKpiScore));
 
       document.getElementById("kpiManagerRemarks").value = activeMonthlyKpi?.managerRemarks || "";
       document.getElementById("kpiManagerRemarks").disabled = !canGradeManager;
@@ -4050,7 +4495,6 @@
         card.querySelector(".eval-row-points").textContent = pts.toFixed(2);
         totalWeighted += pts;
       });
-
       const pct = Math.round((totalWeighted / 5) * 100);
       document.getElementById("kpiTotalScoreDisplay").textContent = `${totalWeighted.toFixed(2)} / 5.00 (${pct}%)`;
       return { totalWeighted: Number(totalWeighted.toFixed(2)), pct };
